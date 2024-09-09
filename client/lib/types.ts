@@ -10,3 +10,21 @@ export interface Gear {
 	createdAt: string;
 	updatedAt: string | null;
 }
+
+export type AuthStatus = 'unauthenticated' | 'authenticated' | 'loading';
+
+export interface AuthState {
+	accessToken: string | null;
+	refreshToken: string | null;
+	status: AuthStatus;
+}
+
+export interface User {
+	id: number;
+	name: string;
+	username?: string;
+	email?: string;
+	image: string | null;
+	createdAt: string | null;
+	imgPlaceholder?: string;
+}

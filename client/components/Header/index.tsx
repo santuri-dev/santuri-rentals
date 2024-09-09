@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import NavLinks from './NavLinks';
+import NavLinks from '../NavLinks';
+import LoginButton from './LoginButton';
 
 export default function Header() {
 	return (
@@ -14,7 +15,7 @@ export default function Header() {
 					{ path: '/studio', name: 'Studio' },
 				]}
 			/>
-			<div></div>
+			<LoginButton />
 		</header>
 	);
 }
