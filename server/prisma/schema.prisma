@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  username       String  @unique(map: "User_name_key")
+  firstName      String?
+  lastName       String?
+  email          String  @unique
+  phoneNumber    String?
+  password       String
+  image          String?
+  imgPlaceholder String?
+
+  resetPasswordToken String?
+
+  emailVerified    DateTime?
+  verificationCode String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  Session              Session[]
+  GearCheckoutApprover GearCheckout[] @relation(name: "approver")
+  GearCheckoutBorrower GearCheckout[] @relation(name: "borrower")
+}
+
+model Session {
+  id Int @id @default(autoincrement())
+
+  expires   DateTime
+  userAgent String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Gear {
+  id Int @id @default(autoincrement())
+
+  name         String
+  serialNumber String @unique
+  condition    String
+  status       String
+
+  accessories String?
+  notes       String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  GearCheckout   GearCheckout? @relation(fields: [gearCheckoutId], references: [id])
+  gearCheckoutId Int?
+}
+
+model GearCheckout {
+  id Int @id @default(autoincrement())
+
+  items Gear[]
+
+  borrower   User @relation(fields: [borrowerId], references: [id], name: "borrower")
+  borrowerId Int
+
+  approver   User    @relation(fields: [approverId], references: [id], name: "approver")
+  approverId Int
+  approved   Boolean
+
+  returnDate DateTime
+  pickupDate DateTime
+
+  returnNotes String?
+  returnedOn  DateTime
+  returned    Boolean
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Course {
+  id Int @id @default(autoincrement())
+
+  name        String
+  description String
+  cost        Float
+  startDate   DateTime
+  endDate     DateTime
+  location    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
