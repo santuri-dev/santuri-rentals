@@ -47,37 +47,37 @@ export type Database = {
       }
       Gear: {
         Row: {
-          accessories: string | null
           condition: string
           createdAt: string
           gearCheckoutId: number | null
           id: number
           name: string
           notes: string | null
+          peripherals: string[] | null
           serialNumber: string
           status: string
           updatedAt: string | null
         }
         Insert: {
-          accessories?: string | null
           condition: string
           createdAt?: string
           gearCheckoutId?: number | null
           id?: number
           name: string
           notes?: string | null
+          peripherals?: string[] | null
           serialNumber: string
           status: string
           updatedAt?: string | null
         }
         Update: {
-          accessories?: string | null
           condition?: string
           createdAt?: string
           gearCheckoutId?: number | null
           id?: number
           name?: string
           notes?: string | null
+          peripherals?: string[] | null
           serialNumber?: string
           status?: string
           updatedAt?: string | null

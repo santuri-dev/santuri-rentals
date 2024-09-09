@@ -4,7 +4,7 @@ export interface Gear {
 	serialNumber: string;
 	condition: string;
 	status: string;
-	accessories: string[];
+	peripherals: string[];
 	gearCheckoutId: number | null;
 	notes: string | null;
 	createdAt: string;

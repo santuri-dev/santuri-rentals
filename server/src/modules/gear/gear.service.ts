@@ -13,7 +13,7 @@ export async function getAllItems() {
 export async function getAvailableItems() {
 	const { data, error } = await supabase
 		.from('Gear')
-		.select('*')
+		.select('id, name, condition, peripherals')
 		.eq('status', 'available');
 
 	if (error) throw new Error(error.message);
