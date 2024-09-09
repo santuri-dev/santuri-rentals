@@ -15,8 +15,10 @@ export default function ColumnToggleMenu<T>({ table }: { table: Table<T> }) {
 	const columns = table.getAllLeafColumns();
 	const all = columns.length;
 	const visible = columns.filter((v) => v.getIsVisible()).length;
+	const canToggle =
+		table.getAllLeafColumns().filter((v) => v.getCanHide()).length === all;
 
-	return (
+	return canToggle ? (
 		<DropdownMenu open={open} onOpenChange={setOpen}>
 			<DropdownMenuTrigger asChild>
 				<Button
@@ -45,5 +47,5 @@ export default function ColumnToggleMenu<T>({ table }: { table: Table<T> }) {
 					))}
 			</DropdownMenuContent>
 		</DropdownMenu>
-	);
+	) : null;
 }

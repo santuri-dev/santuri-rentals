@@ -15,10 +15,13 @@ export default function SelectActionsMenu<T>({
 	selectActions,
 }: {
 	selectedRows: CustomSelectedRows<T>;
-	selectActions: Array<{
-		name: string;
-		action: (rows: T[], updateLoading: () => void) => Promise<void>;
-	}>;
+	selectActions: {
+		title: string;
+		actions: Array<{
+			name: string;
+			action: (rows: T[], updateLoading: () => void) => Promise<void>;
+		}>;
+	};
 }) {
 	const [loading, setLoading] = useState<Array<string>>([]);
 	const [open, setOpen] = useState(false);
@@ -31,11 +34,11 @@ export default function SelectActionsMenu<T>({
 					variant={'outline'}
 					size={'sm'}>
 					<CursorArrowIcon className='h-3 w-3' />
-					Select Actions {`(${selectedRows.length})`}
+					{`${selectActions.title} (${selectedRows.length})`}
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				{selectActions.map(({ action, name }, idx) => (
+				{selectActions.actions.map(({ action, name }, idx) => (
 					<DropdownMenuItem
 						onClick={async (e) => {
 							e.preventDefault();

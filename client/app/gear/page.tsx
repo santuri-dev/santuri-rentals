@@ -1,9 +1,5 @@
-import GearTable from '@/components/GearTable';
+import GearTable from '@/components/Tables/GearTable';
 
 export default function Page() {
-	return (
-		<>
-			<GearTable />
-		</>
-	);
+	return <GearTable />;
 }

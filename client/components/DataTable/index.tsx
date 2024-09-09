@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/table';
 import { DataTablePagination } from './data-table-pagination';
 import { ReactNode, useState } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import Spinner from '@/components/Loaders/Spinner';
 import { ReloadIcon } from '@radix-ui/react-icons';
@@ -38,10 +38,13 @@ interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	opts: QueryOpts<TData[]>;
 	actions?: { name: string; children: ReactNode }[];
-	selectActions?: Array<{
-		name: string;
-		action: (rows: TData[], updateLoading: () => void) => Promise<void>;
-	}>;
+	selectActions?: {
+		title: string;
+		actions: Array<{
+			name: string;
+			action: (rows: TData[], updateLoading: () => void) => Promise<void>;
+		}>;
+	};
 }
 
 export function DataTable<TData, TValue>({
@@ -51,7 +54,7 @@ export function DataTable<TData, TValue>({
 	actions,
 	selectActions,
 }: DataTableProps<TData, TValue>) {
-	const { data, isFetching, refetch } = useSuspenseQuery(opts);
+	const { data, isFetching, refetch } = useQuery(opts);
 
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -86,6 +89,8 @@ export function DataTable<TData, TValue>({
 		rowSelection
 	);
 
+	const tableRows = table.getRowModel().rows;
+
 	return (
 		<div className='space-y-4'>
 			<h1 className='text-lg'>{title}</h1>
@@ -118,7 +123,9 @@ export function DataTable<TData, TValue>({
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header) => {
 									return (
-										<TableHead key={header.id}>
+										<TableHead
+											key={header.id}
+											className='first:rounded-tl-md last:rounded-tr-md'>
 											{!header.isPlaceholder
 												? flexRender(
 														header.column.columnDef.header,
@@ -132,13 +139,19 @@ export function DataTable<TData, TValue>({
 						))}
 					</TableHeader>
 					<TableBody>
-						{table.getRowModel().rows?.length ? (
-							table.getRowModel().rows.map((row) => (
+						{tableRows.length ? (
+							tableRows.map((row, idx) => (
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && 'selected'}>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
+										<TableCell
+											key={cell.id}
+											className={`${
+												tableRows.length - 1 === idx
+													? 'first:rounded-bl-md last:rounded-br-md'
+													: ''
+											}`}>
 											{flexRender(
 												cell.column.columnDef.cell,
 												cell.getContext()
