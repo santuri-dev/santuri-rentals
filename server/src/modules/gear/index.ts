@@ -8,8 +8,7 @@ import {
 	getItemsById,
 	getInventoryStats,
 } from './gear.service';
-import { InventoryItemSchema } from './gear.service';
-import { z } from 'zod';
+import { InventoryItemSchema } from './gear.schema';
 import { requireUser } from '@/middleware/requireUser';
 
 const gear = (app: Elysia) =>
@@ -39,9 +38,7 @@ const gear = (app: Elysia) =>
 				'/add',
 				async ({ body, set }) => {
 					try {
-						const newItem = await addItem(
-							body as unknown as z.infer<typeof InventoryItemSchema>
-						);
+						const newItem = await addItem(body);
 						return { success: true, message: newItem.message };
 					} catch (error: any) {
 						set.status = 400;
@@ -49,13 +46,7 @@ const gear = (app: Elysia) =>
 					}
 				},
 				{
-					body: t.Object({
-						name: t.String(),
-						serialNumber: t.String(),
-						condition: t.Any(),
-						accessories: t.Array(t.String()),
-						status: t.Any(),
-					}),
+					body: InventoryItemSchema,
 				}
 			)
 			.put(
@@ -64,7 +55,7 @@ const gear = (app: Elysia) =>
 					try {
 						const updatedItem = await editItem({
 							id,
-							data: body as unknown as z.infer<typeof InventoryItemSchema>,
+							data: body,
 						});
 						return { success: true, message: updatedItem.message };
 					} catch (error: any) {
@@ -74,13 +65,7 @@ const gear = (app: Elysia) =>
 				},
 				{
 					params: t.Object({ id: t.String() }),
-					body: t.Object({
-						name: t.String(),
-						serialNumber: t.String(),
-						condition: t.Any(),
-						accessories: t.Array(t.String()),
-						status: t.Any(),
-					}),
+					body: InventoryItemSchema,
 				}
 			)
 			.delete(

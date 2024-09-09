@@ -1,24 +1,5 @@
 import supabase from '@/db';
-import { z } from 'zod';
-
-export const InventoryItemCondition = z.enum(['mint', 'good', 'bad']);
-
-export const InventoryItemStatus = z.enum([
-	'available',
-	'class',
-	'borrowed',
-	'lease',
-	'overdue',
-]);
-
-export const InventoryItemSchema = z.object({
-	name: z.string().min(1, 'Name cannot be empty'),
-	serialNumber: z.string().min(1, 'Name cannot be empty'),
-	condition: InventoryItemCondition,
-	accessories: z.string().optional(),
-	notes: z.string().optional(),
-	status: InventoryItemStatus,
-});
+import { InventoryItem } from './gear.schema';
 
 // Fetch all items
 export async function getAllItems() {
@@ -40,7 +21,7 @@ export async function getAvailableItems() {
 }
 
 // Add a new item
-export async function addItem(input: z.infer<typeof InventoryItemSchema>) {
+export async function addItem(input: InventoryItem) {
 	const { data, error } = await supabase
 		.from('Gear')
 		.insert(input)
@@ -59,7 +40,7 @@ export async function editItem({
 	data: input,
 }: {
 	id: string;
-	data: z.infer<typeof InventoryItemSchema>;
+	data: InventoryItem;
 }) {
 	const { data, error } = await supabase
 		.from('Gear')

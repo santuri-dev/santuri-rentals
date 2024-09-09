@@ -7,8 +7,6 @@ import user from './modules/user';
 import gear from './modules/gear';
 import shop from './modules/shop';
 
-const app = new Elysia().use(cors());
-
 const swaggerConfig = {
 	documentation: {
 		info: {
@@ -43,9 +41,14 @@ const swaggerConfig = {
 	path: '/docs',
 };
 
-if (Bun.env.LOCAL) app.use(swagger(swaggerConfig));
-
-app
+const app = new Elysia()
+	.use(cors())
+	.use((app) => {
+		if (env.NODE_ENV === 'local') {
+			app.use(swagger(swaggerConfig));
+		}
+		return app;
+	})
 	.group('/api', (app) =>
 		app
 			.get('/health', () => 'OK', { tags: ['health'] })
@@ -59,3 +62,5 @@ app
 console.log(
 	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port} (${env.NODE_ENV})`
 );
+
+export type App = typeof app;
