@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CustomSelectedRows } from './types';
+import { CustomSelectedRows, SelectActions } from './types';
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -15,13 +15,7 @@ export default function SelectActionsMenu<T>({
 	selectActions,
 }: {
 	selectedRows: CustomSelectedRows<T>;
-	selectActions: {
-		title: string;
-		actions: Array<{
-			name: string;
-			action: (rows: T[], updateLoading: () => void) => Promise<void>;
-		}>;
-	};
+	selectActions: SelectActions<T>;
 }) {
 	const [loading, setLoading] = useState<Array<string>>([]);
 	const [open, setOpen] = useState(false);

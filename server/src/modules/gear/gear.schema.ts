@@ -26,4 +26,12 @@ export const InventoryItemSchema = t.Object({
 	status: InventoryItemStatus,
 });
 
+export const GearRequestSchema = t.Object({
+	items: t.Array(t.Number()),
+	pickupDate: t.String({ format: 'date-time' }),
+	returnDate: t.String({ format: 'date-time' }),
+});
+
+export type GearRequest = Static<typeof GearRequestSchema>;
+
 export type InventoryItem = Static<typeof InventoryItemSchema>;

@@ -32,19 +32,14 @@ import { QueryOpts } from '@/lib/queryClient';
 import SelectActionsMenu from './select-actions-menu';
 import useSelectedRows from './useSelectedRows';
 import ColumnToggleMenu from './column-toggle-menu';
+import { SelectActions } from './types';
 
 interface DataTableProps<TData, TValue> {
 	title: string;
 	columns: ColumnDef<TData, TValue>[];
 	opts: QueryOpts<TData[]>;
 	actions?: { name: string; children: ReactNode }[];
-	selectActions?: {
-		title: string;
-		actions: Array<{
-			name: string;
-			action: (rows: TData[], updateLoading: () => void) => Promise<void>;
-		}>;
-	};
+	selectActions?: SelectActions<TData>;
 }
 
 export function DataTable<TData, TValue>({

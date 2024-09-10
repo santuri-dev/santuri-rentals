@@ -49,7 +49,6 @@ export type Database = {
         Row: {
           condition: string
           createdAt: string
-          gearCheckoutId: number | null
           id: number
           name: string
           notes: string | null
@@ -61,7 +60,6 @@ export type Database = {
         Insert: {
           condition: string
           createdAt?: string
-          gearCheckoutId?: number | null
           id?: number
           name: string
           notes?: string | null
@@ -73,7 +71,6 @@ export type Database = {
         Update: {
           condition?: string
           createdAt?: string
-          gearCheckoutId?: number | null
           id?: number
           name?: string
           notes?: string | null
@@ -82,53 +79,48 @@ export type Database = {
           status?: string
           updatedAt?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "Gear_gearCheckoutId_fkey"
-            columns: ["gearCheckoutId"]
-            isOneToOne: false
-            referencedRelation: "GearCheckout"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       GearCheckout: {
         Row: {
           approved: boolean
-          approverId: number
+          approverId: number | null
           borrowerId: number
           createdAt: string
           id: number
+          items: number[] | null
           pickupDate: string
           returnDate: string
           returned: boolean
-          returnedOn: string
+          returnedOn: string | null
           returnNotes: string | null
           updatedAt: string | null
         }
         Insert: {
-          approved: boolean
-          approverId: number
+          approved?: boolean
+          approverId?: number | null
           borrowerId: number
           createdAt?: string
           id?: number
+          items?: number[] | null
           pickupDate: string
           returnDate: string
-          returned: boolean
-          returnedOn: string
+          returned?: boolean
+          returnedOn?: string | null
           returnNotes?: string | null
           updatedAt?: string | null
         }
         Update: {
           approved?: boolean
-          approverId?: number
+          approverId?: number | null
           borrowerId?: number
           createdAt?: string
           id?: number
+          items?: number[] | null
           pickupDate?: string
           returnDate?: string
           returned?: boolean
-          returnedOn?: string
+          returnedOn?: string | null
           returnNotes?: string | null
           updatedAt?: string | null
         }

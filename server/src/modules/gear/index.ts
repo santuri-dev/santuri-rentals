@@ -7,8 +7,9 @@ import {
 	deleteItem,
 	getItemsById,
 	getInventoryStats,
+	requestGear,
 } from './gear.service';
-import { InventoryItemSchema } from './gear.schema';
+import { GearRequestSchema, InventoryItemSchema } from './gear.schema';
 import { requireUser } from '@/middleware/requireUser';
 
 const gear = (app: Elysia) =>
@@ -25,7 +26,7 @@ const gear = (app: Elysia) =>
 				}
 			})
 			.use(requireUser)
-			.get('/', async ({ set }) => {
+			.get('', async ({ set }) => {
 				try {
 					const items = await getAllItems();
 					return { success: true, data: items };
@@ -93,7 +94,7 @@ const gear = (app: Elysia) =>
 				}
 			})
 			.get(
-				'/item/:id',
+				'/:id',
 				async ({ params: { id }, set }) => {
 					try {
 						const items = await getItemsById(id);
@@ -106,6 +107,19 @@ const gear = (app: Elysia) =>
 				{
 					params: t.Object({ id: t.Number() }),
 				}
+			)
+			.post(
+				'/request',
+				async ({ body, set, user }) => {
+					try {
+						const items = await requestGear({ ...body, borrowerId: user.id });
+						return { success: true, message: items };
+					} catch (error: any) {
+						set.status = 500;
+						return { success: false, message: error.message };
+					}
+				},
+				{ body: GearRequestSchema }
 			)
 	);
 

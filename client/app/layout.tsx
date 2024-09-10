@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={`antialiased w-screen h-fit`}>
+			<body className={`antialiased max-w-screen overflow-x-hidden h-fit`}>
 				<Providers>
 					<Header />
 					<main className='px-6'>{children}</main>

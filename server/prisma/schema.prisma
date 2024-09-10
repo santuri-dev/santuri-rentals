@@ -55,29 +55,26 @@ model Gear {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
-
-  GearCheckout   GearCheckout? @relation(fields: [gearCheckoutId], references: [id])
-  gearCheckoutId Int?
 }
 
 model GearCheckout {
   id Int @id @default(autoincrement())
 
-  items Gear[]
+  items Int[]
 
   borrower   User @relation(fields: [borrowerId], references: [id], name: "borrower")
   borrowerId Int
 
-  approver   User    @relation(fields: [approverId], references: [id], name: "approver")
-  approverId Int
-  approved   Boolean
+  approver   User?   @relation(fields: [approverId], references: [id], name: "approver")
+  approverId Int?
+  approved   Boolean @default(false)
 
   returnDate DateTime
   pickupDate DateTime
 
   returnNotes String?
-  returnedOn  DateTime
-  returned    Boolean
+  returnedOn  DateTime?
+  returned    Boolean   @default(false)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt

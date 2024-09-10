@@ -1,5 +1,5 @@
 import supabase from '@/db';
-import { InventoryItem } from './gear.schema';
+import { GearRequest, InventoryItem } from './gear.schema';
 
 // Fetch all items
 export async function getAllItems() {
@@ -116,4 +116,25 @@ export async function getInventoryStats() {
 		'Due Today': dueToday.length,
 		Overdue: overdue.length,
 	};
+}
+
+export async function requestGear({
+	borrowerId,
+	items,
+	pickupDate,
+	returnDate,
+}: GearRequest & { borrowerId: number }) {
+	try {
+		const { error: checkoutError } = await supabase
+			.from('GearCheckout')
+			.insert({ borrowerId, pickupDate, returnDate, items });
+
+		if (checkoutError) {
+			throw new Error(`Error creating request: ${checkoutError.message}`);
+		}
+
+		return 'Successfully created gear request';
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
 }
