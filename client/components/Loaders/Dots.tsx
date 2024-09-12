@@ -1,7 +1,7 @@
 import { ThreeDots } from 'react-loader-spinner';
 
 export default function Dots({
-	color = '#fff',
+	color = '#555',
 	radius = '9',
 	size = '32',
 }: {

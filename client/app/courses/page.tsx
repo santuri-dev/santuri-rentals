@@ -3,7 +3,7 @@ import CourseGrid from '@/components/Courses/CourseGrid';
 
 export default function Page() {
 	return (
-		<div className='py-12 flex'>
+		<div className='flex py-6 max-h-[calc(100vh-72px)]'>
 			<div className='w-3/4'>
 				<CourseGrid />
 			</div>
