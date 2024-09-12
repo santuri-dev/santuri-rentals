@@ -6,9 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { ScrollArea } from '../ui/scroll-area';
 import { coursesOpts } from '@/lib/api';
 import { formatDate } from '@/lib/helpers';
+import { useState } from 'react';
 
 export default function CourseCalendar() {
 	const { data: courses } = useQuery(coursesOpts);
+	const [selected, setSelected] = useState<Date | undefined>();
 
 	return (
 		<div className='px-6 flex items-center justify-center flex-col shadow-lg'>
@@ -24,13 +26,16 @@ export default function CourseCalendar() {
 						console.log('date selected');
 					}
 				}}
-				selected={
-					courses.length > 0 ? new Date(courses[0].startDate) : new Date()
-				}
+				selected={selected}
 			/>
-			<ScrollArea className='w-full'>
+			<ScrollArea className='w-full h-48 shadow-inner'>
 				{courses.map((course) => (
-					<Card key={course.id} className='mb-4'>
+					<Card
+						key={course.id}
+						className='mb-4 w-[90%]'
+						onClick={() => {
+							setSelected(new Date(course.startDate));
+						}}>
 						<CardHeader>
 							<CardTitle className='text-sm'>{course.name}</CardTitle>
 						</CardHeader>
