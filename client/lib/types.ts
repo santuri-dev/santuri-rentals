@@ -28,3 +28,17 @@ export interface User {
 	createdAt: string | null;
 	imgPlaceholder?: string;
 }
+
+export interface Course {
+	applicationDeadline: string;
+	cost: number;
+	createdAt: string;
+	description: string;
+	duration: string;
+	endDate: string;
+	id: number;
+	location: string;
+	name: string;
+	startDate: string;
+	updatedAt: string;
+}

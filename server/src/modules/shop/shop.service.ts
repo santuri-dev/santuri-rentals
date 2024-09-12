@@ -1,4 +1,5 @@
 import supabase from '@/db';
+import { Course } from './shop.schema';
 
 // Fetch all courses
 export async function getAllCourses() {
@@ -9,14 +10,7 @@ export async function getAllCourses() {
 }
 
 // Add a new course
-export async function addCourse(input: {
-	description: string;
-	name: string;
-	cost: number;
-	startDate: string;
-	endDate: string;
-	location: string;
-}) {
+export async function addCourse(input: Course) {
 	const { data, error } = await supabase
 		.from('Course')
 		.insert(input)

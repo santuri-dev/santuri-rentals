@@ -16,6 +16,8 @@ export const CourseSchema = t.Object({
 		minLength: 1,
 		errorMessage: 'Location cannot be empty',
 	}),
+	duration: t.String(),
+	applicationDeadline: t.String({ format: 'date-time' }),
 });
 
 export type Course = Static<typeof CourseSchema>;

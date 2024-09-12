@@ -11,9 +11,11 @@ export type Database = {
     Tables: {
       Course: {
         Row: {
+          applicationDeadline: string
           cost: number
           createdAt: string
           description: string
+          duration: string
           endDate: string
           id: number
           location: string
@@ -22,9 +24,11 @@ export type Database = {
           updatedAt: string
         }
         Insert: {
+          applicationDeadline: string
           cost: number
           createdAt?: string
           description: string
+          duration: string
           endDate: string
           id?: number
           location: string
@@ -33,9 +37,11 @@ export type Database = {
           updatedAt?: string
         }
         Update: {
+          applicationDeadline?: string
           cost?: number
           createdAt?: string
           description?: string
+          duration?: string
           endDate?: string
           id?: number
           location?: string
