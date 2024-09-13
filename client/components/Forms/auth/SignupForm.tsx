@@ -19,6 +19,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PasswordInput } from '../PasswordInput';
 import Dots from '@/components/Loaders/Dots';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import Link from 'next/link';
 
 const signupFormSchema = z
 	.object({
@@ -39,6 +42,8 @@ type SignupInput = z.infer<typeof signupFormSchema>;
 
 export default function SignupForm() {
 	const [submitting, setSubmitting] = useState(false);
+	const { push } = useRouter();
+	const { status } = useAuth();
 
 	const form = useForm<SignupInput>({
 		resolver: zodResolver(signupFormSchema),
@@ -77,9 +82,16 @@ export default function SignupForm() {
 		setSubmitting(false);
 	}
 
+	if (status === 'authenticated') {
+		push('/');
+	}
+
 	return (
 		<div className='mx-auto w-full max-w-md space-y-6'>
-			<div className='text-center'>
+			<div className='text-center space-y-6'>
+				<Link href={'/'} className='font-bold text-xl hover:text-blue-500'>
+					Santuri EA
+				</Link>
 				<h1 className='text-xl font-bold tracking-tight text-foreground'>
 					Create an account
 				</h1>
@@ -139,6 +151,14 @@ export default function SignupForm() {
 								</FormItem>
 							)}
 						/>
+						<span className='flex items-center text-sm'>
+							Already have an account?
+							<Link
+								className='text-blue-500 underline bricolage-normal text-[10pt] underline-offset-2 ml-2'
+								href='/auth/login'>
+								Login
+							</Link>
+						</span>
 					</div>
 					<Button
 						className='w-full mt-4'

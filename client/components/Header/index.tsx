@@ -1,9 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import NavLinks from '../NavLinks';
 import LoginButton from './LoginButton';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
-	return (
+	const pathname = usePathname();
+
+	return !pathname.startsWith('/auth') ? (
 		<header className='w-full shadow-2xl h-[72px] flex justify-between px-6 items-center'>
 			<Link href={'/'} className='font-bold text-xl'>
 				Santuri EA
@@ -17,5 +22,5 @@ export default function Header() {
 			/>
 			<LoginButton />
 		</header>
-	);
+	) : null;
 }

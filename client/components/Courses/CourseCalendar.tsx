@@ -28,7 +28,7 @@ export default function CourseCalendar() {
 				}}
 				selected={selected}
 			/>
-			<ScrollArea className='w-full h-48 shadow-inner'>
+			<ScrollArea className='w-full shadow-inner'>
 				{courses.map((course) => (
 					<Card
 						key={course.id}
