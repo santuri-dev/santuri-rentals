@@ -61,6 +61,7 @@ export function DatePickerWithRange({
 						mode='range'
 						defaultMonth={date?.from}
 						selected={date}
+						fromDate={new Date()}
 						onSelect={(value) => {
 							setDate(value);
 							if (value) {
