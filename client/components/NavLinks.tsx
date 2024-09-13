@@ -12,7 +12,7 @@ export default function NavLinks({ links }: { links: NavLink[] }) {
 	const pathname = usePathname();
 
 	return (
-		<div className='flex justify-between gap-4 font-semibold'>
+		<div className='hidden md:flex justify-between gap-4 font-semibold'>
 			{links.map(({ path, name }) => (
 				<Link
 					className={`${
