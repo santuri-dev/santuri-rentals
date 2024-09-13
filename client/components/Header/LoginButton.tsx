@@ -17,12 +17,12 @@ export default function LoginButton() {
 	const { status, logout, user } = useAuth();
 
 	return status === 'unauthenticated' ? (
-		<Button variant={'secondary'} asChild>
+		<Button variant={'secondary'} className='hidden md:block' asChild>
 			<Link href={'/auth/login'}>Login</Link>
 		</Button>
 	) : (
 		<DropdownMenu>
-			<DropdownMenuTrigger>
+			<DropdownMenuTrigger className='hidden md:block'>
 				<Avatar>
 					<AvatarImage src={user?.image ?? ''} />
 					<AvatarFallback className='font-bold'>
