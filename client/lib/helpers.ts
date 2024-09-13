@@ -7,3 +7,8 @@ export function capitalizeFirstLetter(str: string) {
 export function formatDate(date: string) {
 	return dayjs(date).format('MMM D YYYY');
 }
+
+export const formatCurrency = new Intl.NumberFormat('en-US', {
+	style: 'currency',
+	currency: 'KES',
+}).format;
