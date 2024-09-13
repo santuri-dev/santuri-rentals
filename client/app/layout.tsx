@@ -6,8 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
 	title: 'Santuri East Africa',
-	description:
-		'Join our production classes, book studio time and rent studio gear',
+	description: 'Production classes, Studio time and Gear Rental',
 };
 
 export default function RootLayout({
