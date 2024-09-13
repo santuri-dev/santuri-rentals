@@ -32,7 +32,7 @@ export default function NavLinks({ links }: { links: NavLink[] }) {
 					</Link>
 				))}
 			</div>
-			<div className='md:hidden flex justify-between gap-4 font-semibold'>
+			<div className='md:hidden ml-auto mr-6 flex justify-between gap-4 font-semibold'>
 				<DropdownMenu>
 					<DropdownMenuTrigger>
 						<Menu />
