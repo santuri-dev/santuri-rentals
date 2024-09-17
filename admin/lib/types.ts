@@ -11,6 +11,13 @@ export interface Gear {
 	updatedAt: string | null;
 }
 
+export interface GearStats {
+	Available: number;
+	'Due Today': number;
+	Leased: number;
+	Overdue: number;
+}
+
 export type AuthStatus = 'unauthenticated' | 'authenticated' | 'loading';
 
 export interface AuthState {

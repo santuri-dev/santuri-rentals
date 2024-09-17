@@ -1,8 +1,8 @@
 import supabase from '@/db';
-import { GearRequest, InventoryItem } from './gear.schema';
+import { GearRequest, GearInventoryItem } from './gear.schema';
 
 // Fetch all items
-export async function getAllItems() {
+export async function getAllGearItems() {
 	const { data, error } = await supabase.from('Gear').select('*');
 
 	if (error) throw new Error(error.message);
@@ -10,7 +10,7 @@ export async function getAllItems() {
 }
 
 // Fetch available items
-export async function getAvailableItems() {
+export async function getAvailableGearItems() {
 	const { data, error } = await supabase
 		.from('Gear')
 		.select('id, name, condition, peripherals')
@@ -21,7 +21,7 @@ export async function getAvailableItems() {
 }
 
 // Add a new item
-export async function addItem(input: InventoryItem) {
+export async function addGearItem(input: GearInventoryItem) {
 	const { data, error } = await supabase
 		.from('Gear')
 		.insert(input)
@@ -35,12 +35,12 @@ export async function addItem(input: InventoryItem) {
 }
 
 // Edit an existing item
-export async function editItem({
+export async function editGearItem({
 	id,
 	data: input,
 }: {
 	id: string;
-	data: InventoryItem;
+	data: GearInventoryItem;
 }) {
 	const { data, error } = await supabase
 		.from('Gear')
@@ -56,7 +56,7 @@ export async function editItem({
 }
 
 // Delete an item
-export async function deleteItem(id: string) {
+export async function deleteGearItem(id: string) {
 	const { data, error } = await supabase
 		.from('Gear')
 		.delete()
@@ -71,7 +71,7 @@ export async function deleteItem(id: string) {
 }
 
 // Get items by ID
-export async function getItemsById(id: number) {
+export async function getGearItemsById(id: number) {
 	const { data, error } = await supabase
 		.from('Gear')
 		.select('name, serialNumber, status, condition')
@@ -83,7 +83,7 @@ export async function getItemsById(id: number) {
 }
 
 // Get inventory stats
-export async function getInventoryStats() {
+export async function getGearInventoryStats() {
 	const { data: items, error: itemsError } = await supabase
 		.from('Gear')
 		.select('*');

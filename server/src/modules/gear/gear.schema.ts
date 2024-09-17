@@ -1,12 +1,12 @@
 import { Static, t } from 'elysia';
 
-export const InventoryItemCondition = t.Union([
+export const GearInventoryItemCondition = t.Union([
 	t.Literal('mint'),
 	t.Literal('good'),
 	t.Literal('bad'),
 ]);
 
-export const InventoryItemStatus = t.Union([
+export const GearInventoryItemStatus = t.Union([
 	t.Literal('available'),
 	t.Literal('class'),
 	t.Literal('borrowed'),
@@ -14,16 +14,16 @@ export const InventoryItemStatus = t.Union([
 	t.Literal('overdue'),
 ]);
 
-export const InventoryItemSchema = t.Object({
+export const GearInventoryItemSchema = t.Object({
 	name: t.String({ minLength: 1, errorMessage: 'Name cannot be empty' }),
 	serialNumber: t.String({
 		minLength: 1,
 		errorMessage: 'Serial number cannot be empty',
 	}),
-	condition: InventoryItemCondition,
+	condition: GearInventoryItemCondition,
 	accessories: t.Optional(t.String()),
 	notes: t.Optional(t.String()),
-	status: InventoryItemStatus,
+	status: GearInventoryItemStatus,
 });
 
 export const GearRequestSchema = t.Object({
@@ -34,4 +34,4 @@ export const GearRequestSchema = t.Object({
 
 export type GearRequest = Static<typeof GearRequestSchema>;
 
-export type InventoryItem = Static<typeof InventoryItemSchema>;
+export type GearInventoryItem = Static<typeof GearInventoryItemSchema>;

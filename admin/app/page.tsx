@@ -1,3 +1,4 @@
+import InventoryStats from '@/components/InventoryStats';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Page() {
@@ -10,17 +11,12 @@ export default function Page() {
 				<Tabs defaultValue='overview' className='space-y-4'>
 					<TabsList>
 						<TabsTrigger value='overview'>Overview</TabsTrigger>
-						<TabsTrigger value='analytics' disabled>
-							Analytics
-						</TabsTrigger>
-						<TabsTrigger value='reports' disabled>
-							Reports
-						</TabsTrigger>
-						<TabsTrigger value='notifications' disabled>
-							Notifications
-						</TabsTrigger>
+						<TabsTrigger value='analytics'>Analytics</TabsTrigger>
 					</TabsList>
 					<TabsContent value='overview' className='space-y-4'></TabsContent>
+					<TabsContent value='analytics' className='space-y-4'>
+						<InventoryStats />
+					</TabsContent>
 				</Tabs>
 			</div>
 		</div>
