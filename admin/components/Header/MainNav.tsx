@@ -1,35 +1,37 @@
-import Link from 'next/link';
+'use client';
 
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { NavLink } from '@/lib/types';
+import { usePathname } from 'next/navigation';
+
+const links: NavLink[] = [
+	{ path: '/', name: 'Dashboard' },
+	{ path: '/gear', name: 'Gear' },
+	{ path: '/courses', name: 'Courses' },
+	{ path: '/studio', name: 'Studio' },
+];
 
 export function MainNav({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLElement>) {
+	const pathname = usePathname();
+
 	return (
 		<nav
 			className={cn('flex items-center space-x-4 lg:space-x-6', className)}
 			{...props}>
-			<Link
-				href='/examples/dashboard'
-				className='text-sm font-medium transition-colors hover:text-primary'>
-				Overview
-			</Link>
-			<Link
-				href='/examples/dashboard'
-				className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary'>
-				Customers
-			</Link>
-			<Link
-				href='/examples/dashboard'
-				className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary'>
-				Products
-			</Link>
-			<Link
-				href='/examples/dashboard'
-				className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary'>
-				Settings
-			</Link>
+			{links.map(({ name, path }) => (
+				<Link
+					key={path}
+					href={path}
+					className={`${
+						pathname === path ? 'text-blue-500' : ''
+					} text-md font-semibold hover:text-blue-500 transition-all ease-in-out duration-300`}>
+					{name}
+				</Link>
+			))}
 		</nav>
 	);
 }

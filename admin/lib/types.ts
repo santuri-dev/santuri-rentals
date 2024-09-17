@@ -42,3 +42,8 @@ export interface Course {
 	startDate: string;
 	updatedAt: string;
 }
+
+export interface NavLink {
+	path: string;
+	name: string;
+}

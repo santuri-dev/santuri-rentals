@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Providers from '@/components/Providers';
 import { Toaster } from '@/components/ui/toaster';
-import RequireAuth from '@/components/RequireAuth';
+import Header from '@/components/Header';
 
 export const metadata: Metadata = {
 	title: 'Santuri Admin',
@@ -16,11 +16,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={`antialiased max-w-screen overflow-x-hidden h-fit`}>
+			<body className={`antialiased w-screen overflow-x-hidden h-fit`}>
 				<Providers>
-					<RequireAuth>
-						<main>{children}</main>
-					</RequireAuth>
+					<Header />
+					<main>{children}</main>
 				</Providers>
 				<Toaster />
 			</body>

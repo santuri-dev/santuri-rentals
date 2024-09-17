@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
-import Spinner2 from './Loaders/Spinner2';
+import Spinner2 from '../Loaders/Spinner2';
 
 export default function RequireAuth({
 	children,

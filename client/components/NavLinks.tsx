@@ -9,11 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Menu } from 'lucide-react';
-
-interface NavLink {
-	path: string;
-	name: string;
-}
+import { NavLink } from '@/lib/types';
 
 export default function NavLinks({ links }: { links: NavLink[] }) {
 	const pathname = usePathname();
