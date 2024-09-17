@@ -95,3 +95,34 @@ model Course {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
+
+model AdminUser {
+  id Int @id @default(autoincrement())
+
+  firstName   String
+  lastName    String
+  email       String  @unique
+  phoneNumber String?
+  password    String
+  image       String?
+  role        String
+
+  emailVerified    DateTime?
+  verificationCode String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  AdminSession AdminSession[]
+}
+
+model AdminSession {
+  id Int @id @default(autoincrement())
+
+  expires   DateTime
+  userAgent String
+
+  adminUserId Int
+
+  adminUser AdminUser @relation(fields: [adminUserId], references: [id])
+}

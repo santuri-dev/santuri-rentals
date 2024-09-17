@@ -14,3 +14,9 @@ export interface DecodedRefresh {
 export interface DecodedReset {
 	id: number;
 }
+
+export interface AdminDecodedRefresh {
+	id: number;
+	adminUserId: number;
+	userAgent: string;
+}

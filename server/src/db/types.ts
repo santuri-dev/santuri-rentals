@@ -9,6 +9,80 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      AdminSession: {
+        Row: {
+          adminUserId: number
+          expires: string
+          id: number
+          userAgent: string
+        }
+        Insert: {
+          adminUserId: number
+          expires: string
+          id?: number
+          userAgent: string
+        }
+        Update: {
+          adminUserId?: number
+          expires?: string
+          id?: number
+          userAgent?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "AdminSession_adminUserId_fkey"
+            columns: ["adminUserId"]
+            isOneToOne: false
+            referencedRelation: "AdminUser"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      AdminUser: {
+        Row: {
+          createdAt: string
+          email: string
+          emailVerified: string | null
+          firstName: string
+          id: number
+          image: string | null
+          lastName: string
+          password: string
+          phoneNumber: string | null
+          role: string
+          updatedAt: string
+          verificationCode: string | null
+        }
+        Insert: {
+          createdAt?: string
+          email: string
+          emailVerified?: string | null
+          firstName: string
+          id?: number
+          image?: string | null
+          lastName: string
+          password: string
+          phoneNumber?: string | null
+          role: string
+          updatedAt?: string
+          verificationCode?: string | null
+        }
+        Update: {
+          createdAt?: string
+          email?: string
+          emailVerified?: string | null
+          firstName?: string
+          id?: number
+          image?: string | null
+          lastName?: string
+          password?: string
+          phoneNumber?: string | null
+          role?: string
+          updatedAt?: string
+          verificationCode?: string | null
+        }
+        Relationships: []
+      }
       Course: {
         Row: {
           applicationDeadline: string

@@ -3,9 +3,9 @@ import { cors } from '@elysiajs/cors';
 import swagger from '@elysiajs/swagger';
 import env from './lib/env';
 import auth from './modules/auth';
-import user from './modules/user';
 import gear from './modules/gear';
 import shop from './modules/shop';
+import admin from './modules/admin';
 
 const swaggerConfig = {
 	documentation: {
@@ -18,6 +18,10 @@ const swaggerConfig = {
 			{
 				name: 'Auth',
 				description: 'Endpoints for the auth service',
+			},
+			{
+				name: 'Admin',
+				description: 'Endpoints for the admin auth service',
 			},
 			{
 				name: 'User',
@@ -53,7 +57,7 @@ const app = new Elysia()
 		app
 			.get('/health', () => 'OK', { tags: ['health'] })
 			.use(auth)
-			.use(user)
+			.use(admin)
 			.use(gear)
 			.use(shop)
 	)

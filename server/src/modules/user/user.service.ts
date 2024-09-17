@@ -53,7 +53,7 @@ export async function createUser({
 		if (error) throw new Error(error.message);
 		if (!data) throw new Error(`Something went wrong: data=null`);
 
-		const verificationLink = `${env.SERVER_URL}/api/user/verify/${data[0].id}/${verificationCode}`;
+		const verificationLink = `${env.SERVER_URL}/api/auth/verify/${data[0].id}/${verificationCode}`;
 
 		try {
 			await transporter.sendMail({

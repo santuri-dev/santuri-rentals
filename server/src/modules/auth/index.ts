@@ -9,7 +9,7 @@ import {
 	signAccessToken,
 	signRefreshToken,
 } from './auth.service';
-import { createUser, fetchUser } from '../user/user.service';
+import { createUser, fetchUser, verifyUser } from '../user/user.service';
 import { LocalUser } from '@/lib/types';
 import env from '@/lib/env';
 
@@ -170,6 +170,20 @@ const auth = (app: Elysia) =>
 						email: t.String({ format: 'email' }),
 						password: t.String({ minLength: 6 }),
 					}),
+				}
+			)
+			.get(
+				'/verify/:id/:verificationCode',
+				async ({ params: { id, verificationCode }, redirect }) => {
+					const res = await verifyUser(id, verificationCode);
+					return redirect(
+						`${env.CLIENT_URL}/auth/login?verified=${res.success}${
+							res.data?.email ? `&email=${res.data?.email}` : ''
+						}`
+					);
+				},
+				{
+					params: t.Object({ id: t.Numeric(), verificationCode: t.String() }),
 				}
 			)
 			.use(requireUser)
