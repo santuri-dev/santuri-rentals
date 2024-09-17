@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import {
 	Form,
 	FormControl,
@@ -60,9 +59,6 @@ export default function RequestReset() {
 	return (
 		<div className='mx-auto w-full max-w-md space-y-6'>
 			<div className='text-center space-y-6'>
-				<Link href={'/'} className='font-bold text-xl hover:text-blue-500'>
-					Santuri EA
-				</Link>
 				<h1 className='text-lg font-semibold tracking-tight text-foreground'>
 					Reset your password
 				</h1>

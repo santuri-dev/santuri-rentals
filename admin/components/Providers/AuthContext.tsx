@@ -103,15 +103,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	const logout = useCallback(async () => {
-		setUser(undefined);
-		setStatus('unauthenticated');
-		await request.delete(`/auth/logout`);
-		localStorage.removeItem('token');
-		request.defaults.headers['Authorization'] = '';
-		request.defaults.headers['x-refresh'] = '';
-		queryClient.clear();
-		await queryClient.invalidateQueries();
-		await queryClient.refetchQueries();
+		try {
+			setUser(undefined);
+			setStatus('unauthenticated');
+			await request.delete(`/auth/logout`);
+			localStorage.removeItem('token');
+			request.defaults.headers['Authorization'] = '';
+			request.defaults.headers['x-refresh'] = '';
+			queryClient.clear();
+			await queryClient.invalidateQueries();
+			await queryClient.refetchQueries();
+		} catch (error) {
+			console.log('Logging out...');
+		}
 	}, []);
 
 	const fetchUser = useCallback(async () => {

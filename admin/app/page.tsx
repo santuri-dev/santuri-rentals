@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MainNav } from '@/components/MainNav';
-import { UserNav } from '@/components/UserNav';
+import { MainNav } from '@/components/Header/MainNav';
+import { UserNav } from '@/components/Header/UserNav';
 
 export default function Page() {
 	return (
