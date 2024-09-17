@@ -105,8 +105,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const logout = useCallback(async () => {
 		setUser(undefined);
 		setStatus('unauthenticated');
-		localStorage.removeItem('token');
 		await request.delete(`/auth/logout`);
+		localStorage.removeItem('token');
 		request.defaults.headers['Authorization'] = '';
 		request.defaults.headers['x-refresh'] = '';
 		queryClient.clear();
