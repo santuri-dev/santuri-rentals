@@ -20,7 +20,7 @@ const swaggerConfig = {
 				description: 'Endpoints for the auth service',
 			},
 			{
-				name: 'Admin',
+				name: 'Admin Auth',
 				description: 'Endpoints for the admin auth service',
 			},
 			{
