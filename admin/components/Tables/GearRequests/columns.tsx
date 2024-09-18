@@ -1,5 +1,4 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableColumnHeader } from '@/components/DataTable/data-table-column-header';
 import {
 	DropdownMenu,
