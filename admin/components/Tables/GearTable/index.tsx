@@ -1,40 +1,24 @@
 'use client';
 
 import { DataTable } from '../../DataTable';
-import { Gear } from '@/lib/types';
 import { gearColumns } from './columns';
-import { useAuth } from '@/hooks/use-auth';
-import { SelectActions } from '@/components/DataTable/types';
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogTitle,
+	DialogTrigger,
 } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { gearTableOpts } from '@/lib/api';
+import GearForm from '@/components/Forms/gear/GearForm';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
 
 export default function GearTable() {
-	const { status } = useAuth();
 	const [open, setOpen] = useState(false);
-
-	const selectActions: SelectActions<Gear> | undefined =
-		status === 'authenticated'
-			? {
-					title: 'Items',
-					actions: [
-						{
-							name: 'Request',
-							async action(rows, updateLoading) {
-								'use server';
-								setOpen(true);
-								updateLoading();
-								return Promise.resolve();
-							},
-						},
-					],
-			  }
-			: undefined;
+	const { refetch } = useQuery(gearTableOpts);
 
 	return (
 		<>
@@ -42,17 +26,34 @@ export default function GearTable() {
 				title=''
 				columns={gearColumns}
 				opts={gearTableOpts}
-				selectActions={selectActions}
+				actions={[
+					{
+						name: 'Add Gear',
+						children: (
+							<Dialog open={open} onOpenChange={setOpen}>
+								<DialogTrigger asChild>
+									<Button variant={'secondary'} size={'sm'}>
+										Add Gear <Plus className='h-4 w-4 ml-2' />
+									</Button>
+								</DialogTrigger>
+								<DialogContent className='max-h-[90vh] overflow-y-scroll'>
+									<DialogTitle>Gear Form</DialogTitle>
+									<DialogDescription>
+										Enter the details of the item. This can also be edited
+										later.
+									</DialogDescription>
+									<GearForm
+										onSubmit={async () => {
+											setOpen(false);
+											await refetch();
+										}}
+									/>
+								</DialogContent>
+							</Dialog>
+						),
+					},
+				]}
 			/>
-			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogContent>
-					<DialogTitle>Select Rental Date</DialogTitle>
-
-					<DialogDescription>
-						This will be the date range for your gear rental
-					</DialogDescription>
-				</DialogContent>
-			</Dialog>
 		</>
 	);
 }

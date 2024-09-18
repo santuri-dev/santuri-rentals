@@ -21,7 +21,7 @@ export const GearInventoryItemSchema = t.Object({
 		errorMessage: 'Serial number cannot be empty',
 	}),
 	condition: GearInventoryItemCondition,
-	accessories: t.Optional(t.String()),
+	peripherals: t.Array(t.String()),
 	notes: t.Optional(t.String()),
 	status: GearInventoryItemStatus,
 });
