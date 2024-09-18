@@ -18,6 +18,7 @@ import {
 	editGearItem,
 	getAllGearItems,
 	getGearInventoryStats,
+	getManyGearItems,
 	getPendingGearRequests,
 } from '../gear/gear.service';
 import { GearInventoryItemSchema } from '../gear/gear.schema';
@@ -228,6 +229,19 @@ const admin = (app: Elysia) =>
 							return { success: false, message: error.message };
 						}
 					})
+					.post(
+						'/bulk',
+						async ({ set, body: { ids } }) => {
+							try {
+								const items = await getManyGearItems(ids);
+								return { success: true, data: items };
+							} catch (error: any) {
+								set.status = 500;
+								return { success: false, message: error.message };
+							}
+						},
+						{ body: t.Object({ ids: t.Array(t.Number()) }) }
+					)
 					.post(
 						'/add',
 						async ({ body, set }) => {

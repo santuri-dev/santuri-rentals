@@ -36,7 +36,7 @@ export default function GearTable() {
 										Add Gear <Plus className='h-4 w-4 ml-2' />
 									</Button>
 								</DialogTrigger>
-								<DialogContent className='max-h-[90vh] overflow-y-scroll'>
+								<DialogContent>
 									<DialogTitle>Gear Form</DialogTitle>
 									<DialogDescription>
 										Enter the details of the item. This can also be edited

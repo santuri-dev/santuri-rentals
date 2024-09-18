@@ -1,15 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/DataTable/data-table-column-header';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
 import { GearCheckout } from '@/lib/types';
 import { formatDate } from '@/lib/helpers';
+import RequestPreview from './RequestPreview';
 
 export const gearRequestColumns: ColumnDef<GearCheckout>[] = [
 	{
@@ -70,29 +63,7 @@ export const gearRequestColumns: ColumnDef<GearCheckout>[] = [
 	},
 	{
 		id: 'actions',
-		cell: () => {
-			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant='ghost' className='h-8 w-8 p-0'>
-							<span className='sr-only'>Row Actions</span>
-							<MoreHorizontal className='h-4 w-4' />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align='end' className='p-0 border'>
-						<DropdownMenuItem className='rounded-none'>
-							Approve
-						</DropdownMenuItem>
-						<DropdownMenuItem className='rounded-none'>
-							Review / Amend
-						</DropdownMenuItem>
-						<DropdownMenuItem className='rounded-none'>
-							Decline
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			);
-		},
+		cell: ({ row }) => <RequestPreview gearCheckout={row.original} />,
 		enableHiding: false,
 	},
 ];

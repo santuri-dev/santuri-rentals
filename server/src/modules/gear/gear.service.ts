@@ -9,6 +9,14 @@ export async function getAllGearItems() {
 	return data;
 }
 
+// Fetch many items
+export async function getManyGearItems(ids: number[]) {
+	const { data, error } = await supabase.from('Gear').select('*').in('id', ids);
+
+	if (error) throw new Error(error.message);
+	return data;
+}
+
 // Fetch available items
 export async function getAvailableGearItems() {
 	const { data, error } = await supabase
