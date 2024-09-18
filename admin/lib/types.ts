@@ -54,3 +54,12 @@ export interface NavLink {
 	path: string;
 	name: string;
 }
+
+export interface GearCheckout {
+	id: number;
+	pickupDate: string;
+	returnDate: string;
+	items: number[];
+	createdAt: string;
+	User: User;
+}

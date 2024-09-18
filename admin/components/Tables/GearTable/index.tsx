@@ -1,10 +1,8 @@
 'use client';
 
-import { QueryOpts } from '@/lib/queryClient';
 import { DataTable } from '../../DataTable';
 import { Gear } from '@/lib/types';
 import { gearColumns } from './columns';
-import { request } from '@/lib/axios';
 import { useAuth } from '@/hooks/use-auth';
 import { SelectActions } from '@/components/DataTable/types';
 import {
@@ -14,15 +12,7 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { useState } from 'react';
-
-const opts: QueryOpts<Gear[]> = {
-	initialData: [],
-	queryKey: ['gear', 'available'],
-	queryFn: async () => {
-		const { data } = (await request.get('/gear')).data;
-		return data;
-	},
-};
+import { gearTableOpts } from '@/lib/api';
 
 export default function GearTable() {
 	const { status } = useAuth();
@@ -51,7 +41,7 @@ export default function GearTable() {
 			<DataTable
 				title=''
 				columns={gearColumns}
-				opts={opts}
+				opts={gearTableOpts}
 				selectActions={selectActions}
 			/>
 			<Dialog open={open} onOpenChange={setOpen}>

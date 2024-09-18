@@ -1,4 +1,6 @@
+import GearRequestsTable from '@/components/Tables/GearRequests';
 import GearTable from '@/components/Tables/GearTable';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Page() {
 	return (
@@ -7,7 +9,22 @@ export default function Page() {
 				<div className='flex items-center justify-between space-y-2'>
 					<h2 className='text-3xl font-bold tracking-tight'>Gear</h2>
 				</div>
-				<GearTable />
+				<Tabs defaultValue='overview' className='space-y-4'>
+					<TabsList>
+						<TabsTrigger value='overview'>Overview</TabsTrigger>
+						<TabsTrigger value='requests'>Requests</TabsTrigger>
+						<TabsTrigger value='leases'>Leases</TabsTrigger>
+					</TabsList>
+					<TabsContent value='overview' className='space-y-4'>
+						<GearTable />
+					</TabsContent>
+					<TabsContent value='requests' className='space-y-4'>
+						<GearRequestsTable />
+					</TabsContent>
+					<TabsContent value='leases' className='space-y-4'>
+						<></>
+					</TabsContent>
+				</Tabs>
 			</div>
 		</div>
 	);

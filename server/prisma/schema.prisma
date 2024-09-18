@@ -27,9 +27,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  Session              Session[]
-  GearCheckoutApprover GearCheckout[] @relation(name: "approver")
-  GearCheckoutBorrower GearCheckout[] @relation(name: "borrower")
+  Session      Session[]
+  GearCheckout GearCheckout[] @relation(name: "borrower")
 }
 
 model Session {
@@ -65,9 +64,9 @@ model GearCheckout {
   borrower   User @relation(fields: [borrowerId], references: [id], name: "borrower")
   borrowerId Int
 
-  approver   User?   @relation(fields: [approverId], references: [id], name: "approver")
+  approver   AdminUser? @relation(fields: [approverId], references: [id], name: "approver")
   approverId Int?
-  approved   Boolean @default(false)
+  approved   Boolean    @default(false)
 
   returnDate DateTime
   pickupDate DateTime
@@ -76,8 +75,9 @@ model GearCheckout {
   returnedOn  DateTime?
   returned    Boolean   @default(false)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  adminUserId Int?
 }
 
 model Course {
@@ -114,6 +114,7 @@ model AdminUser {
   updatedAt DateTime @default(now()) @updatedAt
 
   AdminSession AdminSession[]
+  GearCheckout GearCheckout[] @relation(name: "approver")
 }
 
 model AdminSession {

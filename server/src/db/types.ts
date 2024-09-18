@@ -163,6 +163,7 @@ export type Database = {
       }
       GearCheckout: {
         Row: {
+          adminUserId: number | null
           approved: boolean
           approverId: number | null
           borrowerId: number
@@ -177,6 +178,7 @@ export type Database = {
           updatedAt: string | null
         }
         Insert: {
+          adminUserId?: number | null
           approved?: boolean
           approverId?: number | null
           borrowerId: number
@@ -191,6 +193,7 @@ export type Database = {
           updatedAt?: string | null
         }
         Update: {
+          adminUserId?: number | null
           approved?: boolean
           approverId?: number | null
           borrowerId?: number
@@ -209,7 +212,7 @@ export type Database = {
             foreignKeyName: "GearCheckout_approverId_fkey"
             columns: ["approverId"]
             isOneToOne: false
-            referencedRelation: "User"
+            referencedRelation: "AdminUser"
             referencedColumns: ["id"]
           },
           {

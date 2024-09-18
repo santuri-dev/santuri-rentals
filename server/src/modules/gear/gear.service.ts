@@ -138,3 +138,23 @@ export async function requestGear({
 		throw new Error(error.message);
 	}
 }
+
+export async function getPendingGearRequests() {
+	try {
+		const { data, error: checkoutError } = await supabase
+			.from('GearCheckout')
+			.select(
+				'id, pickupDate, returnDate, items, createdAt, User(id, username, email)'
+			)
+			.eq('approved', false)
+			.eq('returned', false);
+
+		if (checkoutError) {
+			throw new Error(`Error fetching gear request: ${checkoutError.message}`);
+		}
+
+		return data;
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
+}

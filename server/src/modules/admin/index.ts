@@ -18,6 +18,7 @@ import {
 	editGearItem,
 	getAllGearItems,
 	getGearInventoryStats,
+	getPendingGearRequests,
 } from '../gear/gear.service';
 import { GearInventoryItemSchema } from '../gear/gear.schema';
 
@@ -276,6 +277,15 @@ const admin = (app: Elysia) =>
 							params: t.Object({ id: t.String() }),
 						}
 					)
+					.get('/requests', async ({ set }) => {
+						try {
+							const data = await getPendingGearRequests();
+							return { success: true, data };
+						} catch (error: any) {
+							set.status = 500;
+							return { success: false, message: error.message };
+						}
+					})
 			)
 	);
 
