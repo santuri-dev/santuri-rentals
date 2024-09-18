@@ -33,19 +33,19 @@ const gearFormSchema = z.object({
 		message: 'Please select a valid condition',
 	}),
 	peripherals: z.array(z.string()),
-	notes: z.string().optional(),
+	notes: z.string().nullable(),
 	status: z.enum(['available', 'class', 'borrowed', 'lease', 'overdue'], {
 		message: 'Please select a valid status',
 	}),
 });
 
-type GearFormInput = z.infer<typeof gearFormSchema>;
+export type GearFormInput = z.infer<typeof gearFormSchema>;
 
 export default function GearForm({
 	defaultValues,
 	onSubmit,
 }: {
-	defaultValues?: Partial<GearFormInput>;
+	defaultValues?: Partial<GearFormInput> & { id: number };
 	onSubmit?: () => Promise<void>;
 }) {
 	const [submitting, setSubmitting] = useState(false);
@@ -59,19 +59,39 @@ export default function GearForm({
 			condition: 'mint',
 			status: 'available',
 			peripherals: [],
+			notes: '',
 		},
 	});
 
 	async function handleSubmit(data: GearFormInput) {
 		setSubmitting(true);
 
-		try {
-			await request.post('/gear/add', data);
-		} catch (error) {
-			toast({
-				title: 'Error',
-				description: 'Something went wrong while adding gear',
-			});
+		if (defaultValues) {
+			try {
+				await request.put(`/gear/edit/${defaultValues.id}`, data);
+				toast({
+					title: 'Success',
+					description: 'Successfully edited gear',
+				});
+			} catch (error) {
+				toast({
+					title: 'Error',
+					description: 'Something went wrong while editing gear',
+				});
+			}
+		} else {
+			try {
+				await request.post('/gear/add', data);
+				toast({
+					title: 'Success',
+					description: 'Successfully added gear',
+				});
+			} catch (error) {
+				toast({
+					title: 'Error',
+					description: 'Something went wrong while adding gear',
+				});
+			}
 		}
 
 		if (onSubmit) await onSubmit();
@@ -188,7 +208,11 @@ export default function GearForm({
 						<FormItem>
 							<FormLabel>Notes (Optional)</FormLabel>
 							<FormControl>
-								<Input placeholder='Any additional notes' {...field} />
+								<Input
+									placeholder='Any additional notes'
+									{...field}
+									value={field.value ?? ''}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>

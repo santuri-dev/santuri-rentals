@@ -1,14 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/DataTable/data-table-column-header';
 import { Badge } from '@/components/ui/badge';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
+import GearRowActions from './GearRowActions';
 import { Gear } from '@/lib/types';
 
 export const gearColumns: ColumnDef<Gear>[] = [
@@ -81,26 +74,7 @@ export const gearColumns: ColumnDef<Gear>[] = [
 	},
 	{
 		id: 'actions',
-		cell: () => {
-			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant='ghost' className='h-8 w-8 p-0'>
-							<span className='sr-only'>Row Actions</span>
-							<MoreHorizontal className='h-4 w-4' />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align='end' className='p-0 border'>
-						<DropdownMenuItem className='rounded-none'>
-							Request Item
-						</DropdownMenuItem>
-						<DropdownMenuItem className='rounded-none'>
-							View Details
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			);
-		},
+		cell: ({ row }) => <GearRowActions gear={row.original} />,
 		enableHiding: false,
 	},
 ];

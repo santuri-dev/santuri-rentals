@@ -22,7 +22,7 @@ export const GearInventoryItemSchema = t.Object({
 	}),
 	condition: GearInventoryItemCondition,
 	peripherals: t.Array(t.String()),
-	notes: t.Optional(t.String()),
+	notes: t.Nullable(t.String()),
 	status: GearInventoryItemStatus,
 });
 

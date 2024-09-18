@@ -49,7 +49,7 @@ model Gear {
   condition    String
   status       String
 
-  peripherals String[]
+  peripherals String[] @default([])
   notes       String?
 
   createdAt DateTime  @default(now())
