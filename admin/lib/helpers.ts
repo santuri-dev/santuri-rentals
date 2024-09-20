@@ -12,3 +12,10 @@ export const formatCurrency = new Intl.NumberFormat('en-US', {
 	style: 'currency',
 	currency: 'KES',
 }).format;
+
+export function camelCaseToReadable(text: string) {
+	const readableText = text
+		.replace(/([A-Z])/g, ' $1')
+		.replace(/^./, (str) => str.toUpperCase());
+	return readableText.trim();
+}

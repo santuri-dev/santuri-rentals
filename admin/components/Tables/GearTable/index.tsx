@@ -1,7 +1,7 @@
 'use client';
 
 import { DataTable } from '../../DataTable';
-import { gearColumns } from './columns';
+import { gearColumns, gearRowActions } from './columns';
 import {
 	Dialog,
 	DialogContent,
@@ -24,7 +24,7 @@ export default function GearTable() {
 		<>
 			<DataTable
 				title=''
-				columns={gearColumns}
+				columns={[...gearColumns, gearRowActions]}
 				opts={gearTableOpts}
 				actions={[
 					{
