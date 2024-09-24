@@ -10,8 +10,15 @@ export async function getAllGearItems() {
 }
 
 // Fetch many items
-export async function getManyGearItems(ids: number[]) {
-	const { data, error } = await supabase.from('Gear').select('*').in('id', ids);
+export async function getManyGearItems(ids: number[], status?: string) {
+	let query = supabase.from('Gear').select('*').in('id', ids);
+
+	// Apply status filter conditionally
+	if (status) {
+		query = query.eq('status', status);
+	}
+
+	const { data, error } = await query;
 
 	if (error) throw new Error(error.message);
 	return data;
@@ -98,31 +105,17 @@ export async function getGearInventoryStats() {
 
 	if (itemsError) throw new Error(itemsError.message);
 
-	const { data: checkouts, error: checkoutsError } = await supabase
-		.from('GearCheckout')
-		.select('*')
-		.eq('returned', false)
-		.eq('approved', true);
-
-	if (checkoutsError) throw new Error(checkoutsError.message);
-
 	const availableItems = items.filter((item) => item.status === 'available');
 	const leasedItems = items.filter(
 		(item) => item.status === 'lease' || item.status === 'borrowed'
 	);
-	const dueToday = checkouts.filter(
-		(checkout) =>
-			new Date(checkout.returnDate).getDate() === new Date().getDate()
-	);
-	const overdue = checkouts.filter(
-		(checkout) => new Date(checkout.returnDate).getDate() < new Date().getDate()
-	);
 
+	// TODO: Update the overdue and due today stats
 	return {
 		Available: availableItems.length,
 		Leased: leasedItems.length,
-		'Due Today': dueToday.length,
-		Overdue: overdue.length,
+		'Due Today': 0,
+		Overdue: 0,
 	};
 }
 
@@ -154,8 +147,7 @@ export async function getPendingGearRequests() {
 			.select(
 				'id, pickupDate, returnDate, items, createdAt, User(id, username, email)'
 			)
-			.eq('approved', false)
-			.eq('returned', false);
+			.eq('closed', false);
 
 		if (checkoutError) {
 			throw new Error(`Error fetching gear request: ${checkoutError.message}`);

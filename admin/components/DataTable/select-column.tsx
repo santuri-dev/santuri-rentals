@@ -16,7 +16,7 @@ const selectColumn = <T extends object>(): ColumnDef<T> => ({
 			checked={row.getIsSelected()}
 			onCheckedChange={(value) => row.toggleSelected(!!value)}
 			aria-label='Select row'
-			className='translate-y-[2px]'
+			className='translate-y-[2px] mr-[2px]'
 		/>
 	),
 	enableSorting: false,

@@ -14,17 +14,17 @@ import GearForm, { GearFormInput } from '@/components/Forms/gear/GearForm';
 import { Gear } from '@/lib/types';
 import { Edit, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useQuery } from '@tanstack/react-query';
 import { gearTableOpts } from '@/lib/api';
 import { request } from '@/lib/axios';
 import { toast } from '@/hooks/use-toast';
 import Dots from '@/components/Loaders/Dots';
+import useLazyQuery from '@/hooks/use-lazy-query';
 
 export default function GearRowActions({ gear }: { gear: Gear }) {
 	const [editOpen, setEditOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [deleting, setDeleting] = useState(false);
-	const { refetch } = useQuery(gearTableOpts);
+	const { refetch } = useLazyQuery(gearTableOpts);
 
 	async function handleDelete() {
 		setDeleting(true);

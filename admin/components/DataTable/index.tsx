@@ -40,6 +40,7 @@ interface DataTableProps<TData, TValue> {
 	opts: QueryOpts<TData[]>;
 	actions?: { name: string; children: ReactNode }[];
 	selectActions?: SelectActions<TData>;
+	paginate?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -48,6 +49,7 @@ export function DataTable<TData, TValue>({
 	opts,
 	actions,
 	selectActions,
+	paginate,
 }: DataTableProps<TData, TValue>) {
 	const { data, isFetching, refetch } = useQuery(opts);
 
@@ -167,7 +169,7 @@ export function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
-			<DataTablePagination table={table} />
+			{!paginate ? null : <DataTablePagination table={table} />}
 		</div>
 	);
 }

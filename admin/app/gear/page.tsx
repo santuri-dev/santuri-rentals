@@ -1,3 +1,4 @@
+import GearLeases from '@/components/Tables/GearLeases';
 import GearRequestsTable from '@/components/Tables/GearRequests';
 import GearTable from '@/components/Tables/GearTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -22,7 +23,7 @@ export default function Page() {
 						<GearRequestsTable />
 					</TabsContent>
 					<TabsContent value='leases' className='space-y-4'>
-						<></>
+						<GearLeases />
 					</TabsContent>
 				</Tabs>
 			</div>

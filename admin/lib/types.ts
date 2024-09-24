@@ -63,3 +63,5 @@ export interface GearCheckout {
 	createdAt: string;
 	User: User;
 }
+
+export type GearLease = Gear & { GearCheckout: GearCheckout };

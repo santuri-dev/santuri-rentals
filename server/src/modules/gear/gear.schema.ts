@@ -6,6 +6,7 @@ export const GearInventoryItemCondition = t.Union([
 	t.Literal('bad'),
 ]);
 
+// TODO: Remove borrowed and overdue status
 export const GearInventoryItemStatus = t.Union([
 	t.Literal('available'),
 	t.Literal('class'),

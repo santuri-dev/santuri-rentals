@@ -51,7 +51,9 @@ export default function SelectActionsMenu<T>({
 						key={`${name}~${idx}`}
 						className='min-w-[150px] flex justify-between items-center'>
 						{name}
-						{loading && loading.includes(name) ? <Spinner2 /> : null}
+						{loading && loading.includes(name) ? (
+							<Spinner2 size={'20'} />
+						) : null}
 					</DropdownMenuItem>
 				))}
 			</DropdownMenuContent>

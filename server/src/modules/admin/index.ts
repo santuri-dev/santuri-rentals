@@ -21,7 +21,15 @@ import {
 	getManyGearItems,
 	getPendingGearRequests,
 } from '../gear/gear.service';
-import { GearInventoryItemSchema } from '../gear/gear.schema';
+import {
+	GearInventoryItemSchema,
+	GearInventoryItemStatus,
+} from '../gear/gear.schema';
+import {
+	approveGearRequest,
+	closeGearRequest,
+	getAllLeases,
+} from './admin_gear.service';
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -231,16 +239,21 @@ const admin = (app: Elysia) =>
 					})
 					.post(
 						'/bulk',
-						async ({ set, body: { ids } }) => {
+						async ({ set, body: { ids, status } }) => {
 							try {
-								const items = await getManyGearItems(ids);
+								const items = await getManyGearItems(ids, status);
 								return { success: true, data: items };
 							} catch (error: any) {
 								set.status = 500;
 								return { success: false, message: error.message };
 							}
 						},
-						{ body: t.Object({ ids: t.Array(t.Number()) }) }
+						{
+							body: t.Object({
+								ids: t.Array(t.Number()),
+								status: t.Optional(GearInventoryItemStatus),
+							}),
+						}
 					)
 					.post(
 						'/add',
@@ -291,15 +304,68 @@ const admin = (app: Elysia) =>
 							params: t.Object({ id: t.String() }),
 						}
 					)
-					.get('/requests', async ({ set }) => {
-						try {
-							const data = await getPendingGearRequests();
-							return { success: true, data };
-						} catch (error: any) {
-							set.status = 500;
-							return { success: false, message: error.message };
-						}
-					})
+					.group('/requests', (app) =>
+						app
+							.get('', async ({ set }) => {
+								try {
+									const data = await getPendingGearRequests();
+									return { success: true, data };
+								} catch (error: any) {
+									set.status = 500;
+									return { success: false, message: error.message };
+								}
+							})
+							.post(
+								'/approve',
+								async ({ body: { checkoutId, items }, set, user }) => {
+									try {
+										const message = await approveGearRequest(
+											checkoutId,
+											items,
+											user.id
+										);
+										return { message, success: true };
+									} catch (error: any) {
+										set.status = 500;
+										return { success: false, message: error.message };
+									}
+								},
+								{
+									body: t.Object({
+										checkoutId: t.Number(),
+										items: t.Array(t.Number()),
+									}),
+								}
+							)
+							.post(
+								'/close',
+								async ({ body: { id }, set, user }) => {
+									try {
+										const message = await closeGearRequest(id, user.id);
+										return { message, success: true };
+									} catch (error: any) {
+										set.status = 500;
+										return { success: false, message: error.message };
+									}
+								},
+								{
+									body: t.Object({
+										id: t.Number(),
+									}),
+								}
+							)
+					)
+					.group('/leases', (app) =>
+						app.get('', async ({ set }) => {
+							try {
+								const leases = await getAllLeases();
+								return { success: true, data: leases };
+							} catch (error: any) {
+								set.status = 500;
+								return { success: false, message: error.message };
+							}
+						})
+					)
 			)
 	);
 

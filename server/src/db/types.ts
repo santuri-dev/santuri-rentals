@@ -129,6 +129,7 @@ export type Database = {
         Row: {
           condition: string
           createdAt: string
+          gearCheckoutId: number | null
           id: number
           name: string
           notes: string | null
@@ -140,6 +141,7 @@ export type Database = {
         Insert: {
           condition: string
           createdAt?: string
+          gearCheckoutId?: number | null
           id?: number
           name: string
           notes?: string | null
@@ -151,6 +153,7 @@ export type Database = {
         Update: {
           condition?: string
           createdAt?: string
+          gearCheckoutId?: number | null
           id?: number
           name?: string
           notes?: string | null
@@ -159,67 +162,63 @@ export type Database = {
           status?: string
           updatedAt?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "Gear_gearCheckoutId_fkey"
+            columns: ["gearCheckoutId"]
+            isOneToOne: false
+            referencedRelation: "GearCheckout"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       GearCheckout: {
         Row: {
-          adminUserId: number | null
-          approved: boolean
-          approverId: number | null
           borrowerId: number
+          closed: boolean
+          closedById: number | null
           createdAt: string
           id: number
           items: number[] | null
           pickupDate: string
           returnDate: string
-          returned: boolean
-          returnedOn: string | null
-          returnNotes: string | null
           updatedAt: string | null
         }
         Insert: {
-          adminUserId?: number | null
-          approved?: boolean
-          approverId?: number | null
           borrowerId: number
+          closed?: boolean
+          closedById?: number | null
           createdAt?: string
           id?: number
           items?: number[] | null
           pickupDate: string
           returnDate: string
-          returned?: boolean
-          returnedOn?: string | null
-          returnNotes?: string | null
           updatedAt?: string | null
         }
         Update: {
-          adminUserId?: number | null
-          approved?: boolean
-          approverId?: number | null
           borrowerId?: number
+          closed?: boolean
+          closedById?: number | null
           createdAt?: string
           id?: number
           items?: number[] | null
           pickupDate?: string
           returnDate?: string
-          returned?: boolean
-          returnedOn?: string | null
-          returnNotes?: string | null
           updatedAt?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "GearCheckout_approverId_fkey"
-            columns: ["approverId"]
-            isOneToOne: false
-            referencedRelation: "AdminUser"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "GearCheckout_borrowerId_fkey"
             columns: ["borrowerId"]
             isOneToOne: false
             referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "GearCheckout_closedById_fkey"
+            columns: ["closedById"]
+            isOneToOne: false
+            referencedRelation: "AdminUser"
             referencedColumns: ["id"]
           },
         ]
