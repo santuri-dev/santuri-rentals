@@ -26,7 +26,6 @@ const courseFormSchema = z.object({
 	location: z.string().min(1, { message: 'Location cannot be empty' }),
 	startDate: z.date({ required_error: 'A start date is required' }),
 	endDate: z.date({ required_error: 'An end date is required' }),
-	duration: z.string().min(1, { message: 'Duration cannot be empty' }),
 	applicationDeadline: z.date({
 		required_error: 'An application deadline is required',
 	}),
@@ -53,7 +52,6 @@ export default function CourseForm({
 			location: '',
 			startDate: new Date(),
 			endDate: new Date(),
-			duration: '',
 			applicationDeadline: new Date(),
 			cost: 0,
 		},
@@ -150,7 +148,7 @@ export default function CourseForm({
 						</FormItem>
 					)}
 				/>
-				<div className='grid grid-cols-2 gap-4'>
+				<div className='grid grid-cols-2 gap-4 w-full'>
 					<FormField
 						control={form.control}
 						name='startDate'
@@ -196,22 +194,6 @@ export default function CourseForm({
 										selected={field.value}
 										onChange={field.onChange}
 										placeholderText='Select deadline'
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name='duration'
-						render={({ field }) => (
-							<FormItem className='flex flex-col'>
-								<FormLabel>Duration</FormLabel>
-								<FormControl>
-									<Input
-										placeholder='Enter duration (e.g. 6 weeks)'
-										{...field}
 									/>
 								</FormControl>
 								<FormMessage />

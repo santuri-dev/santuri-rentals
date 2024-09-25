@@ -2,6 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/DataTable/data-table-column-header';
 import { Course } from '@/lib/types';
 import { calculateDuration, formatCurrency, formatDate } from '@/lib/helpers';
+import CourseRowActions from './CourseRowActions';
 
 export const courseColumns: ColumnDef<Course>[] = [
 	{
@@ -91,3 +92,9 @@ export const courseColumns: ColumnDef<Course>[] = [
 		enableHiding: false,
 	},
 ];
+
+export const courseRowActions: ColumnDef<Course> = {
+	id: 'actions',
+	cell: ({ row }) => <CourseRowActions course={row.original} />,
+	enableHiding: false,
+};

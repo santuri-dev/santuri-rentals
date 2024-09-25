@@ -1,7 +1,7 @@
 'use client';
 
 import { DataTable } from '@/components/DataTable';
-import { courseColumns } from './columns';
+import { courseColumns, courseRowActions } from './columns';
 import { coursesOpts } from '@/lib/api';
 import { useState } from 'react';
 import useLazyQuery from '@/hooks/use-lazy-query';
@@ -23,7 +23,7 @@ export default function CoursesTable() {
 	return (
 		<DataTable
 			title=''
-			columns={courseColumns}
+			columns={[...courseColumns, courseRowActions]}
 			opts={coursesOpts}
 			actions={[
 				{

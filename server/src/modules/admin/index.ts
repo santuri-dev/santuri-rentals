@@ -30,8 +30,9 @@ import {
 	closeGearRequest,
 	getAllLeases,
 } from './admin_gear.service';
-import { addCourse, getAllCourses } from '../shop/shop.service';
+import { getAllCourses } from '../shop/shop.service';
 import { CourseSchema } from '../shop/shop.schema';
+import { addCourse, deleteCourse, editCourse } from './admin_shop.service';
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -400,6 +401,43 @@ const admin = (app: Elysia) =>
 						},
 						{
 							body: CourseSchema,
+						}
+					)
+					.put(
+						'/edit/:id',
+						async ({ body, set, params: { id } }) => {
+							try {
+								const result = await editCourse(id, body);
+								return {
+									success: true,
+									message: result.message,
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									message: error.message,
+								};
+							}
+						},
+						{
+							body: CourseSchema,
+							params: t.Object({ id: t.String() }),
+						}
+					)
+					.delete(
+						'/delete/:id',
+						async ({ params: { id }, set }) => {
+							try {
+								const result = await deleteCourse(id);
+								return { success: true, message: result.message };
+							} catch (error: any) {
+								set.status = 500;
+								return { success: false, message: error.message };
+							}
+						},
+						{
+							params: t.Object({ id: t.String() }),
 						}
 					)
 			)
