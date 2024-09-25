@@ -1,6 +1,6 @@
-import GearLeases from '@/components/Tables/GearLeases';
-import GearRequestsTable from '@/components/Tables/GearRequests';
-import GearTable from '@/components/Tables/GearTable';
+import GearLeases from '@/components/Tables/gear/GearLeases';
+import GearRequestsTable from '@/components/Tables/gear/GearRequests';
+import GearTable from '@/components/Tables/gear/GearTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Page() {

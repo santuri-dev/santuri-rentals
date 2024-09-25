@@ -49,7 +49,7 @@ export function DataTable<TData, TValue>({
 	opts,
 	actions,
 	selectActions,
-	paginate,
+	paginate = true,
 }: DataTableProps<TData, TValue>) {
 	const { data, isFetching, refetch } = useQuery(opts);
 
@@ -169,7 +169,7 @@ export function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
-			{!paginate ? null : <DataTablePagination table={table} />}
+			{paginate ? <DataTablePagination table={table} /> : null}
 		</div>
 	);
 }

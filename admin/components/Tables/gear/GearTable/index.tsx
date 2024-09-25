@@ -1,6 +1,6 @@
 'use client';
 
-import { DataTable } from '../../DataTable';
+import { DataTable } from '@/components/DataTable';
 import { gearColumns, gearRowActions } from './columns';
 import {
 	Dialog,
