@@ -14,11 +14,11 @@ import { gearTableOpts } from '@/lib/api';
 import GearForm from '@/components/Forms/gear/GearForm';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useQuery } from '@tanstack/react-query';
+import useLazyQuery from '@/hooks/use-lazy-query';
 
 export default function GearTable() {
 	const [open, setOpen] = useState(false);
-	const { refetch } = useQuery(gearTableOpts);
+	const { refetch } = useLazyQuery(gearTableOpts);
 
 	return (
 		<>

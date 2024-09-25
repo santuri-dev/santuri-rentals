@@ -53,6 +53,7 @@ export const courseColumns: ColumnDef<Course>[] = [
 			return <p className={`text-sm`}>{row.original.duration}</p>;
 		},
 		enableHiding: false,
+		enableSorting: false,
 	},
 	{
 		accessorKey: 'startDate',

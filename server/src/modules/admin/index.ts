@@ -30,7 +30,8 @@ import {
 	closeGearRequest,
 	getAllLeases,
 } from './admin_gear.service';
-import { getAllCourses } from '../shop/shop.service';
+import { addCourse, getAllCourses } from '../shop/shop.service';
+import { CourseSchema } from '../shop/shop.schema';
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -380,6 +381,27 @@ const admin = (app: Elysia) =>
 							return { success: false, message: error.message };
 						}
 					})
+					.post(
+						'',
+						async ({ body, set }) => {
+							try {
+								const result = await addCourse(body);
+								return {
+									success: true,
+									message: result.message,
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									message: error.message,
+								};
+							}
+						},
+						{
+							body: CourseSchema,
+						}
+					)
 			)
 	);
 
