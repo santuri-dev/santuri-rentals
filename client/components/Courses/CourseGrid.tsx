@@ -21,6 +21,7 @@ import { coursesOpts } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Course } from '@/lib/types';
+// import DOMPurify from 'dompurify';	
 
 function CourseDialog({
 	course,
@@ -41,11 +42,14 @@ function CourseDialog({
 					<DialogDescription>Course Details</DialogDescription>
 				</DialogHeader>
 				<div className='grid gap-4 py-4'>
-					<div className='grid grid-cols-4 items-center gap-4'>
-						<span className='text-sm font-medium col-span-4'>
-							Description: {course.description}
-						</span>
-					</div>
+					{/* <div className='grid grid-cols-4 items-center gap-4'>
+						<span
+							className='text-sm font-medium col-span-4'
+							dangerouslySetInnerHTML={{
+								__html: DOMPurify.sanitize(course.description),
+							}}
+						/>
+					</div> */}
 					<div className='grid grid-cols-4 items-center gap-4'>
 						<span className='text-sm font-medium col-span-2'>
 							Application Deadline:

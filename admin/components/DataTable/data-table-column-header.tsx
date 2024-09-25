@@ -14,27 +14,37 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
 
 interface DataTableColumnHeaderProps<TData, TValue>
 	extends React.HTMLAttributes<HTMLDivElement> {
 	column: Column<TData, TValue>;
 	title: string;
+	disabled?: boolean;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
 	column,
 	title,
 	className,
+	disabled = false,
 }: DataTableColumnHeaderProps<TData, TValue>) {
+	const [open, setOpen] = useState(false);
 	if (!title) return null;
 	return (
 		<div className={cn('flex items-center space-x-2', className)}>
-			<DropdownMenu>
+			<DropdownMenu
+				open={open}
+				onOpenChange={(value) => {
+					if (!disabled) {
+						setOpen(value);
+					}
+				}}>
 				<DropdownMenuTrigger asChild>
 					<Button
 						variant='ghost'
 						size='sm'
-						className='-ml-3 h-8 data-[state=open]:bg-accent'>
+						className='-ml-1 px-2 h-8 data-[state=open]:bg-accent'>
 						<span>{title}</span>
 						{column.getCanSort() ? (
 							<>

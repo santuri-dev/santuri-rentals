@@ -18,6 +18,7 @@ import Dots from '@/components/Loaders/Dots';
 import { request } from '@/lib/axios';
 import { toast } from '@/hooks/use-toast';
 import DatePicker from '@/components/ui/date-picker';
+import Editor from '../Editor';
 
 const courseFormSchema = z.object({
 	name: z.string().min(1, { message: 'Name cannot be empty' }),
@@ -117,7 +118,20 @@ export default function CourseForm({
 						<FormItem>
 							<FormLabel>Description</FormLabel>
 							<FormControl>
-								<Input placeholder='Enter course description' {...field} />
+								<Editor {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='cost'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Cost</FormLabel>
+							<FormControl>
+								<Input placeholder='Enter course cost' {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -136,87 +150,75 @@ export default function CourseForm({
 						</FormItem>
 					)}
 				/>
-				<FormField
-					control={form.control}
-					name='startDate'
-					render={({ field }) => (
-						<FormItem className='flex flex-col'>
-							<FormLabel>Start Date</FormLabel>
-							<FormControl>
-								<DatePicker
-									selected={field.value}
-									onChange={field.onChange}
-									placeholderText='Select start date'
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='endDate'
-					render={({ field }) => (
-						<FormItem className='flex flex-col'>
-							<FormLabel>End Date</FormLabel>
-							<FormControl>
-								<DatePicker
-									selected={field.value}
-									onChange={field.onChange}
-									placeholderText='Select end date'
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='applicationDeadline'
-					render={({ field }) => (
-						<FormItem className='flex flex-col'>
-							<FormLabel>Application Deadline</FormLabel>
-							<FormControl>
-								<DatePicker
-									selected={field.value}
-									onChange={field.onChange}
-									placeholderText='Select deadline'
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='duration'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Duration</FormLabel>
-							<FormControl>
-								<Input placeholder='Enter duration (e.g. 6 weeks)' {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='cost'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Cost</FormLabel>
-							<FormControl>
-								<Input
-									// type='number'
-									placeholder='Enter course cost'
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+				<div className='grid grid-cols-2 gap-4'>
+					<FormField
+						control={form.control}
+						name='startDate'
+						render={({ field }) => (
+							<FormItem className='flex flex-col'>
+								<FormLabel>Start Date</FormLabel>
+								<FormControl>
+									<DatePicker
+										selected={field.value}
+										onChange={field.onChange}
+										placeholderText='Select start date'
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name='endDate'
+						render={({ field }) => (
+							<FormItem className='flex flex-col'>
+								<FormLabel>End Date</FormLabel>
+								<FormControl>
+									<DatePicker
+										selected={field.value}
+										onChange={field.onChange}
+										placeholderText='Select end date'
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name='applicationDeadline'
+						render={({ field }) => (
+							<FormItem className='flex flex-col'>
+								<FormLabel>Application Deadline</FormLabel>
+								<FormControl>
+									<DatePicker
+										selected={field.value}
+										onChange={field.onChange}
+										placeholderText='Select deadline'
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name='duration'
+						render={({ field }) => (
+							<FormItem className='flex flex-col'>
+								<FormLabel>Duration</FormLabel>
+								<FormControl>
+									<Input
+										placeholder='Enter duration (e.g. 6 weeks)'
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</div>
 				<Button
 					variant='default'
 					className='w-full'

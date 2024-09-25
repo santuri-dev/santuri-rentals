@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/DataTable/data-table-column-header';
 import { Course } from '@/lib/types';
-import { formatCurrency, formatDate } from '@/lib/helpers';
+import { calculateDuration, formatCurrency, formatDate } from '@/lib/helpers';
 
 export const courseColumns: ColumnDef<Course>[] = [
 	{
@@ -23,12 +23,13 @@ export const courseColumns: ColumnDef<Course>[] = [
 	{
 		accessorKey: 'location',
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title='Location' />
+			<DataTableColumnHeader column={column} title='Location' disabled={true} />
 		),
 		cell: ({ row }) => {
 			return <p className={`text-sm`}>{row.original.location}</p>;
 		},
 		enableHiding: false,
+		enableSorting: false,
 	},
 	{
 		accessorKey: 'applicationDeadline',
@@ -47,10 +48,14 @@ export const courseColumns: ColumnDef<Course>[] = [
 	{
 		accessorKey: 'duration',
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title='Duration' />
+			<DataTableColumnHeader column={column} title='Duration' disabled={true} />
 		),
 		cell: ({ row }) => {
-			return <p className={`text-sm`}>{row.original.duration}</p>;
+			return (
+				<p className={`text-sm`}>
+					{calculateDuration(row.original.startDate, row.original.endDate)}
+				</p>
+			);
 		},
 		enableHiding: false,
 		enableSorting: false,
