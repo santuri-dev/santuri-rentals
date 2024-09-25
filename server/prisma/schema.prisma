@@ -83,6 +83,7 @@ model GearCheckout {
 model Course {
   id Int @id @default(autoincrement())
 
+  slug        String   @unique
   name        String
   description String
   cost        Float

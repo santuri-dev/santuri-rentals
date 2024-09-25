@@ -1,11 +1,14 @@
 import supabase from '@/db';
 import { Course } from '../shop/shop.schema';
+import { generateUniqueSlug } from '../../lib/helpers';
 
 // Add a new course
 export async function addCourse(input: Course) {
+	const slug = await generateUniqueSlug(input.name, 'Course');
+
 	const { data, error } = await supabase
 		.from('Course')
-		.insert(input)
+		.insert({ ...input, slug })
 		.select('name');
 
 	if (error) throw new Error(error.message);
@@ -15,11 +18,21 @@ export async function addCourse(input: Course) {
 	};
 }
 
-// Edit an existing course
 export async function editCourse(id: string, input: Partial<Course>) {
+	let slug;
+
+	if (input.name) {
+		slug = await generateUniqueSlug(input.name, 'Course');
+	}
+
+	const updateData = {
+		...input,
+		...(slug && { slug }),
+	};
+
 	const { data, error } = await supabase
 		.from('Course')
-		.update(input)
+		.update(updateData)
 		.eq('id', id)
 		.select('name');
 

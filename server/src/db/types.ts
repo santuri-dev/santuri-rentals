@@ -93,6 +93,7 @@ export type Database = {
           id: number
           location: string
           name: string
+          slug: string
           startDate: string
           updatedAt: string
         }
@@ -105,6 +106,7 @@ export type Database = {
           id?: number
           location: string
           name: string
+          slug: string
           startDate: string
           updatedAt?: string
         }
@@ -117,6 +119,7 @@ export type Database = {
           id?: number
           location?: string
           name?: string
+          slug?: string
           startDate?: string
           updatedAt?: string
         }
