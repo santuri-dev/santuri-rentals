@@ -28,6 +28,10 @@ const swaggerConfig = {
 				description: 'Endpoints for the admin gear service',
 			},
 			{
+				name: 'Admin Courses',
+				description: 'Endpoints for the admin course service',
+			},
+			{
 				name: 'User',
 				description: 'Endpoints for the user service',
 			},

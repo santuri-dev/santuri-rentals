@@ -1,6 +1,6 @@
 import { request } from './axios';
 import { QueryOpts } from './queryClient';
-import { Gear, GearCheckout, GearLease, GearStats } from './types';
+import { Course, Gear, GearCheckout, GearLease, GearStats } from './types';
 
 export const gearStatsOpts: QueryOpts<GearStats> = {
 	initialData: { 'Due Today': 0, Available: 0, Leased: 0, Overdue: 0 },
@@ -34,6 +34,15 @@ export const gearLeaseOpts: QueryOpts<GearLease[]> = {
 	queryKey: ['gear', 'leases'],
 	queryFn: async () => {
 		const { data } = (await request.get('/gear/leases')).data;
+		return data;
+	},
+};
+
+export const coursesOpts: QueryOpts<Course[]> = {
+	initialData: [],
+	queryKey: ['courses'],
+	queryFn: async () => {
+		const { data } = (await request.get('/courses')).data;
 		return data;
 	},
 };

@@ -30,6 +30,7 @@ import {
 	closeGearRequest,
 	getAllLeases,
 } from './admin_gear.service';
+import { getAllCourses } from '../shop/shop.service';
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -366,6 +367,19 @@ const admin = (app: Elysia) =>
 							}
 						})
 					)
+			)
+			.group('/courses', (app) =>
+				app
+					.guard({ detail: { tags: ['Admin Courses'] } })
+					.get('', async ({ set }) => {
+						try {
+							const data = await getAllCourses();
+							return { success: true, data };
+						} catch (error: any) {
+							set.status = 500;
+							return { success: false, message: error.message };
+						}
+					})
 			)
 	);
 

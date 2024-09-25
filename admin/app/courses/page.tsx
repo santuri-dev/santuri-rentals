@@ -1,3 +1,4 @@
+import CoursesTable from '@/components/Tables/courses/CoursesTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Page() {
@@ -11,7 +12,9 @@ export default function Page() {
 					<TabsList>
 						<TabsTrigger value='overview'>Overview</TabsTrigger>
 					</TabsList>
-					<TabsContent value='overview' className='space-y-4'></TabsContent>
+					<TabsContent value='overview' className='space-y-4'>
+						<CoursesTable />
+					</TabsContent>
 				</Tabs>
 			</div>
 		</div>
