@@ -89,7 +89,6 @@ export type Database = {
           cost: number
           createdAt: string
           description: string
-          duration: string
           endDate: string
           id: number
           location: string
@@ -102,7 +101,6 @@ export type Database = {
           cost: number
           createdAt?: string
           description: string
-          duration: string
           endDate: string
           id?: number
           location: string
@@ -115,7 +113,6 @@ export type Database = {
           cost?: number
           createdAt?: string
           description?: string
-          duration?: string
           endDate?: string
           id?: number
           location?: string

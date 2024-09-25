@@ -34,7 +34,6 @@ export interface Course {
 	cost: number;
 	createdAt: string;
 	description: string;
-	duration: string;
 	endDate: string;
 	id: number;
 	location: string;

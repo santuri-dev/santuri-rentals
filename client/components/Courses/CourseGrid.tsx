@@ -18,10 +18,10 @@ import {
 	DialogFooter,
 } from '@/components/ui/dialog';
 import { coursesOpts } from '@/lib/api';
-import { formatCurrency, formatDate } from '@/lib/helpers';
+import { calculateDuration, formatCurrency, formatDate } from '@/lib/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Course } from '@/lib/types';
-// import DOMPurify from 'dompurify';	
+// import DOMPurify from 'dompurify';
 
 function CourseDialog({
 	course,
@@ -72,7 +72,9 @@ function CourseDialog({
 					</div>
 					<div className='grid grid-cols-4 items-center gap-4'>
 						<span className='text-sm font-medium col-span-2'>Duration:</span>
-						<span className='text-sm col-span-2'>{course.duration}</span>
+						<span className='text-sm col-span-2'>
+							{calculateDuration(course.startDate, course.endDate)}
+						</span>
 					</div>
 					<div className='grid grid-cols-4 items-center gap-4'>
 						<span className='text-sm font-medium col-span-2'>Location:</span>

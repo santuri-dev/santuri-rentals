@@ -31,7 +31,7 @@ export function calculateDuration(startDate: string, endDate: string): string {
 		readableDuration = `${days} day${days > 1 ? 's' : ''}`;
 	}
 
-	return readableDuration;
+	return `~ ${readableDuration}`;
 }
 
 export function capitalizeFirstLetter(str: string) {

@@ -83,13 +83,13 @@ model GearCheckout {
 model Course {
   id Int @id @default(autoincrement())
 
-  name                String
-  description         String
-  cost                Float
-  startDate           DateTime
-  endDate             DateTime
-  location            String
-  duration            String
+  name        String
+  description String
+  cost        Float
+  startDate   DateTime
+  endDate     DateTime
+  location    String
+
   applicationDeadline DateTime
 
   createdAt DateTime @default(now())
