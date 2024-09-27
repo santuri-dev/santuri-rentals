@@ -18,21 +18,23 @@ export async function addCourse(input: Course) {
 	};
 }
 
-export async function editCourse(id: string, input: Partial<Course>) {
-	let slug;
-
-	if (input.name) {
-		slug = await generateUniqueSlug(input.name, 'Course');
-	}
-
-	const updateData = {
-		...input,
-		...(slug && { slug }),
-	};
-
+// Get a course
+export async function getCourse(slug: string) {
 	const { data, error } = await supabase
 		.from('Course')
-		.update(updateData)
+		.select('*')
+		.eq('slug', slug)
+		.single();
+
+	if (error) throw new Error(error.message);
+
+	return data;
+}
+
+export async function editCourse(id: string, input: Partial<Course>) {
+	const { data, error } = await supabase
+		.from('Course')
+		.update(input)
 		.eq('id', id)
 		.select('name');
 

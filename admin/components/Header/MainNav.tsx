@@ -27,7 +27,10 @@ export function MainNav({
 					key={path}
 					href={path}
 					className={`${
-						pathname === path ? 'text-blue-500' : ''
+						(pathname.startsWith(path) && path !== '/') ||
+						(name === 'Dashboard' && path === pathname)
+							? 'text-blue-500'
+							: ''
 					} text-md font-semibold hover:text-blue-500 transition-all ease-in-out duration-300`}>
 					{name}
 				</Link>

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { QueryOpts } from '@/lib/queryClient';
+import { QueryOpts, UQueryOpts } from '@/lib/queryClient';
 
-export default function useLazyQuery<T>(options: QueryOpts<T>) {
+export default function useLazyQuery<T>(options: QueryOpts<T> | UQueryOpts<T>) {
 	const [enabled, setEnabled] = useState(false);
 
 	const query = useQuery<T>({ ...options, enabled });

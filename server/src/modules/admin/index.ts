@@ -32,7 +32,12 @@ import {
 } from './admin_gear.service';
 import { getAllCourses } from '../shop/shop.service';
 import { CourseSchema } from '../shop/shop.schema';
-import { addCourse, deleteCourse, editCourse } from './admin_shop.service';
+import {
+	addCourse,
+	deleteCourse,
+	editCourse,
+	getCourse,
+} from './admin_shop.service';
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -401,6 +406,27 @@ const admin = (app: Elysia) =>
 						},
 						{
 							body: CourseSchema,
+						}
+					)
+					.get(
+						'/:slug',
+						async ({ set, params: { slug } }) => {
+							try {
+								const data = await getCourse(slug);
+								return {
+									success: true,
+									data,
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									message: error.message,
+								};
+							}
+						},
+						{
+							params: t.Object({ slug: t.String() }),
 						}
 					)
 					.put(

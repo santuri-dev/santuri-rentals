@@ -212,6 +212,7 @@ const Editor = forwardRef<HTMLDivElement, EditorProps>(
 			onUpdate({ editor }) {
 				onChange(DOMPurify.sanitize(editor.getHTML()));
 			},
+			immediatelyRender: false,
 		});
 
 		return (
