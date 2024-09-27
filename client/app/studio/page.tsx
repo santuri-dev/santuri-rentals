@@ -147,10 +147,11 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 };
 
 export default function Page() {
-	const [date, setDate] = useState<Date | undefined>(undefined);
+	const [date, setDate] = useState<Date>(new Date());
 	const [selectedTime, setSelectedTime] = useState<TimeOption | null>(null);
 	const [selectedDuration, setSelectedDuration] =
 		useState<DurationOption | null>(null);
+	const [type, setType] = useState<'dj' | 'recording'>('dj');
 
 	const parseTime = (time: string): { hours: number; minutes: number } => {
 		const [timePart, period] = time.match(/(\d+)(am|pm)/i)!.slice(1);
@@ -172,7 +173,6 @@ export default function Page() {
 		const { hours, minutes } = parseTime(selectedTime);
 		const startTime = setHours(setMinutes(new Date(date), minutes), hours);
 
-		// Ensure the selected time is in the future
 		if (isBefore(startTime, currentDate)) {
 			toast({
 				title: 'Error',
@@ -185,9 +185,9 @@ export default function Page() {
 		const endTime = addHours(startTime, durationHours);
 
 		console.log({
-			date: format(startTime, 'PPP'),
-			startTime: format(startTime, 'p'),
-			endTime: format(endTime, 'p'),
+			startTime,
+			endTime,
+			type,
 		});
 	}
 
@@ -238,7 +238,9 @@ export default function Page() {
 											fromDate={new Date()}
 											mode='single'
 											selected={date}
-											onSelect={(newDate: Date | undefined) => setDate(newDate)}
+											onSelect={(newDate: Date | undefined) => {
+												if (newDate) setDate(newDate);
+											}}
 											initialFocus
 										/>
 									</PopoverContent>
@@ -260,8 +262,14 @@ export default function Page() {
 					<div>
 						<Tabs defaultValue='dj'>
 							<TabsList className='grid w-full grid-cols-2'>
-								<TabsTrigger value='dj'>DJ</TabsTrigger>
-								<TabsTrigger value='recording'>Recording</TabsTrigger>
+								<TabsTrigger onClick={() => setType('dj')} value='dj'>
+									DJ
+								</TabsTrigger>
+								<TabsTrigger
+									onClick={() => setType('recording')}
+									value='recording'>
+									Recording
+								</TabsTrigger>
 							</TabsList>
 							<TabsContent value='dj'>
 								<div className='mt-4 space-y-4'>
