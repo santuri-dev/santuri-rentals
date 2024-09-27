@@ -152,6 +152,7 @@ export default function Page() {
 	const [selectedDuration, setSelectedDuration] =
 		useState<DurationOption | null>(null);
 	const [type, setType] = useState<'dj' | 'recording'>('dj');
+	const [alternativeTimesOpen, setAlternativeTimesOpen] = useState(false);
 
 	const parseTime = (time: string): { hours: number; minutes: number } => {
 		const [timePart, period] = time.match(/(\d+)(am|pm)/i)!.slice(1);
@@ -190,6 +191,33 @@ export default function Page() {
 			type,
 		});
 	}
+
+	const alternativeTimes: TimeOption[] = [
+		'12am',
+		'1am',
+		'2am',
+		'3am',
+		'4am',
+		'5am',
+		'6am',
+		'7am',
+		'8am',
+		'9am',
+		'10am',
+		'11am',
+		'12pm',
+		'1pm',
+		'2pm',
+		'3pm',
+		'4pm',
+		'5pm',
+		'6pm',
+		'7pm',
+		'8pm',
+		'9pm',
+		'10pm',
+		'11pm',
+	];
 
 	return (
 		<div className='py-6'>
@@ -302,13 +330,42 @@ export default function Page() {
 						</Tabs>
 					</div>
 				</div>
-				<div className='mt-6'>
+				<div className='mt-6 flex gap-4'>
 					<Button
 						onClick={handleSubmit}
 						size='default'
 						disabled={!date || !selectedTime || !selectedDuration}>
 						Book Session
 					</Button>
+					<Dialog
+						open={alternativeTimesOpen}
+						onOpenChange={setAlternativeTimesOpen}>
+						<DialogTrigger asChild>
+							<Button variant='outline'>Find Alternative Times</Button>
+						</DialogTrigger>
+						<DialogContent className='sm:max-w-[425px]'>
+							<DialogTitle>Alternative Times</DialogTitle>
+							<DialogDescription>
+								Select an alternative time for {format(date, 'PPP')}
+							</DialogDescription>
+							<ScrollArea className='h-[300px] p-4'>
+								<div className='grid grid-cols-4 gap-2'>
+									{alternativeTimes.map((time) => (
+										<Button
+											key={time}
+											variant={selectedTime === time ? 'default' : 'outline'}
+											className='w-full'
+											onClick={() => {
+												setSelectedTime(time);
+												setAlternativeTimesOpen(false);
+											}}>
+											{time}
+										</Button>
+									))}
+								</div>
+							</ScrollArea>
+						</DialogContent>
+					</Dialog>
 				</div>
 			</div>
 		</div>
