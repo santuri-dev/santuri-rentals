@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
 
-	const { selectedRows } = useSelectedRows(
+	const { selectedRows, clearSelection } = useSelectedRows(
 		['selected', ...opts.queryKey.map((v: unknown) => v as string)],
 		table,
 		rowSelection
@@ -96,6 +96,7 @@ export function DataTable<TData, TValue>({
 						<SelectActionsMenu
 							selectActions={selectActions}
 							selectedRows={selectedRows}
+							clearSelection={clearSelection}
 						/>
 					) : null}
 					{actions?.map(({ children, name }) => (

@@ -13,9 +13,11 @@ import { Button } from '@/components/ui/button';
 export default function SelectActionsMenu<T>({
 	selectedRows,
 	selectActions,
+	clearSelection,
 }: {
 	selectedRows: CustomSelectedRows<T>;
 	selectActions: SelectActions<T>;
+	clearSelection: () => void;
 }) {
 	const [loading, setLoading] = useState<Array<string>>([]);
 	const [open, setOpen] = useState(false);
@@ -44,6 +46,7 @@ export default function SelectActionsMenu<T>({
 										return prev.filter((item) => item !== name);
 									})
 							);
+							clearSelection();
 						}}
 						disabled={
 							selectedRows.length === 0 || (loading && loading.includes(name))

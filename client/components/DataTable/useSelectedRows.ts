@@ -45,7 +45,11 @@ const useSelectedRows = <T>(
 		initialData: [],
 	});
 
-	return { selectedRows };
+	function clearSelection() {
+		table.setRowSelection({});
+	}
+
+	return { selectedRows, clearSelection };
 };
 
 export default useSelectedRows;

@@ -28,6 +28,10 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { format, addHours, isBefore, setHours, setMinutes } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
+import { Gear } from '@/lib/types';
+import { DataTable } from '@/components/DataTable';
+import { gearColumns } from '@/components/Tables/GearTable/columns';
+import { availableGearOpts } from '@/lib/api';
 
 type TimeOption = string;
 type DurationOption = string;
@@ -151,8 +155,11 @@ export default function Page() {
 	const [selectedTime, setSelectedTime] = useState<TimeOption | null>(null);
 	const [selectedDuration, setSelectedDuration] =
 		useState<DurationOption | null>(null);
-	const [type, setType] = useState<'dj' | 'recording'>('dj');
+	const [type, setType] = useState<
+		'dj' | 'recording' | 'rehearsals' | 'workstation'
+	>('dj');
 	const [alternativeTimesOpen, setAlternativeTimesOpen] = useState(false);
+	const [workstationItems, setWorkstationItems] = useState<Gear[]>([]);
 
 	const parseTime = (time: string): { hours: number; minutes: number } => {
 		const [timePart, period] = time.match(/(\d+)(am|pm)/i)!.slice(1);
@@ -189,6 +196,7 @@ export default function Page() {
 			startTime,
 			endTime,
 			type,
+			...(type === 'workstation' ? { workstationItems } : null),
 		});
 	}
 
@@ -289,9 +297,19 @@ export default function Page() {
 					</div>
 					<div>
 						<Tabs defaultValue='dj'>
-							<TabsList className='grid w-full grid-cols-2'>
+							<TabsList className='grid w-full grid-cols-4'>
 								<TabsTrigger onClick={() => setType('dj')} value='dj'>
 									DJ
+								</TabsTrigger>
+								<TabsTrigger
+									onClick={() => setType('rehearsals')}
+									value='rehearsals'>
+									Rehearsal
+								</TabsTrigger>
+								<TabsTrigger
+									onClick={() => setType('workstation')}
+									value='workstation'>
+									Workstation
 								</TabsTrigger>
 								<TabsTrigger
 									onClick={() => setType('recording')}
@@ -325,6 +343,60 @@ export default function Page() {
 											MIDI controllers and synthesizers available upon request
 										</li>
 									</ul>
+								</div>
+							</TabsContent>
+							<TabsContent value='rehearsals'>
+								<div className='mt-4 space-y-4'>
+									<h3 className='font-semibold'>Rehearsal Equipment</h3>
+									<ul className='list-disc pl-5 space-y-2 text-sm'>
+										<li>Professional-grade microphones and audio interfaces</li>
+										<li>Studio monitors and acoustic treatment</li>
+										<li>Digital Audio Workstation (DAW) software</li>
+										<li>
+											MIDI controllers and synthesizers available upon request
+										</li>
+									</ul>
+								</div>
+							</TabsContent>
+							<TabsContent value='workstation'>
+								<div className='mt-4 space-y-4'>
+									<h3 className='font-semibold'>Workstation Equipment</h3>
+									<p className='text-sm'>
+										Select Items that you would like to request for your
+										workstation
+									</p>
+									<DataTable
+										title=''
+										columns={gearColumns}
+										opts={availableGearOpts}
+										selectActions={{
+											title: 'Items',
+											actions: [
+												{
+													name: 'Request for Session',
+													async action(rows, updateLoading) {
+														'use server';
+														setWorkstationItems(rows);
+														updateLoading();
+														const itemNames = rows
+															.map((row) => row.name) // Extract the 'name' property from each object in 'rows'
+															.join(', '); // Join the names with a comma and space
+
+														// If there are more than one name, replace the last comma with 'and'
+														const readableNames = itemNames.replace(
+															/, ([^,]*)$/,
+															' and $1'
+														);
+														toast({
+															title: 'Success',
+															description: `Successfully added ${readableNames} to request`,
+														});
+														return Promise.resolve();
+													},
+												},
+											],
+										}}
+									/>
 								</div>
 							</TabsContent>
 						</Tabs>

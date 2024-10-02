@@ -1,6 +1,5 @@
 'use client';
 
-import { QueryOpts } from '@/lib/queryClient';
 import { DataTable } from '../../DataTable';
 import { Gear } from '@/lib/types';
 import { gearColumns } from './columns';
@@ -14,17 +13,9 @@ import {
 	DialogDescription,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import DateSelectionForm from '@/components/Forms/DateSelectionForm';
-
-const opts: QueryOpts<Gear[]> = {
-	initialData: [],
-	queryKey: ['gear', 'available'],
-	queryFn: async () => {
-		const { data } = (await request.get('/gear/available')).data;
-		return data;
-	},
-};
+import { availableGearOpts } from '@/lib/api';
 
 async function requestGear(
 	pickupDate: Date,
@@ -63,11 +54,11 @@ export default function GearTable() {
 			: undefined;
 
 	return (
-		<>
+		<Fragment>
 			<DataTable
 				title=''
 				columns={gearColumns}
-				opts={opts}
+				opts={availableGearOpts}
 				selectActions={selectActions}
 			/>
 			<Dialog open={open} onOpenChange={setOpen}>
@@ -93,6 +84,6 @@ export default function GearTable() {
 					</DialogDescription>
 				</DialogContent>
 			</Dialog>
-		</>
+		</Fragment>
 	);
 }
