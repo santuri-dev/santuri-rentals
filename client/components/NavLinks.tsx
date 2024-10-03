@@ -10,12 +10,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Menu } from 'lucide-react';
 import { NavLink } from '@/lib/types';
+import { Fragment } from 'react';
 
 export default function NavLinks({ links }: { links: NavLink[] }) {
 	const pathname = usePathname();
 
 	return (
-		<>
+		<Fragment>
 			<div className='hidden md:flex justify-between gap-4 font-semibold'>
 				{links.map(({ path, name }) => (
 					<Link
@@ -48,6 +49,6 @@ export default function NavLinks({ links }: { links: NavLink[] }) {
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
-		</>
+		</Fragment>
 	);
 }

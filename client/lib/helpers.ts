@@ -46,3 +46,20 @@ export const formatCurrency = new Intl.NumberFormat('en-US', {
 	style: 'currency',
 	currency: 'KES',
 }).format;
+
+export const parseTime = (time: string): { hours: number; minutes: number } => {
+	const [, hours, period] = time.match(/(\d+)(am|pm)/i) || [];
+	let parsedHours = parseInt(hours);
+
+	if (period.toLowerCase() === 'pm' && parsedHours !== 12) {
+		parsedHours += 12;
+	} else if (period.toLowerCase() === 'am' && parsedHours === 12) {
+		parsedHours = 0;
+	}
+
+	return { hours: parsedHours, minutes: 0 };
+};
+
+export const parseDuration = (duration: string): number => {
+	return parseInt(duration);
+};

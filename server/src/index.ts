@@ -6,6 +6,7 @@ import auth from './modules/auth';
 import gear from './modules/gear';
 import shop from './modules/shop';
 import admin from './modules/admin';
+import studio from './modules/studio';
 
 const swaggerConfig = {
 	documentation: {
@@ -68,6 +69,7 @@ const app = new Elysia()
 			.use(admin)
 			.use(gear)
 			.use(shop)
+			.use(studio)
 	)
 	.listen(env.PORT);
 

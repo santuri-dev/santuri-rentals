@@ -1,6 +1,5 @@
 import { Elysia } from 'elysia';
-import { addCourse, getAllCourses } from './shop.service';
-import { CourseSchema } from './shop.schema';
+import { getAllCourses } from './shop.service';
 
 const shop = (app: Elysia) =>
 	app.group('/shop', (app) =>

@@ -252,6 +252,39 @@ export type Database = {
           },
         ]
       }
+      StudioRequest: {
+        Row: {
+          createdAt: string
+          endTime: string
+          gearItems: number[] | null
+          id: number
+          startTime: string
+          status: string
+          type: string
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          endTime: string
+          gearItems?: number[] | null
+          id?: number
+          startTime: string
+          status?: string
+          type: string
+          updatedAt?: string
+        }
+        Update: {
+          createdAt?: string
+          endTime?: string
+          gearItems?: number[] | null
+          id?: number
+          startTime?: string
+          status?: string
+          type?: string
+          updatedAt?: string
+        }
+        Relationships: []
+      }
       User: {
         Row: {
           createdAt: string

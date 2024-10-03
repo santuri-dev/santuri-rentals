@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -18,137 +18,21 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogTitle,
-	DialogTrigger,
-} from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { format, addHours, isBefore, setHours, setMinutes } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 import { Gear } from '@/lib/types';
 import { DataTable } from '@/components/DataTable';
 import { gearColumns } from '@/components/Tables/GearTable/columns';
 import { availableGearOpts } from '@/lib/api';
-
-type TimeOption = string;
-type DurationOption = string;
-
-interface TimeSelectorProps {
-	selectedTime: TimeOption | null;
-	setSelectedTime: (time: TimeOption | null) => void;
-	selectedDuration: DurationOption | null;
-	setSelectedDuration: (duration: DurationOption | null) => void;
-}
-
-const TimeSelector: React.FC<TimeSelectorProps> = ({
-	selectedTime,
-	setSelectedTime,
-	selectedDuration,
-	setSelectedDuration,
-}) => {
-	const [openDialog, setOpenDialog] = useState(false);
-
-	const times: TimeOption[] = [
-		'12am',
-		'1am',
-		'2am',
-		'3am',
-		'4am',
-		'5am',
-		'6am',
-		'7am',
-		'8am',
-		'9am',
-		'10am',
-		'11am',
-		'12pm',
-		'1pm',
-		'2pm',
-		'3pm',
-		'4pm',
-		'5pm',
-		'6pm',
-		'7pm',
-		'8pm',
-		'9pm',
-		'10pm',
-		'11pm',
-	];
-	const durations: DurationOption[] = [
-		'1 hr',
-		'2 hrs',
-		'3 hrs',
-		'4 hrs',
-		'5 hrs',
-		'6 hrs',
-		'7 hrs',
-		'8 hrs',
-		'9 hrs',
-		'10 hrs',
-		'12 hrs',
-		'24 hrs',
-	];
-
-	return (
-		<div className='flex items-center gap-4 w-full justify-between'>
-			<div className='w-full'>
-				<label className='text-sm font-medium mb-2 block'>Start Time</label>
-				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
-					<DialogTrigger asChild>
-						<Button
-							variant='outline'
-							className='w-full justify-start text-left font-normal'>
-							<Clock className='mr-2 h-4 w-4' />
-							{selectedTime ? selectedTime : 'Select start time'}
-						</Button>
-					</DialogTrigger>
-					<DialogContent className='sm:max-w-[425px]'>
-						<DialogTitle>Select Time</DialogTitle>
-						<DialogDescription>
-							Select the time to start your session
-						</DialogDescription>
-						<ScrollArea className='h-[300px] p-4'>
-							<div className='grid grid-cols-4 gap-2'>
-								{times.map((time) => (
-									<Button
-										key={time}
-										variant={selectedTime === time ? 'default' : 'outline'}
-										className='w-full'
-										onClick={() => {
-											setSelectedTime(time);
-											setOpenDialog(false);
-										}}>
-										{time}
-									</Button>
-								))}
-							</div>
-						</ScrollArea>
-					</DialogContent>
-				</Dialog>
-			</div>
-			<div className='w-full'>
-				<label className='text-sm font-medium mb-2 block'>Duration</label>
-				<Select
-					value={selectedDuration || undefined}
-					onValueChange={(value: DurationOption) => setSelectedDuration(value)}>
-					<SelectTrigger className='w-full'>
-						<SelectValue placeholder='Select duration' />
-					</SelectTrigger>
-					<SelectContent>
-						{durations.map((duration) => (
-							<SelectItem key={duration} value={duration}>
-								{duration}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
-		</div>
-	);
-};
+import { request } from '@/lib/axios';
+import Dots from '@/components/Loaders/Dots';
+import { useQuery } from '@tanstack/react-query';
+import TimeSelector, {
+	AllocatedSlot,
+	DurationOption,
+	TimeOption,
+} from '@/components/TimeSelector';
+import { parseDuration, parseTime } from '@/lib/helpers';
 
 export default function Page() {
 	const [date, setDate] = useState<Date>(new Date());
@@ -158,23 +42,32 @@ export default function Page() {
 	const [type, setType] = useState<
 		'dj' | 'recording' | 'rehearsals' | 'workstation'
 	>('dj');
-	const [alternativeTimesOpen, setAlternativeTimesOpen] = useState(false);
-	const [workstationItems, setWorkstationItems] = useState<Gear[]>([]);
+	const [gearItems, setWorkstationItems] = useState<Gear[]>([]);
+	const { data: allocatedSlots } = useQuery<AllocatedSlot[]>({
+		initialData: [],
+		queryKey: ['allocated_times', date.toISOString()],
+		queryFn: async () => {
+			const { data } = (
+				await request.post('/studio/requests', {
+					date: date.toISOString(),
+					status: 'approved',
+				})
+			).data;
 
-	const parseTime = (time: string): { hours: number; minutes: number } => {
-		const [timePart, period] = time.match(/(\d+)(am|pm)/i)!.slice(1);
-		const hours =
-			period.toLowerCase() === 'pm' && timePart !== '12'
-				? parseInt(timePart) + 12
-				: parseInt(timePart);
-		return { hours: hours % 24, minutes: 0 };
-	};
+			return data;
+		},
+	});
+	const [loading, setLoading] = useState(false);
 
-	const parseDuration = (duration: string): number => {
-		return parseInt(duration);
-	};
+	function reset() {
+		setDate(new Date());
+		setSelectedDuration(null);
+		setSelectedTime(null);
+		setWorkstationItems([]);
+	}
 
-	function handleSubmit() {
+	async function handleSubmit() {
+		setLoading(true);
 		if (!date || !selectedTime || !selectedDuration) return;
 
 		const currentDate = new Date();
@@ -186,49 +79,37 @@ export default function Page() {
 				title: 'Error',
 				description: 'The selected start time must be in the future.',
 			});
+			setLoading(false);
 			return;
 		}
 
 		const durationHours = parseDuration(selectedDuration);
 		const endTime = addHours(startTime, durationHours);
 
-		console.log({
-			startTime,
-			endTime,
-			type,
-			...(type === 'workstation' ? { workstationItems } : null),
-		});
+		try {
+			const { message } = (
+				await request.post('/studio', {
+					startTime: new Date(startTime).toISOString(),
+					endTime: new Date(endTime).toISOString(),
+					type,
+					...(type === 'workstation' ? { gearItems } : { gearItems: [] }),
+				})
+			).data;
+
+			toast({ title: 'Success', description: message });
+			reset();
+		} catch (error) {
+			toast({
+				title: 'Error',
+				description: 'Failed to book the session. Please try again.',
+			});
+		} finally {
+			setLoading(false);
+		}
 	}
 
-	const alternativeTimes: TimeOption[] = [
-		'12am',
-		'1am',
-		'2am',
-		'3am',
-		'4am',
-		'5am',
-		'6am',
-		'7am',
-		'8am',
-		'9am',
-		'10am',
-		'11am',
-		'12pm',
-		'1pm',
-		'2pm',
-		'3pm',
-		'4pm',
-		'5pm',
-		'6pm',
-		'7pm',
-		'8pm',
-		'9pm',
-		'10pm',
-		'11pm',
-	];
-
 	return (
-		<div className='py-6'>
+		<div className='py-6 px-0 md:px-4'>
 			<div className='flex flex-col gap-6 pb-6'>
 				<h2 className='font-semibold text-lg'>Book a Session</h2>
 				<p className='text-sm'>
@@ -288,6 +169,8 @@ export default function Page() {
 							setSelectedTime={setSelectedTime}
 							selectedDuration={selectedDuration}
 							setSelectedDuration={setSelectedDuration}
+							date={date}
+							allocatedSlots={allocatedSlots}
 						/>
 					</div>
 				</div>
@@ -406,38 +289,9 @@ export default function Page() {
 					<Button
 						onClick={handleSubmit}
 						size='default'
-						disabled={!date || !selectedTime || !selectedDuration}>
-						Book Session
+						disabled={!date || !selectedTime || !selectedDuration || loading}>
+						{loading ? <Dots /> : 'Book Session'}
 					</Button>
-					<Dialog
-						open={alternativeTimesOpen}
-						onOpenChange={setAlternativeTimesOpen}>
-						<DialogTrigger asChild>
-							<Button variant='outline'>Find Alternative Times</Button>
-						</DialogTrigger>
-						<DialogContent className='sm:max-w-[425px]'>
-							<DialogTitle>Alternative Times</DialogTitle>
-							<DialogDescription>
-								Select an alternative time for {format(date, 'PPP')}
-							</DialogDescription>
-							<ScrollArea className='h-[300px] p-4'>
-								<div className='grid grid-cols-4 gap-2'>
-									{alternativeTimes.map((time) => (
-										<Button
-											key={time}
-											variant={selectedTime === time ? 'default' : 'outline'}
-											className='w-full'
-											onClick={() => {
-												setSelectedTime(time);
-												setAlternativeTimesOpen(false);
-											}}>
-											{time}
-										</Button>
-									))}
-								</div>
-							</ScrollArea>
-						</DialogContent>
-					</Dialog>
 				</div>
 			</div>
 		</div>

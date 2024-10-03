@@ -128,3 +128,16 @@ model AdminSession {
 
   adminUser AdminUser @relation(fields: [adminUserId], references: [id])
 }
+
+model StudioRequest {
+  id Int @id @default(autoincrement())
+
+  type      String
+  startTime DateTime
+  endTime   DateTime
+  status    String   @default("pending")
+  gearItems Int[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
