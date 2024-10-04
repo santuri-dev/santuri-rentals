@@ -35,7 +35,7 @@ export const requireAdminUser = (app: Elysia) =>
 				const newAccessToken = await signAdminAccessToken(
 					{
 						id: user.id,
-						name: user.firstName,
+						name: user.username,
 						image: user.image ?? '',
 						imgPlaceholder: user.image ?? '',
 					},
