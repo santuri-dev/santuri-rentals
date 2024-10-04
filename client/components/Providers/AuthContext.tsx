@@ -115,6 +115,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			await queryClient.refetchQueries();
 		} catch (error) {
 			console.log('Logging out...');
+			localStorage.removeItem('token');
 		}
 	}, []);
 

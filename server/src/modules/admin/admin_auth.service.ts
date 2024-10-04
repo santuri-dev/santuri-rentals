@@ -31,14 +31,12 @@ export async function fetchAdminUser({ field, value }: FetchUserBy) {
 }
 
 export async function createAdminUser({
-	firstName,
-	lastName,
+	username,
 	password,
 	email,
 	role,
 }: {
-	firstName: string;
-	lastName: string;
+	username: string;
 	email: string;
 	password: string;
 	role: string;
@@ -48,8 +46,7 @@ export async function createAdminUser({
 		const { data, error } = await supabase
 			.from('AdminUser')
 			.insert({
-				firstName,
-				lastName,
+				username,
 				password: await hashPassword(password),
 				email,
 				verificationCode,

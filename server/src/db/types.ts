@@ -43,42 +43,45 @@ export type Database = {
           createdAt: string
           email: string
           emailVerified: string | null
-          firstName: string
+          firstName: string | null
           id: number
           image: string | null
-          lastName: string
+          lastName: string | null
           password: string
           phoneNumber: string | null
           role: string
           updatedAt: string
+          username: string
           verificationCode: string | null
         }
         Insert: {
           createdAt?: string
           email: string
           emailVerified?: string | null
-          firstName: string
+          firstName?: string | null
           id?: number
           image?: string | null
-          lastName: string
+          lastName?: string | null
           password: string
           phoneNumber?: string | null
-          role: string
+          role?: string
           updatedAt?: string
+          username: string
           verificationCode?: string | null
         }
         Update: {
           createdAt?: string
           email?: string
           emailVerified?: string | null
-          firstName?: string
+          firstName?: string | null
           id?: number
           image?: string | null
-          lastName?: string
+          lastName?: string | null
           password?: string
           phoneNumber?: string | null
           role?: string
           updatedAt?: string
+          username?: string
           verificationCode?: string | null
         }
         Relationships: []
@@ -262,6 +265,7 @@ export type Database = {
           status: string
           type: string
           updatedAt: string
+          userId: number
         }
         Insert: {
           createdAt?: string
@@ -272,6 +276,7 @@ export type Database = {
           status?: string
           type: string
           updatedAt?: string
+          userId: number
         }
         Update: {
           createdAt?: string
@@ -282,8 +287,17 @@ export type Database = {
           status?: string
           type?: string
           updatedAt?: string
+          userId?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "StudioRequest_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       User: {
         Row: {

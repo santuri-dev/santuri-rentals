@@ -38,6 +38,7 @@ import {
 	editCourse,
 	getCourse,
 } from './admin_shop.service';
+import { approveStudioRequest } from '../studio/studio.service';
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -50,10 +51,9 @@ const admin = (app: Elysia) =>
 						'/verify/:id/:verificationCode',
 						async ({ params: { id, verificationCode }, redirect }) => {
 							const res = await verifyAdminUser(id, verificationCode);
-							redirect(
+							return redirect(
 								`${env.ADMIN_CLIENT_URL}/auth/login?verified=${res.success}`
 							);
-							return res;
 						},
 						{
 							params: t.Object({
@@ -65,7 +65,7 @@ const admin = (app: Elysia) =>
 					.post(
 						'/signup',
 						async ({ body, set }) => {
-							const { firstName, lastName, role, email, password } = body;
+							const { username, role, email, password } = body;
 
 							const exists = await fetchAdminUser({
 								field: 'email',
@@ -82,8 +82,7 @@ const admin = (app: Elysia) =>
 							}
 
 							const user = await createAdminUser({
-								firstName,
-								lastName,
+								username,
 								password,
 								email,
 								role,
@@ -99,9 +98,8 @@ const admin = (app: Elysia) =>
 						},
 						{
 							body: t.Object({
-								firstName: t.String(),
-								lastName: t.String(),
-								role: t.String(),
+								username: t.String(),
+								role: t.String({ default: 'admin' }),
 								email: t.String({ format: 'email' }),
 								password: t.String(),
 							}),
@@ -142,7 +140,7 @@ const admin = (app: Elysia) =>
 							const accessToken = await signAdminAccessToken(
 								{
 									id: adminUser.id,
-									name: adminUser.firstName,
+									name: adminUser.username,
 									image: adminUser.image ?? '',
 									imgPlaceholder: adminUser.image ?? '',
 								},
@@ -466,6 +464,25 @@ const admin = (app: Elysia) =>
 							params: t.Object({ id: t.String() }),
 						}
 					)
+			)
+			.group('/studio', (app) =>
+				app.post('/approve/:id', async ({ set, params: { id } }) => {
+					try {
+						const data = await approveStudioRequest(parseInt(id));
+						return {
+							success: true,
+							message: 'Studio request created successfully',
+							data,
+						};
+					} catch (error: any) {
+						set.status = 400;
+						return {
+							success: false,
+							message: error.message,
+							data: null,
+						};
+					}
+				})
 			)
 	);
 

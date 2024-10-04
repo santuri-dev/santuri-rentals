@@ -2,7 +2,8 @@ import supabase from '@/db';
 import { StudioRequest } from './studio.schema';
 
 export async function createStudioRequest(
-	input: StudioRequest & { gearItems: number[] }
+	input: StudioRequest & { gearItems: number[] },
+	userId: number
 ) {
 	const { type, startTime, endTime } = input;
 
@@ -12,6 +13,7 @@ export async function createStudioRequest(
 			startTime: new Date(startTime).toISOString(),
 			endTime: new Date(endTime).toISOString(),
 			type,
+			userId,
 		})
 		.select()
 		.single();
