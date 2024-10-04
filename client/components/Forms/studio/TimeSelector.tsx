@@ -25,7 +25,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { useCallback, useState } from 'react';
-import { Button } from './ui/button';
+import { Button } from '../../ui/button';
 import { Clock } from 'lucide-react';
 import { parseDuration, parseTime } from '@/lib/helpers';
 
@@ -108,6 +108,15 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 				hours
 			);
 
+			// Get the current date and time
+			const currentDateTime = new Date();
+
+			// Check if the selected time has already passed
+			if (selectedDateTime < currentDateTime) {
+				return true;
+			}
+
+			// Check if the time is within any allocated slots
 			return allocatedSlots.some((slot) => {
 				const slotStart = parseISO(slot.startTime);
 				const slotEnd = subMilliseconds(parseISO(slot.endTime), 1); // Subtract 1 millisecond to not include the end hour

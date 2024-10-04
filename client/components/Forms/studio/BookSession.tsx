@@ -31,7 +31,7 @@ import TimeSelector, {
 	AllocatedSlot,
 	DurationOption,
 	TimeOption,
-} from '@/components/TimeSelector';
+} from '@/components/Forms/studio/TimeSelector';
 import { parseDuration, parseTime } from '@/lib/helpers';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
@@ -113,7 +113,7 @@ export default function BookSession() {
 
 	return (
 		<div className='flex flex-col gap-6 pb-6'>
-			<h2 className='font-semibold text-lg'>Book a Session</h2>
+			<h2 className='font-semibold text-xl'>Book a Session</h2>
 			<p className='text-sm'>
 				Book a studio session by selecting your preferred date, start time, and
 				session duration. Choose between the DJ or Recording Studio and review

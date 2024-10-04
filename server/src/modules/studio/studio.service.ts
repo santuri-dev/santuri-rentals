@@ -1,5 +1,6 @@
 import supabase from '@/db';
 import { StudioRequest } from './studio.schema';
+import { setMilliseconds, setMinutes, setSeconds } from 'date-fns';
 
 export async function createStudioRequest(
 	input: StudioRequest & { gearItems: number[] },
@@ -7,11 +8,20 @@ export async function createStudioRequest(
 ) {
 	const { type, startTime, endTime } = input;
 
+	const selectedStartTime = setMilliseconds(
+		setSeconds(setMinutes(new Date(startTime), 0), 0),
+		0
+	);
+	const selectedEndTime = setMilliseconds(
+		setSeconds(setMinutes(new Date(endTime), 0), 0),
+		0
+	);
+
 	const { data: studioRequestData, error: studioRequestError } = await supabase
 		.from('StudioRequest')
 		.insert({
-			startTime: new Date(startTime).toISOString(),
-			endTime: new Date(endTime).toISOString(),
+			startTime: selectedStartTime.toISOString(),
+			endTime: selectedEndTime.toISOString(),
 			type,
 			userId,
 		})
