@@ -65,3 +65,16 @@ export interface GearCheckout {
 }
 
 export type GearLease = Gear & { GearCheckout: GearCheckout };
+
+export interface StudioRequest {
+	createdAt: string;
+	endTime: string;
+	gearItems: number[] | null;
+	id: number;
+	startTime: string;
+	status: string;
+	type: string;
+	updatedAt: string;
+	userId: number;
+	User: User;
+}

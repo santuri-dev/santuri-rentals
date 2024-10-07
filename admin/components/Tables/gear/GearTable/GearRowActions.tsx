@@ -55,7 +55,7 @@ export default function GearRowActions({ gear }: { gear: Gear }) {
 						<Edit className='h-4 w-4 p-0' />
 					</Button>
 				</DialogTrigger>
-				<DialogContent className='max-h-[90vh] overflow-y-scroll'>
+				<DialogContent className='max-h-[90vh] overflow-y-auto'>
 					<DialogTitle>Gear Form</DialogTitle>
 					<DialogDescription>
 						Enter the details of the item. This can also be edited later.

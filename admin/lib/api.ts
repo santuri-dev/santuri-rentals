@@ -1,6 +1,13 @@
 import { request } from './axios';
 import { QueryOpts, UQueryOpts } from './queryClient';
-import { Course, Gear, GearCheckout, GearLease, GearStats } from './types';
+import {
+	Course,
+	Gear,
+	GearCheckout,
+	GearLease,
+	GearStats,
+	StudioRequest,
+} from './types';
 
 export const gearStatsOpts: QueryOpts<GearStats> = {
 	initialData: { 'Due Today': 0, Available: 0, Leased: 0, Overdue: 0 },
@@ -54,3 +61,12 @@ export const courseBySlugOpts = (slug: string): UQueryOpts<Course> => ({
 		return data;
 	},
 });
+
+export const studioRequestOpts: QueryOpts<StudioRequest[]> = {
+	initialData: [],
+	queryKey: ['studio_requests'],
+	queryFn: async () => {
+		const { data } = (await request.get('/studio/requests')).data;
+		return data;
+	},
+};

@@ -38,7 +38,10 @@ import {
 	editCourse,
 	getCourse,
 } from './admin_shop.service';
-import { approveStudioRequest } from '../studio/studio.service';
+import {
+	approveStudioRequest,
+	getAdminStudioRequests,
+} from './admin_studio.service';
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -466,23 +469,42 @@ const admin = (app: Elysia) =>
 					)
 			)
 			.group('/studio', (app) =>
-				app.post('/approve/:id', async ({ set, params: { id } }) => {
-					try {
-						const data = await approveStudioRequest(parseInt(id));
-						return {
-							success: true,
-							message: 'Studio request created successfully',
-							data,
-						};
-					} catch (error: any) {
-						set.status = 400;
-						return {
-							success: false,
-							message: error.message,
-							data: null,
-						};
-					}
-				})
+				app
+					.guard({ detail: { tags: ['Admin Studio'] } })
+					.post('/approve/:id', async ({ set, params: { id } }) => {
+						try {
+							const data = await approveStudioRequest(parseInt(id));
+							return {
+								success: true,
+								message: 'Studio request created successfully',
+								data,
+							};
+						} catch (error: any) {
+							set.status = 400;
+							return {
+								success: false,
+								message: error.message,
+								data: null,
+							};
+						}
+					})
+					.get('/requests', async ({ set }) => {
+						try {
+							const data = await getAdminStudioRequests();
+							return {
+								success: true,
+								message: 'Studio requests fetched successfully',
+								data,
+							};
+						} catch (error: any) {
+							set.status = 400;
+							return {
+								success: false,
+								message: error.message,
+								data: null,
+							};
+						}
+					})
 			)
 	);
 

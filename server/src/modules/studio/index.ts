@@ -1,9 +1,5 @@
 import { Elysia, t } from 'elysia';
-import {
-	approveStudioRequest,
-	createStudioRequest,
-	getStudioRequests,
-} from './studio.service';
+import { createStudioRequest, getStudioRequests } from './studio.service';
 import { StudioRequestSchema } from './studio.schema';
 import { requireUser } from '@/middleware/requireUser';
 

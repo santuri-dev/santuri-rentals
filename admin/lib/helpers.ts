@@ -34,12 +34,54 @@ export function calculateDuration(startDate: string, endDate: string): string {
 	return `~ ${readableDuration}`;
 }
 
+export function calculateTimeDuration(
+	startDate: string,
+	endDate: string
+): string {
+	const start = dayjs(startDate);
+	const end = dayjs(endDate);
+
+	// Calculate the duration difference
+	const diffDuration = dayjs.duration(end.diff(start));
+
+	const years = diffDuration.years();
+	const months = diffDuration.months();
+	const days = diffDuration.days();
+	const hours = diffDuration.hours();
+	const minutes = diffDuration.minutes();
+
+	// Build a readable string
+	let readableDuration = '';
+
+	if (years > 0) {
+		readableDuration += `${years} year${years > 1 ? 's' : ''} `;
+	}
+	if (months > 0) {
+		readableDuration += `${months} month${months > 1 ? 's' : ''} `;
+	}
+	if (days > 0) {
+		readableDuration += `${days} day${days > 1 ? 's' : ''} `;
+	}
+	if (hours > 0) {
+		readableDuration += `${hours} hr${hours > 1 ? 's' : ''} `;
+	}
+	if (minutes > 0) {
+		readableDuration += `${minutes} min${minutes > 1 ? 's' : ''} `;
+	}
+
+	return `${readableDuration.trim() || '0 minutes'}`;
+}
+
 export function capitalizeFirstLetter(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export function formatDate(date: string) {
 	return dayjs(date).format('MMM D YYYY');
+}
+
+export function formatTime(date: string) {
+	return dayjs(date).format('ddd MMM D YY hh:mm A');
 }
 
 export const formatCurrency = new Intl.NumberFormat('en-US', {

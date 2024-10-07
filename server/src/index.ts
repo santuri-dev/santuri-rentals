@@ -33,6 +33,10 @@ const swaggerConfig = {
 				description: 'Endpoints for the admin course service',
 			},
 			{
+				name: 'Admin Studio',
+				description: 'Endpoints for the admin studio service',
+			},
+			{
 				name: 'User',
 				description: 'Endpoints for the user service',
 			},
