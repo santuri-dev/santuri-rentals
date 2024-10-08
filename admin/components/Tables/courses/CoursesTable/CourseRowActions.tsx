@@ -74,7 +74,7 @@ export default function CourseRowActions({
 						<Edit className='h-4 w-4 p-0' />
 					</Button>
 				</DialogTrigger>
-				<DialogContent className='max-h-[90vh] min-w-max overflow-y-auto'>
+				<DialogContent className='max-h-[90vh] max-w-[50vw] overflow-y-auto'>
 					<DialogTitle>Course Form</DialogTitle>
 					<DialogDescription>
 						Enter the details of the item. This can also be edited later.

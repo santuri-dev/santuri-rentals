@@ -80,12 +80,10 @@ function CourseDetails({ slug }: { slug: string }) {
 						))}
 					</div>
 				</div>
-				<>
-					<div className='mt-4'>
-						<h3 className='text-lg font-semibold mb-2'>Description</h3>
-						<div dangerouslySetInnerHTML={{ __html: course.description }} />
-					</div>
-				</>
+				<div
+					className='mt-4'
+					dangerouslySetInnerHTML={{ __html: course.description }}
+				/>
 			</>
 		);
 	}

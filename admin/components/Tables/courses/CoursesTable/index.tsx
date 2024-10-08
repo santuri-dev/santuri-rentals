@@ -35,7 +35,7 @@ export default function CoursesTable() {
 									Add Course <Plus className='h-4 w-4 ml-2' />
 								</Button>
 							</DialogTrigger>
-							<DialogContent className='min-w-max'>
+							<DialogContent className='max-w-[50vw]'>
 								<DialogTitle>Course Form</DialogTitle>
 								<DialogDescription>
 									Enter the details of the course. This can also be edited
