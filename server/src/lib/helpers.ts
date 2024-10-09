@@ -1,5 +1,6 @@
 import supabase from '@/db';
 import slugify from 'slugify';
+import dayjs from 'dayjs';
 
 type SlugResource = 'Course';
 
@@ -24,4 +25,8 @@ export async function generateUniqueSlug(name: string, resource: SlugResource) {
 	}
 
 	return uniqueSlug;
+}
+
+export function formatTime(date: string) {
+	return dayjs(date).format('ddd MMM D YY hh:mm A');
 }

@@ -41,7 +41,7 @@ export default function StudioRequestsRowActions({
 		} catch (error) {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			toast({ title: 'Error', description: error.message });
+			toast({ title: 'Error', description: error.response.data.message });
 		}
 
 		setLoading(false);
