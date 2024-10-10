@@ -39,6 +39,7 @@ import {
 	deleteProduct,
 	editCourse,
 	editProduct,
+	getAllProductsAdmin,
 	getCourse,
 	getProduct,
 } from './admin_shop.service';
@@ -513,6 +514,23 @@ const admin = (app: Elysia) =>
 			.group('/products', (app) =>
 				app
 					.guard({ detail: { tags: ['Admin Products'] } })
+					.get('', async ({ set }) => {
+						try {
+							const courses = await getAllProductsAdmin();
+							return {
+								success: true,
+								message: 'Products fetched successfully',
+								data: courses,
+							};
+						} catch (error: any) {
+							set.status = 400;
+							return {
+								success: false,
+								message: error.message,
+								data: null,
+							};
+						}
+					})
 					.post(
 						'',
 						async ({ set, body }) => {

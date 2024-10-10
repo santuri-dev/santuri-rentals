@@ -6,6 +6,7 @@ import {
 	GearCheckout,
 	GearLease,
 	GearStats,
+	Product,
 	StudioRequest,
 } from './types';
 
@@ -67,6 +68,15 @@ export const studioRequestOpts: QueryOpts<StudioRequest[]> = {
 	queryKey: ['studio_requests'],
 	queryFn: async () => {
 		const { data } = (await request.get('/studio/requests')).data;
+		return data;
+	},
+};
+
+export const productTableOpts: QueryOpts<Product[]> = {
+	initialData: [],
+	queryKey: ['products'],
+	queryFn: async () => {
+		const { data } = (await request.get('/products')).data;
 		return data;
 	},
 };

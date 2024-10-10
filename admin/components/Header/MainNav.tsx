@@ -10,6 +10,7 @@ const links: NavLink[] = [
 	{ path: '/gear', name: 'Gear' },
 	{ path: '/courses', name: 'Courses' },
 	{ path: '/studio', name: 'Studio' },
+	{ path: '/shop', name: 'Shop' },
 ];
 
 export function MainNav({

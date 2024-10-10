@@ -77,6 +77,16 @@ export async function addProduct(input: Product) {
 	};
 }
 
+// Fetch all products (admin)
+export async function getAllProductsAdmin() {
+	const { data, error } = await supabase
+		.from('Product')
+		.select('*, Category(id, name)');
+
+	if (error) throw new Error(error.message);
+	return data;
+}
+
 // Get a product
 export async function getProduct(slug: string) {
 	const { data, error } = await supabase

@@ -78,3 +78,21 @@ export interface StudioRequest {
 	userId: number;
 	User: User;
 }
+
+export interface Product {
+	categoryId: number | null;
+	createdAt: string;
+	currency: string;
+	description: string;
+	id: number;
+	imageUrl: string | null;
+	name: string;
+	price: number;
+	slug: string;
+	status: string;
+	stock: number;
+	Category: {
+		id: number;
+		name: string;
+	} | null;
+}

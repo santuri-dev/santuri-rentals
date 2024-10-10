@@ -95,3 +95,16 @@ export function camelCaseToReadable(text: string) {
 		.replace(/^./, (str) => str.toUpperCase());
 	return readableText.trim();
 }
+
+export function truncateText(
+	text: string,
+	maxLength: number,
+	addEllipsis = true
+) {
+	if (text.length <= maxLength) {
+		return text;
+	}
+
+	const truncated = text.slice(0, maxLength);
+	return addEllipsis ? `${truncated}...` : truncated;
+}

@@ -8,11 +8,13 @@ export async function getAllCourses() {
 	return data;
 }
 
-// Fetch all courses
+// Fetch all products
 export async function getAllProducts() {
 	const { data, error } = await supabase
 		.from('Product')
-		.select('*, Category(id, name)');
+		.select(
+			'id, name, description, slug, stock, price, currency, Category(id, name)'
+		);
 
 	if (error) throw new Error(error.message);
 	return data;
