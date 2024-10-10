@@ -1,16 +1,56 @@
 'use client';
 
 import { DataTable } from '@/components/DataTable';
-import { productColumns } from './columns';
+import { productColumns, productRowActions } from './columns';
 import { productTableOpts } from '@/lib/api';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+import ProductForm from '@/components/Forms/product/ProductForm';
+import useLazyQuery from '@/hooks/use-lazy-query';
 
 export default function ProductsTable() {
-	// const [open, setOpen] = useState(false);
-	// const { refetch } = useLazyQuery(gearTableOpts);
+	const [open, setOpen] = useState(false);
+	const { refetch } = useLazyQuery(productTableOpts);
 
 	return (
-		<>
-			<DataTable title='' columns={productColumns} opts={productTableOpts} />
-		</>
+		<DataTable
+			title=''
+			columns={[...productColumns, productRowActions]}
+			opts={productTableOpts}
+			actions={[
+				{
+					name: 'Add Product',
+					children: (
+						<Dialog open={open} onOpenChange={setOpen}>
+							<DialogTrigger asChild>
+								<Button variant={'secondary'} size={'sm'}>
+									Add Product <Plus className='h-4 w-4 ml-2' />
+								</Button>
+							</DialogTrigger>
+							<DialogContent>
+								<DialogTitle>Gear Form</DialogTitle>
+								<DialogDescription>
+									Enter the details of the item. This can also be edited later.
+								</DialogDescription>
+								<ProductForm
+									onSubmit={async () => {
+										setOpen(false);
+										await refetch();
+									}}
+								/>
+							</DialogContent>
+						</Dialog>
+					),
+				},
+			]}
+		/>
 	);
 }

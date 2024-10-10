@@ -3,6 +3,7 @@ import { DataTableColumnHeader } from '@/components/DataTable/data-table-column-
 import { Badge } from '@/components/ui/badge';
 import { Product } from '@/lib/types';
 import { formatCurrency, truncateText } from '@/lib/helpers';
+import ProductRowActions from './ProductRowActions';
 
 export const productColumns: ColumnDef<Product>[] = [
 	{
@@ -73,8 +74,8 @@ export const productColumns: ColumnDef<Product>[] = [
 	},
 ];
 
-// export const gearRowActions: ColumnDef<Gear> = {
-// 	id: 'actions',
-// 	cell: ({ row }) => <GearRowActions gear={row.original} />,
-// 	enableHiding: false,
-// };
+export const productRowActions: ColumnDef<Product> = {
+	id: 'actions',
+	cell: ({ row }) => <ProductRowActions product={row.original} />,
+	enableHiding: false,
+};

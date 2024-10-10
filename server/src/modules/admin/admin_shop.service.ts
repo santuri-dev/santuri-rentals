@@ -66,7 +66,11 @@ export async function addProduct(input: Product) {
 
 	const { data, error } = await supabase
 		.from('Product')
-		.insert({ ...input, slug })
+		.insert({
+			...input,
+			slug,
+			categoryId: input.categoryId === 0 ? null : input.categoryId,
+		})
 		.select('name')
 		.single();
 
@@ -104,7 +108,10 @@ export async function getProduct(slug: string) {
 export async function editProduct(id: string, input: Partial<Product>) {
 	const { data, error } = await supabase
 		.from('Product')
-		.update(input)
+		.update({
+			...input,
+			categoryId: input.categoryId === 0 ? null : input.categoryId,
+		})
 		.eq('id', id)
 		.select('name');
 
@@ -128,4 +135,35 @@ export async function deleteProduct(id: string) {
 	return {
 		message: `Successfully deleted product: ${data[0].name}.`,
 	};
+}
+
+// Get product categories
+export async function getProductCategories() {
+	const { data, error } = await supabase.from('Category').select('*');
+
+	if (error) throw new Error(error.message);
+
+	return data;
+}
+
+// Create product category
+export async function createProductCategory(input: { name: string }) {
+	const { error } = await supabase.from('Category').insert(input);
+
+	if (error) throw new Error(error.message);
+
+	return { message: `Successfully created product category ${input.name}` };
+}
+
+export async function deleteProductCategory(id: number) {
+	const { data, error } = await supabase
+		.from('Category')
+		.delete()
+		.eq('id', id)
+		.select()
+		.single();
+
+	if (error) throw new Error(error.message);
+
+	return { message: `Successfully deleted product category ${data.name}` };
 }

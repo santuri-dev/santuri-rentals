@@ -73,6 +73,7 @@ export default function GearForm({
 					title: 'Success',
 					description: 'Successfully edited gear',
 				});
+				if (onSubmit) await onSubmit();
 			} catch (error) {
 				toast({
 					title: 'Error',
@@ -86,6 +87,7 @@ export default function GearForm({
 					title: 'Success',
 					description: 'Successfully added gear',
 				});
+				if (onSubmit) await onSubmit();
 			} catch (error) {
 				toast({
 					title: 'Error',
@@ -93,8 +95,6 @@ export default function GearForm({
 				});
 			}
 		}
-
-		if (onSubmit) await onSubmit();
 
 		setSubmitting(false);
 	}

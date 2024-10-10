@@ -35,13 +35,16 @@ import { CourseSchema, ProductSchema } from '../shop/shop.schema';
 import {
 	addCourse,
 	addProduct,
+	createProductCategory,
 	deleteCourse,
 	deleteProduct,
+	deleteProductCategory,
 	editCourse,
 	editProduct,
 	getAllProductsAdmin,
 	getCourse,
 	getProduct,
+	getProductCategories,
 } from './admin_shop.service';
 import {
 	approveStudioRequest,
@@ -607,6 +610,59 @@ const admin = (app: Elysia) =>
 						{
 							params: t.Object({ id: t.String() }),
 						}
+					)
+					.group('/categories', (app) =>
+						app
+							.get('', async ({ set }) => {
+								try {
+									const data = await getProductCategories();
+									return {
+										message: 'Successfully fetch product categories',
+										success: true,
+										data,
+									};
+								} catch (error: any) {
+									return { success: false, message: error.message, data: null };
+								}
+							})
+							.post(
+								'',
+								async ({ body }) => {
+									try {
+										const { message } = await createProductCategory(body);
+										return {
+											message,
+											success: true,
+										};
+									} catch (error: any) {
+										return {
+											success: false,
+											message: error.message,
+											data: null,
+										};
+									}
+								},
+								{ body: t.Object({ name: t.String() }) }
+							)
+							.delete(
+								'/:id',
+								async ({ params }) => {
+									try {
+										const { message } = await deleteProductCategory(params.id);
+										return {
+											message,
+											success: true,
+										};
+									} catch (error: any) {
+										return {
+											success: false,
+											message: error.message,
+											data: null,
+										};
+									}
+								},
+								{ params: t.Object({ id: t.Number() }) }
+							)
 					)
 			)
 	);

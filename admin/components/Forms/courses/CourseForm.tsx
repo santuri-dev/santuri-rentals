@@ -67,6 +67,7 @@ export default function CourseForm({
 					title: 'Success',
 					description: 'Successfully edited course',
 				});
+				if (onSubmit) await onSubmit();
 			} catch (error) {
 				toast({
 					title: 'Error',
@@ -80,6 +81,7 @@ export default function CourseForm({
 					title: 'Success',
 					description: 'Successfully added course',
 				});
+				if (onSubmit) await onSubmit();
 			} catch (error) {
 				toast({
 					title: 'Error',
@@ -87,8 +89,6 @@ export default function CourseForm({
 				});
 			}
 		}
-
-		if (onSubmit) await onSubmit();
 
 		setSubmitting(false);
 	}
