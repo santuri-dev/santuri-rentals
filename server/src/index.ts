@@ -37,6 +37,10 @@ const swaggerConfig = {
 				description: 'Endpoints for the admin studio service',
 			},
 			{
+				name: 'Admin Products',
+				description: 'Endpoints for the admin products service',
+			},
+			{
 				name: 'User',
 				description: 'Endpoints for the user service',
 			},

@@ -146,3 +146,61 @@ model StudioRequest {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Product {
+  id Int @id @default(autoincrement())
+
+  slug String @unique
+
+  name        String
+  description String
+  imageUrl    String?
+  status      String  @default("draft")
+  currency    String
+  price       Float
+
+  stock Int
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+
+  createdAt DateTime    @default(now())
+  OrderItem OrderItem[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+
+  price    Float
+  currency String
+
+  orderId Int?
+  Order   Order? @relation(fields: [orderId], references: [id])
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  status     String
+  orderItems OrderItem[]
+
+  firstName String?
+  lastName  String?
+  email     String
+  phone     String?
+
+  totalCost Float
+  currency  String
+
+  createdAt DateTime @default(now())
+}

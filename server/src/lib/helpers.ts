@@ -2,7 +2,7 @@ import supabase from '@/db';
 import slugify from 'slugify';
 import dayjs from 'dayjs';
 
-type SlugResource = 'Course';
+type SlugResource = 'Course' | 'Product';
 
 const getExisting = async (slug: string, resource: SlugResource) => {
 	const { data, error } = await supabase

@@ -86,6 +86,21 @@ export type Database = {
         }
         Relationships: []
       }
+      Category: {
+        Row: {
+          id: number
+          name: string
+        }
+        Insert: {
+          id?: number
+          name: string
+        }
+        Update: {
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
       Course: {
         Row: {
           applicationDeadline: string
@@ -222,6 +237,134 @@ export type Database = {
             columns: ["closedById"]
             isOneToOne: false
             referencedRelation: "AdminUser"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Order: {
+        Row: {
+          createdAt: string
+          currency: string
+          email: string
+          firstName: string | null
+          id: number
+          lastName: string | null
+          phone: string | null
+          status: string
+          totalCost: number
+        }
+        Insert: {
+          createdAt?: string
+          currency: string
+          email: string
+          firstName?: string | null
+          id?: number
+          lastName?: string | null
+          phone?: string | null
+          status: string
+          totalCost: number
+        }
+        Update: {
+          createdAt?: string
+          currency?: string
+          email?: string
+          firstName?: string | null
+          id?: number
+          lastName?: string | null
+          phone?: string | null
+          status?: string
+          totalCost?: number
+        }
+        Relationships: []
+      }
+      OrderItem: {
+        Row: {
+          currency: string
+          id: number
+          orderId: number | null
+          price: number
+          productId: number
+          quantity: number
+        }
+        Insert: {
+          currency: string
+          id?: number
+          orderId?: number | null
+          price: number
+          productId: number
+          quantity: number
+        }
+        Update: {
+          currency?: string
+          id?: number
+          orderId?: number | null
+          price?: number
+          productId?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "OrderItem_orderId_fkey"
+            columns: ["orderId"]
+            isOneToOne: false
+            referencedRelation: "Order"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "OrderItem_productId_fkey"
+            columns: ["productId"]
+            isOneToOne: false
+            referencedRelation: "Product"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Product: {
+        Row: {
+          categoryId: number | null
+          createdAt: string
+          currency: string
+          description: string
+          id: number
+          imageUrl: string | null
+          name: string
+          price: number
+          slug: string
+          status: string
+          stock: number
+        }
+        Insert: {
+          categoryId?: number | null
+          createdAt?: string
+          currency: string
+          description: string
+          id?: number
+          imageUrl?: string | null
+          name: string
+          price: number
+          slug: string
+          status?: string
+          stock: number
+        }
+        Update: {
+          categoryId?: number | null
+          createdAt?: string
+          currency?: string
+          description?: string
+          id?: number
+          imageUrl?: string | null
+          name?: string
+          price?: number
+          slug?: string
+          status?: string
+          stock?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Product_categoryId_fkey"
+            columns: ["categoryId"]
+            isOneToOne: false
+            referencedRelation: "Category"
             referencedColumns: ["id"]
           },
         ]
