@@ -11,7 +11,7 @@ export default function Header() {
 	return !pathname.startsWith('/auth') ? (
 		<header className='w-full shadow-2xl h-[72px] flex justify-between px-6 items-center'>
 			<Link href={'/'} className='font-bold text-xl md:text-2xl tracking-tight'>
-				Santuri East Africa
+				Santuri EA
 			</Link>
 			<div className='flex items-center gap-4'>
 				<NavLinks

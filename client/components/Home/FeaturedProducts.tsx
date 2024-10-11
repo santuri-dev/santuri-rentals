@@ -43,7 +43,7 @@ export default function FeaturedProducts() {
 			<section className='p-6 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
 				<div className='mx-auto'>
 					<h2 className='text-xl font-bold mb-8'>Featured Merch</h2>
-					<div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6'>
+					<div className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6'>
 						{[...Array(5)].map((_, index) => (
 							<ProductSkeleton key={index} />
 						))}
@@ -71,7 +71,7 @@ export default function FeaturedProducts() {
 		<section className='p-6 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
 			<div className='mx-auto'>
 				<h2 className='text-xl font-bold mb-8'>Featured Merch</h2>
-				<div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6'>
+				<div className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6'>
 					{products.map((product) => (
 						<Card
 							key={product.id}

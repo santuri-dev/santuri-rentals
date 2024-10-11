@@ -20,7 +20,7 @@ export default function Page() {
 							<h1 className='text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl'>
 								Learn, Practice and Rent Gear
 							</h1>
-							<p className='mx-auto max-w-[700px] text-gray-500 md:text-lg dark:text-gray-400 tracking-tight'>
+							<p className='mx-auto max-w-[700px] text-gray-500 md:text-lg dark:text-gray-400 tracking-tight leading-tight'>
 								Everything you need for your music journey in one place.
 							</p>
 						</div>
