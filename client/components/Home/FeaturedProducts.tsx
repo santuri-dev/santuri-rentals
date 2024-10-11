@@ -15,10 +15,14 @@ function ProductSkeleton() {
 	return (
 		<Card className='flex flex-col h-full'>
 			<CardContent className='p-4 flex-grow'>
-				<Skeleton className='aspect-square w-full mb-4' />
+				<div className='h-32 relative mb-4'>
+					<Skeleton className='h-full w-full rounded-md' />
+					<Skeleton className='absolute top-2 left-2 h-6 w-20' />
+				</div>
 				<Skeleton className='h-6 w-3/4 mb-2' />
-				<Skeleton className='h-4 w-1/2 mb-2' />
-				<Skeleton className='h-4 w-full' />
+				<Skeleton className='h-4 w-full mb-2' />
+				<Skeleton className='h-4 w-full mb-4' />
+				<Skeleton className='h-5 w-1/4' />
 			</CardContent>
 			<CardFooter>
 				<Skeleton className='h-10 w-full' />
@@ -36,13 +40,11 @@ export default function FeaturedProducts() {
 
 	if (isLoading) {
 		return (
-			<section className='py-12 bg-gradient-to-r from-primary/10 to-secondary/10'>
-				<div className='container mx-auto px-4'>
-					<h2 className='text-3xl font-bold mb-8 text-center'>
-						Featured Products
-					</h2>
-					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-						{[...Array(3)].map((_, index) => (
+			<section className='p-6 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
+				<div className='mx-auto'>
+					<h2 className='text-xl font-bold mb-8'>Featured Merch</h2>
+					<div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6'>
+						{[...Array(5)].map((_, index) => (
 							<ProductSkeleton key={index} />
 						))}
 					</div>
@@ -53,8 +55,8 @@ export default function FeaturedProducts() {
 
 	if (error) {
 		return (
-			<section className='py-12 bg-gradient-to-r from-primary/10 to-secondary/10'>
-				<div className='container mx-auto px-4'>
+			<section className='p-6 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
+				<div className='mx-auto'>
 					<p className='text-center text-red-500'>
 						Error loading featured products.
 					</p>

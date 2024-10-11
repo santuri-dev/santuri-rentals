@@ -8,6 +8,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Disc3, Headphones, Speaker } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Page() {
 	return (
@@ -24,13 +25,19 @@ export default function Page() {
 							</p>
 						</div>
 						<div className='space-x-4'>
-							<Button>Get Started</Button>
-							<Button variant='outline'>Learn More</Button>
+							<Button asChild>
+								<Link href={'/auth/signup'}>Get Started</Link>
+							</Button>
+							<Button variant='outline' asChild>
+								<Link href={'#about'}>Learn More</Link>
+							</Button>
 						</div>
 					</div>
 				</div>
 			</section>
-			<section className='w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
+			<section
+				id='about'
+				className='w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
 				<div className='container px-4 md:px-6'>
 					<h2 className='text-xl font-bold tracking-tighter sm:text-4xl text-center mb-8'>
 						Our Courses
@@ -60,7 +67,9 @@ export default function Page() {
 									<CardDescription>{course.description}</CardDescription>
 								</CardHeader>
 								<CardFooter>
-									<Button>Apply Now</Button>
+									<Button asChild>
+										<Link href={'/courses'}>Apply Now</Link>
+									</Button>
 								</CardFooter>
 							</Card>
 						))}
@@ -79,11 +88,12 @@ export default function Page() {
 								in our professional studios.
 							</p>
 							<div className='flex flex-col gap-2 min-[400px]:flex-row'>
-								<Button>
-									<Speaker className='mr-2 h-4 w-4' />
-									Book Now
+								<Button asChild>
+									<Link href={'/studio'}>
+										<Speaker className='mr-2 h-4 w-4' />
+										Book Now
+									</Link>
 								</Button>
-								<Button variant='outline'>View Studios</Button>
 							</div>
 						</div>
 						<div className='flex flex-col justify-center space-y-4'>
@@ -95,11 +105,12 @@ export default function Page() {
 								for your next gig or recording session.
 							</p>
 							<div className='flex flex-col gap-2 min-[400px]:flex-row'>
-								<Button>
-									<Disc3 className='mr-2 h-4 w-4' />
-									Rent Gear
+								<Button asChild>
+									<Link href={'/gear'}>
+										<Disc3 className='mr-2 h-4 w-4' />
+										Rent Gear
+									</Link>
 								</Button>
-								<Button variant='outline'>View Inventory</Button>
 							</div>
 						</div>
 					</div>
