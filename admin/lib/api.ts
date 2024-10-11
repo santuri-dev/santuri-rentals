@@ -1,6 +1,7 @@
 import { request } from './axios';
 import { QueryOpts, UQueryOpts } from './queryClient';
 import {
+	Category,
 	Course,
 	Gear,
 	GearCheckout,
@@ -77,6 +78,15 @@ export const productTableOpts: QueryOpts<Product[]> = {
 	queryKey: ['products'],
 	queryFn: async () => {
 		const { data } = (await request.get('/products')).data;
+		return data;
+	},
+};
+
+export const productCategoriesOpts: QueryOpts<Category[]> = {
+	initialData: [],
+	queryKey: ['product', 'categories'],
+	queryFn: async () => {
+		const { data } = (await request.get('/products/categories')).data;
 		return data;
 	},
 };

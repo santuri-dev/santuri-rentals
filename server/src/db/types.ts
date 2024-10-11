@@ -326,6 +326,7 @@ export type Database = {
           currency: string
           description: string
           id: number
+          imagePlaceholder: string | null
           imageUrl: string | null
           name: string
           price: number
@@ -339,6 +340,7 @@ export type Database = {
           currency: string
           description: string
           id?: number
+          imagePlaceholder?: string | null
           imageUrl?: string | null
           name: string
           price: number
@@ -352,6 +354,7 @@ export type Database = {
           currency?: string
           description?: string
           id?: number
+          imagePlaceholder?: string | null
           imageUrl?: string | null
           name?: string
           price?: number

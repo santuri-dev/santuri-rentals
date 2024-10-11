@@ -2,7 +2,7 @@
 
 import { DataTable } from '@/components/DataTable';
 import { productColumns, productRowActions } from './columns';
-import { productTableOpts } from '@/lib/api';
+import { productCategoriesOpts, productTableOpts } from '@/lib/api';
 import {
 	Dialog,
 	DialogContent,
@@ -12,15 +12,18 @@ import {
 } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Tags } from 'lucide-react';
 import ProductForm from '@/components/Forms/product/ProductForm';
 import useLazyQuery from '@/hooks/use-lazy-query';
 import CategoriesForm from '@/components/Forms/product/CategoriesForm';
+import { useQuery } from '@tanstack/react-query';
 
 export default function ProductsTable() {
 	const [openCategories, setOpenCategories] = useState(false);
 	const [open, setOpen] = useState(false);
 	const { refetch } = useLazyQuery(productTableOpts);
+
+	useQuery(productCategoriesOpts);
 
 	return (
 		<DataTable
@@ -60,6 +63,7 @@ export default function ProductsTable() {
 							<DialogTrigger asChild>
 								<Button variant={'secondary'} size={'sm'}>
 									Categories
+									<Tags className={'h-4 w-4 p-0 ml-2'} />
 								</Button>
 							</DialogTrigger>
 							<DialogContent>

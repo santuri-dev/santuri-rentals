@@ -11,7 +11,7 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import { Product } from '@/lib/types';
-import { Edit, Trash } from 'lucide-react';
+import { Edit, Image as ImageIcon, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { productTableOpts } from '@/lib/api';
 import { request } from '@/lib/axios';
@@ -21,10 +21,12 @@ import useLazyQuery from '@/hooks/use-lazy-query';
 import ProductForm, {
 	ProductFormInput,
 } from '@/components/Forms/product/ProductForm';
+import ProductFilesUpload from '@/components/Forms/product/ProductFilesUpload';
 
 export default function ProductRowActions({ product }: { product: Product }) {
 	const [editOpen, setEditOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
+	const [imageOpen, setImageOpen] = useState(false);
 	const [deleting, setDeleting] = useState(false);
 	const { refetch } = useLazyQuery(productTableOpts);
 
@@ -51,6 +53,29 @@ export default function ProductRowActions({ product }: { product: Product }) {
 
 	return (
 		<div className='flex items-center gap-2'>
+			<Dialog open={imageOpen} onOpenChange={setImageOpen}>
+				<DialogTrigger asChild>
+					<Button variant={'secondary'} size={'icon'} className='h-8 w-8 p-0'>
+						<ImageIcon className='h-4 w-4 p-0' />
+					</Button>
+				</DialogTrigger>
+				<DialogContent className='max-h-[90vh] overflow-y-auto'>
+					<DialogTitle>Image Upload Form</DialogTitle>
+					<DialogDescription>Upload the image cover.</DialogDescription>
+					<ProductFilesUpload
+						initalValues={{
+							id: product.id,
+							name: product.name,
+							imageUrl: product.imageUrl ?? '',
+							imagePlaceholder: product.imagePlaceholder ?? '',
+						}}
+						onSubmit={async () => {
+							setImageOpen(false);
+							await refetch();
+						}}
+					/>
+				</DialogContent>
+			</Dialog>
 			<Dialog open={editOpen} onOpenChange={setEditOpen}>
 				<DialogTrigger asChild>
 					<Button variant={'secondary'} size={'icon'} className='h-8 w-8 p-0'>
@@ -58,7 +83,7 @@ export default function ProductRowActions({ product }: { product: Product }) {
 					</Button>
 				</DialogTrigger>
 				<DialogContent className='max-h-[90vh] overflow-y-auto'>
-					<DialogTitle>Gear Form</DialogTitle>
+					<DialogTitle>Product Form</DialogTitle>
 					<DialogDescription>
 						Enter the details of the item. This can also be edited later.
 					</DialogDescription>

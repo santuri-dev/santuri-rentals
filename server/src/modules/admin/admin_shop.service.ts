@@ -1,6 +1,6 @@
-import supabase from '@/db';
+import supabase, { uploadFileToStorage } from '@/db';
 import { Course, Product } from '../shop/shop.schema';
-import { generateUniqueSlug } from '../../lib/helpers';
+import { generateUniqueSlug, toSnakeCase } from '../../lib/helpers';
 
 // Add a new course
 export async function addCourse(input: Course) {
@@ -104,6 +104,18 @@ export async function getProduct(slug: string) {
 	return data;
 }
 
+export async function getProductById(id: number) {
+	const { data, error } = await supabase
+		.from('Product')
+		.select('*')
+		.eq('id', id)
+		.single();
+
+	if (error) throw new Error(error.message);
+
+	return data;
+}
+
 // Edit a product
 export async function editProduct(id: string, input: Partial<Product>) {
 	const { data, error } = await supabase
@@ -166,4 +178,45 @@ export async function deleteProductCategory(id: number) {
 	if (error) throw new Error(error.message);
 
 	return { message: `Successfully deleted product category ${data.name}` };
+}
+
+/** 
+  - [product-files]
+    - [product-id]
+      - `product_name_cover.png`
+
+	- Save the product cover url
+*/
+export async function uploadProductFiles({
+	id,
+	cover,
+}: {
+	id: number;
+	cover: File;
+}) {
+	try {
+		const product = await getProductById(id);
+		const productName = toSnakeCase(product.name);
+
+		const { placeholder, publicUrl } = await uploadFileToStorage(
+			cover,
+			'products',
+			`${product.id}/${productName}_cover`,
+			cover.type
+		);
+
+		const { data } = await supabase
+			.from('Product')
+			.update({
+				imagePlaceholder: placeholder,
+				imageUrl: publicUrl,
+			})
+			.eq('id', id)
+			.select('imageUrl, imagePlaceholder')
+			.single();
+
+		return { message: 'Successfully uploaded product image', data };
+	} catch (e: any) {
+		throw new Error(e.message);
+	}
 }

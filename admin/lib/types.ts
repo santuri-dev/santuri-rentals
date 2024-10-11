@@ -86,6 +86,7 @@ export interface Product {
 	description: string;
 	id: number;
 	imageUrl: string | null;
+	imagePlaceholder: string | null;
 	name: string;
 	price: number;
 	slug: string;

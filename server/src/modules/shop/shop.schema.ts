@@ -33,6 +33,8 @@ export const ProductSchema = t.Object({
 	currency: t.String({ default: 'KES' }),
 	stock: t.Number(),
 	categoryId: t.Optional(t.Number()),
+	imageUrl: t.Optional(t.String()),
+	imagePlaceholder: t.Optional(t.String()),
 });
 
 export type Product = Static<typeof ProductSchema>;

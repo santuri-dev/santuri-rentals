@@ -48,7 +48,7 @@ export default function ProductForm({
 	defaultValues,
 	onSubmit,
 }: {
-	defaultValues?: Partial<ProductFormInput> & { id: number };
+	defaultValues?: Partial<ProductFormInput> & { id: number; imageUrl?: string };
 	onSubmit?: () => Promise<void>;
 }) {
 	const [submitting, setSubmitting] = useState(false);
@@ -139,87 +139,101 @@ export default function ProductForm({
 						</FormItem>
 					)}
 				/>
-				<FormField
-					control={form.control}
-					name='price'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Price</FormLabel>
-							<FormControl>
-								<Input type='number' placeholder='Enter price' {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='stock'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Stock</FormLabel>
-							<FormControl>
-								<Input
-									type='number'
-									placeholder='Enter stock quantity'
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='categoryId'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Category</FormLabel>
-							<Select
-								disabled={categories.length === 0}
-								onValueChange={field.onChange}
-								defaultValue={`${field.value}`}>
+				<div className='grid gap-2 grid-cols-1 md:grid-cols-2'>
+					<FormField
+						control={form.control}
+						name='price'
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Price</FormLabel>
 								<FormControl>
-									<SelectTrigger>
-										<SelectValue placeholder='Select category' />
-									</SelectTrigger>
+									<Input
+										min={0}
+										type='numeric'
+										placeholder='Enter price'
+										{...field}
+									/>
 								</FormControl>
-								<SelectContent>
-									{[...categories, { id: 0, name: 'none' }].map((category) => (
-										<SelectItem value={`${category.id}`} key={category.id}>
-											{category.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='status'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Status</FormLabel>
-							<Select onValueChange={field.onChange} defaultValue={field.value}>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name='stock'
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Stock</FormLabel>
 								<FormControl>
-									<SelectTrigger>
-										<SelectValue placeholder='Select status' />
-									</SelectTrigger>
+									<Input
+										min={0}
+										type='numeric'
+										placeholder='Enter stock quantity'
+										{...field}
+									/>
 								</FormControl>
-								<SelectContent>
-									{productFormSchema.shape.status._def.values.map((v) => (
-										<SelectItem value={v} key={v}>
-											{v}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</div>
+				<div className='grid gap-2 grid-cols-1 md:grid-cols-2'>
+					<FormField
+						control={form.control}
+						name='categoryId'
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Category</FormLabel>
+								<Select
+									disabled={categories.length === 0}
+									onValueChange={field.onChange}
+									defaultValue={`${field.value ?? 0}`}>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder='Select category' />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										{[...categories, { id: 0, name: 'none' }].map(
+											(category) => (
+												<SelectItem value={`${category.id}`} key={category.id}>
+													{category.name}
+												</SelectItem>
+											)
+										)}
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name='status'
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Status</FormLabel>
+								<Select
+									onValueChange={field.onChange}
+									defaultValue={field.value}>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder='Select status' />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										{productFormSchema.shape.status._def.values.map((v) => (
+											<SelectItem value={v} key={v}>
+												{v}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</div>
 
 				<Button
 					variant='default'

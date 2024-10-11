@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia';
+import { Elysia, t } from 'elysia';
 import { getAllCourses, getAllProducts } from './shop.service';
 
 const shop = (app: Elysia) =>

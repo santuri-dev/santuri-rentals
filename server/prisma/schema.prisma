@@ -152,12 +152,13 @@ model Product {
 
   slug String @unique
 
-  name        String
-  description String
-  imageUrl    String?
-  status      String  @default("draft")
-  currency    String
-  price       Float
+  name             String
+  description      String
+  imageUrl         String?
+  imagePlaceholder String?
+  status           String  @default("draft")
+  currency         String
+  price            Float
 
   stock Int
 

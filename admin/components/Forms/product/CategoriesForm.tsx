@@ -17,10 +17,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Dots from '@/components/Loaders/Dots';
 import { request } from '@/lib/axios';
 import { toast } from '@/hooks/use-toast';
-import { useQuery } from '@tanstack/react-query';
 import { Category } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
+import { productCategoriesOpts } from '@/lib/api';
+import useLazyQuery from '@/hooks/use-lazy-query';
 
 const categoryFormSchema = z.object({
 	name: z.string().min(1, { message: 'Category name cannot be empty' }),
@@ -34,14 +35,9 @@ export default function CategoriesForm({
 	onSubmit?: () => Promise<void>;
 }) {
 	const [submitting, setSubmitting] = useState(false);
-	const { data: categories, refetch } = useQuery<Category[]>({
-		initialData: [],
-		queryKey: ['product', 'categories'],
-		queryFn: async () => {
-			const { data } = (await request.get('/products/categories')).data;
-			return data;
-		},
-	});
+	const { data: categories = [], refetch } = useLazyQuery<Category[]>(
+		productCategoriesOpts
+	);
 
 	const form = useForm<CategoryFormInput>({
 		resolver: zodResolver(categoryFormSchema),
@@ -99,14 +95,14 @@ export default function CategoriesForm({
 			<div className='flex items-center gap-1 flex-wrap'>
 				{categories.map(({ id, name }) => (
 					<Badge
-						className='text-xs gap-2 py-[2px]'
+						className='text-xs gap-2 py-1 rounded-full'
 						variant={'secondary'}
 						key={id}>
 						{name}
 						<Button
 							onClick={() => handleDelete(id)}
 							type='button'
-							className='h-4 w-4'
+							className='h-4 w-4 p-0.5'
 							size={'icon'}>
 							<X className='h-4 w-4 p-0' />
 						</Button>

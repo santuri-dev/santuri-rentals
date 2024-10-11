@@ -30,3 +30,7 @@ export async function generateUniqueSlug(name: string, resource: SlugResource) {
 export function formatTime(date: string) {
 	return dayjs(date).format('ddd MMM D YY hh:mm A');
 }
+
+export function toSnakeCase(inputString: string) {
+	return inputString.replace(/ /g, '_').toLowerCase();
+}
