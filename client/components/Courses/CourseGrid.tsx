@@ -111,7 +111,7 @@ export default function CourseGrid() {
 				{courses.map((course) => (
 					<Card key={course.id} className='hover:shadow-lg transition-shadow'>
 						<CardHeader>
-							<CardTitle>{course.name}</CardTitle>
+							<CardTitle className='leading-snug'>{course.name}</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<p className='text-sm text-gray-500'>

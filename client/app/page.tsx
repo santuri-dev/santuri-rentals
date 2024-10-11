@@ -20,7 +20,7 @@ export default function Page() {
 							<h1 className='text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl'>
 								Learn, Practice and Rent Gear
 							</h1>
-							<p className='mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400'>
+							<p className='mx-auto max-w-[700px] text-gray-500 md:text-lg dark:text-gray-400 tracking-tight'>
 								Everything you need for your music journey in one place.
 							</p>
 						</div>
@@ -37,9 +37,9 @@ export default function Page() {
 			</section>
 			<section
 				id='about'
-				className='w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
+				className='w-full py-12 md:py-24 lg:py-24 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
 				<div className='container px-4 md:px-6'>
-					<h2 className='text-xl font-bold tracking-tighter sm:text-4xl text-center mb-8'>
+					<h2 className='text-xl font-bold tracking-tighter sm:text-3xl text-center mb-8'>
 						Our Courses
 					</h2>
 					<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
@@ -83,7 +83,7 @@ export default function Page() {
 							<h2 className='text-xl font-bold tracking-tighter sm:text-3xl'>
 								Book Studio Time
 							</h2>
-							<p className='max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400'>
+							<p className='max-w-[600px] text-gray-500 text-sm dark:text-gray-400'>
 								Access state-of-the-art recording facilities. Perfect your sound
 								in our professional studios.
 							</p>
@@ -100,7 +100,7 @@ export default function Page() {
 							<h2 className='text-xl font-bold tracking-tighter sm:text-3xl'>
 								Rent Music Gear
 							</h2>
-							<p className='max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400'>
+							<p className='max-w-[600px] text-gray-500 text-sm dark:text-gray-400'>
 								Try before you buy. Rent top-quality instruments and equipment
 								for your next gig or recording session.
 							</p>

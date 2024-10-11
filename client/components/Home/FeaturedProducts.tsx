@@ -92,10 +92,10 @@ export default function FeaturedProducts() {
 									</Badge>
 								</div>
 								<h3 className='text-xl font-semibold mb-2'>{product.name}</h3>
-								<p className='text-muted-foreground mb-4 line-clamp-2'>
+								<p className='text-muted-foreground mb-4 text-sm line-clamp-2'>
 									{product.description}
 								</p>
-								<p className='text-md font-bold'>
+								<p className='font-semibold text-sm'>
 									{formatCurrency(product.price)}
 								</p>
 							</CardContent>
