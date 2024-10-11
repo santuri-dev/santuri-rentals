@@ -3,7 +3,7 @@ import CourseGrid from '@/components/Courses/CourseGrid';
 
 export default function Page() {
 	return (
-		<div className='flex py-6'>
+		<div className='flex py-8'>
 			<div className='w-full md:w-3/4'>
 				<CourseGrid />
 			</div>

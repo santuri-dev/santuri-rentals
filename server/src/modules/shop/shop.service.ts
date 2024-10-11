@@ -13,7 +13,7 @@ export async function getAllProducts() {
 	const { data, error } = await supabase
 		.from('Product')
 		.select(
-			'id, name, description, slug, stock, price, currency, Category(id, name)'
+			'id, name, description, slug, stock, price, currency, imageUrl, imagePlaceholder, Category(id, name)'
 		);
 
 	if (error) throw new Error(error.message);

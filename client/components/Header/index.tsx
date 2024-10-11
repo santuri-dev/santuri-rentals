@@ -15,6 +15,7 @@ export default function Header() {
 			</Link>
 			<NavLinks
 				links={[
+					{ path: '/shop', name: 'Shop' },
 					{ path: '/courses', name: 'Courses' },
 					{ path: '/gear', name: 'Gear' },
 					{ path: '/studio', name: 'Studio' },

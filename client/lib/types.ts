@@ -46,3 +46,22 @@ export interface NavLink {
 	path: string;
 	name: string;
 }
+
+export interface Product {
+	categoryId: number | null;
+	createdAt: string;
+	currency: string;
+	description: string;
+	id: number;
+	imageUrl: string | null;
+	imagePlaceholder: string | null;
+	name: string;
+	price: number;
+	slug: string;
+	status: string;
+	stock: number;
+	Category: {
+		id: number;
+		name: string;
+	} | null;
+}

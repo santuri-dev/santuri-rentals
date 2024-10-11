@@ -97,7 +97,7 @@ export default function ProductFilesUpload({
 				</div>
 
 				{initalValues?.imageUrl ? (
-					<div className='mt-4 h-32 w-full relative'>
+					<div className='mt-4 aspect-square relative'>
 						<Image
 							alt={`${initalValues.name} image cover`}
 							src={initalValues.imageUrl}
