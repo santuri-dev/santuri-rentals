@@ -15,8 +15,10 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import ProductForm from '@/components/Forms/product/ProductForm';
 import useLazyQuery from '@/hooks/use-lazy-query';
+import CategoriesForm from '@/components/Forms/product/CategoriesForm';
 
 export default function ProductsTable() {
+	const [openCategories, setOpenCategories] = useState(false);
 	const [open, setOpen] = useState(false);
 	const { refetch } = useLazyQuery(productTableOpts);
 
@@ -36,13 +38,37 @@ export default function ProductsTable() {
 								</Button>
 							</DialogTrigger>
 							<DialogContent>
-								<DialogTitle>Gear Form</DialogTitle>
+								<DialogTitle>Product Form</DialogTitle>
 								<DialogDescription>
-									Enter the details of the item. This can also be edited later.
+									Enter the details of the product. This can also be edited
+									later.
 								</DialogDescription>
 								<ProductForm
 									onSubmit={async () => {
 										setOpen(false);
+										await refetch();
+									}}
+								/>
+							</DialogContent>
+						</Dialog>
+					),
+				},
+				{
+					name: 'Categories',
+					children: (
+						<Dialog open={openCategories} onOpenChange={setOpenCategories}>
+							<DialogTrigger asChild>
+								<Button variant={'secondary'} size={'sm'}>
+									Categories
+								</Button>
+							</DialogTrigger>
+							<DialogContent>
+								<DialogTitle>Categories</DialogTitle>
+								<DialogDescription>
+									Enter the name of the category.
+								</DialogDescription>
+								<CategoriesForm
+									onSubmit={async () => {
 										await refetch();
 									}}
 								/>
