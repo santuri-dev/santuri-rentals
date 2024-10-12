@@ -14,7 +14,8 @@ export async function getAllProducts() {
 		.from('Product')
 		.select(
 			'id, name, description, slug, stock, price, currency, imageUrl, imagePlaceholder, Category(id, name)'
-		);
+		)
+		.eq('status', 'published');
 
 	if (error) throw new Error(error.message);
 	return data;
