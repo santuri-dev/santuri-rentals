@@ -24,7 +24,7 @@ export default function Page() {
 								Everything you need for your music journey in one place.
 							</p>
 						</div>
-						<div className='space-x-4'>
+						<div className='flex gap-4 justify-center'>
 							<Button asChild>
 								<Link href={'/auth/signup'}>Get Started</Link>
 							</Button>

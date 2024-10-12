@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import { ShoppingBag, Star } from 'lucide-react';
+import { ShoppingBag, Star, Tags } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -43,8 +43,8 @@ export default function FeaturedProducts() {
 			<section className='p-6 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
 				<div className='mx-auto'>
 					<h2 className='text-xl font-bold mb-8'>Featured Merch</h2>
-					<div className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6'>
-						{[...Array(5)].map((_, index) => (
+					<div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+						{[...Array(4)].map((_, index) => (
 							<ProductSkeleton key={index} />
 						))}
 					</div>
@@ -71,7 +71,7 @@ export default function FeaturedProducts() {
 		<section className='p-6 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
 			<div className='mx-auto'>
 				<h2 className='text-xl font-bold mb-8'>Featured Merch</h2>
-				<div className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6'>
+				<div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6'>
 					{products.map((product) => (
 						<Card
 							key={product.id}
@@ -91,17 +91,24 @@ export default function FeaturedProducts() {
 										<Star className='w-4 h-4 mr-1' /> Featured
 									</Badge>
 								</div>
-								<h3 className='text-xl font-semibold mb-2'>{product.name}</h3>
-								<p className='text-muted-foreground mb-4 text-sm line-clamp-2'>
-									{product.description}
-								</p>
-								<p className='font-semibold text-sm'>
-									{formatCurrency(product.price)}
-								</p>
+								<div className='px-2'>
+									<h2 className='text-lg font-semibold mb-2'>{product.name}</h2>
+									{product.Category ? (
+										<div className={'flex items-center gap-2'}>
+											<Tags className='text-sm h-4 w-4 p-0' />
+											<Badge
+												className='text-xs gap-2 py-1 rounded-full'
+												variant={'secondary'}>
+												{product.Category?.name}
+											</Badge>
+										</div>
+									) : null}
+								</div>
 							</CardContent>
 							<CardFooter>
 								<Button className='w-full'>
-									<ShoppingBag className='w-4 h-4 mr-2' /> Add to Cart
+									<ShoppingBag className='h-4 w-4 p-0 mr-2' />{' '}
+									{formatCurrency(product.price)}
 								</Button>
 							</CardFooter>
 						</Card>
