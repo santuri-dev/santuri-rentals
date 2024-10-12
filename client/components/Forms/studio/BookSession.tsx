@@ -35,15 +35,16 @@ import TimeSelector, {
 import { parseDuration, parseTime } from '@/lib/helpers';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
+import { Label } from '@/components/ui/label';
+
+type StudioType = 'dj' | 'recording' | 'rehearsals' | 'workstation';
 
 export default function BookSession() {
 	const [date, setDate] = useState<Date>(new Date());
 	const [selectedTime, setSelectedTime] = useState<TimeOption | null>(null);
 	const [selectedDuration, setSelectedDuration] =
 		useState<DurationOption | null>(null);
-	const [type, setType] = useState<
-		'dj' | 'recording' | 'rehearsals' | 'workstation'
-	>('dj');
+	const [type, setType] = useState<StudioType>('dj');
 	const [gearItems, setWorkstationItems] = useState<Gear[]>([]);
 	const { data: allocatedSlots } = useQuery<AllocatedSlot[]>({
 		initialData: [],
@@ -111,6 +112,10 @@ export default function BookSession() {
 		}
 	}
 
+	const handleTypeChange = (value: string) => {
+		setType(value as StudioType);
+	};
+
 	return (
 		<div className='flex flex-col gap-6 pb-6'>
 			<h2 className='font-semibold text-xl'>Book a Session</h2>
@@ -124,9 +129,9 @@ export default function BookSession() {
 					<h2 className='font-semibold text-lg'>Details</h2>
 				</div>
 				<div className='space-y-4'>
-					<div className='gap-2 grid grid-cols-2 items-center'>
+					<div className='gap-2 grid grid-cols-1 md:grid-cols-2 items-center'>
 						<div>
-							<label className='text-sm font-medium'>Location</label>
+							<Label className='text-sm font-medium'>Location</Label>
 							<Select disabled={true} defaultValue='the-mall'>
 								<SelectTrigger className='mt-2'>
 									<SelectValue />
@@ -139,7 +144,7 @@ export default function BookSession() {
 							</Select>
 						</div>
 						<div>
-							<label className='text-sm font-medium mb-2'>Date</label>
+							<Label className='text-sm font-medium mb-2'>Date</Label>
 							<Popover>
 								<PopoverTrigger asChild>
 									<Button
@@ -181,26 +186,23 @@ export default function BookSession() {
 					<h2 className='font-semibold text-lg'>Studio Type</h2>
 				</div>
 				<div>
-					<Tabs defaultValue='dj'>
-						<TabsList className='grid w-full grid-cols-4'>
-							<TabsTrigger onClick={() => setType('dj')} value='dj'>
-								DJ
-							</TabsTrigger>
-							<TabsTrigger
-								onClick={() => setType('rehearsals')}
-								value='rehearsals'>
-								Rehearsal
-							</TabsTrigger>
-							<TabsTrigger
-								onClick={() => setType('workstation')}
-								value='workstation'>
-								Workstation
-							</TabsTrigger>
-							<TabsTrigger
-								onClick={() => setType('recording')}
-								value='recording'>
-								Recording
-							</TabsTrigger>
+					<Select onValueChange={handleTypeChange} value={type}>
+						<SelectTrigger className='md:hidden w-full'>
+							<SelectValue placeholder='Select Studio Type' />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value='dj'>DJ</SelectItem>
+							<SelectItem value='rehearsals'>Rehearsal</SelectItem>
+							<SelectItem value='workstation'>Workstation</SelectItem>
+							<SelectItem value='recording'>Recording</SelectItem>
+						</SelectContent>
+					</Select>
+					<Tabs value={type} onValueChange={handleTypeChange}>
+						<TabsList className='md:w-full md:grid md:grid-cols-4 hidden'>
+							<TabsTrigger value='dj'>DJ</TabsTrigger>
+							<TabsTrigger value='rehearsals'>Rehearsal</TabsTrigger>
+							<TabsTrigger value='workstation'>Workstation</TabsTrigger>
+							<TabsTrigger value='recording'>Recording</TabsTrigger>
 						</TabsList>
 						<TabsContent value='dj'>
 							<div className='mt-4 space-y-4'>
@@ -259,14 +261,11 @@ export default function BookSession() {
 											{
 												name: 'Request for Session',
 												async action(rows, updateLoading) {
-													'use server';
-													setWorkstationItems(rows);
+													await setWorkstationItems(rows);
 													updateLoading();
 													const itemNames = rows
-														.map((row) => row.name) // Extract the 'name' property from each object in 'rows'
-														.join(', '); // Join the names with a comma and space
-
-													// If there are more than one name, replace the last comma with 'and'
+														.map((row) => row.name)
+														.join(', ');
 													const readableNames = itemNames.replace(
 														/, ([^,]*)$/,
 														' and $1'

@@ -160,7 +160,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 	);
 
 	return (
-		<div className='flex items-center gap-4 w-full justify-between'>
+		<div className='flex flex-col md:flex-row items-center gap-4 w-full justify-between'>
 			<div className='w-full'>
 				<label className='text-sm font-medium mb-2 block'>Start Time</label>
 				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
