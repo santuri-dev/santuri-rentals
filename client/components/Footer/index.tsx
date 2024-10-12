@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Footer() {
 	return (
-		<footer className='flex flex-col mt-16 h-[72px] bottom-0 gap-2 sm:flex-row py-6 w-full items-center px-4 md:px-6 border-t'>
+		<footer className='flex flex-col mt-16 h-[72px] bottom-0 gap-2 sm:flex-row py-10 w-full items-center px-4 md:px-6 border-t'>
 			<p className='text-xs text-gray-500 dark:text-gray-400'>
 				© {new Date().getFullYear()} Santuri East Africa. All rights reserved.
 			</p>
