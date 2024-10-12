@@ -21,6 +21,7 @@ import { coursesOpts } from '@/lib/api';
 import { calculateDuration, formatCurrency, formatDate } from '@/lib/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Course } from '@/lib/types';
+import Image from 'next/image';
 // import DOMPurify from 'dompurify';
 
 function CourseDialog({
@@ -111,18 +112,32 @@ export default function CourseGrid() {
 				{courses.map((course) => (
 					<Card key={course.id} className='hover:shadow-lg transition-shadow'>
 						<CardHeader>
+							{course.imageUrl ? (
+								<div className='h-48 relative aspect-square mb-4'>
+									<Image
+										alt={`${course.name} image cover`}
+										src={course.imageUrl}
+										className='object-cover rounded-md'
+										fill
+										placeholder='blur'
+										blurDataURL={course.imagePlaceholder ?? ''}
+									/>
+								</div>
+							) : null}
 							<CardTitle className='leading-snug'>{course.name}</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<p className='text-sm text-gray-500'>
-								Application Deadline:{' '}
+								Apply By:{' '}
 								<strong className='text-card-foreground'>
 									{formatDate(course.applicationDeadline)}
 								</strong>
 							</p>
 						</CardContent>
 						<CardFooter>
-							<Button onClick={() => handleViewDetails(course)}>
+							<Button
+								className='w-full'
+								onClick={() => handleViewDetails(course)}>
 								View Details
 							</Button>
 						</CardFooter>
