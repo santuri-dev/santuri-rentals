@@ -70,7 +70,7 @@ export default function ProductRowActions({ product }: { product: Product }) {
 							imagePlaceholder: product.imagePlaceholder ?? '',
 						}}
 						onSubmit={async () => {
-							setImageOpen(false);
+							// setImageOpen(false);
 							await refetch();
 						}}
 					/>

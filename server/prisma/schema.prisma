@@ -84,13 +84,15 @@ model GearCheckout {
 model Course {
   id Int @id @default(autoincrement())
 
-  slug        String   @unique
-  name        String
-  description String
-  cost        Float
-  startDate   DateTime
-  endDate     DateTime
-  location    String
+  slug             String   @unique
+  name             String
+  description      String
+  cost             Float
+  startDate        DateTime
+  endDate          DateTime
+  location         String
+  imageUrl         String?
+  imagePlaceholder String?
 
   applicationDeadline DateTime
 

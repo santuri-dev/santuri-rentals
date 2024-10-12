@@ -5,16 +5,16 @@ import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
 import { request } from '@/lib/axios';
 import { Label } from '@/components/ui/label';
-import { Product } from '@/lib/types';
+import { Course } from '@/lib/types';
 import Dots from '@/components/Loaders/Dots';
 import { toast } from '@/hooks/use-toast';
 import Image from 'next/image';
 
-export default function ProductFilesUpload({
+export default function CourseFilesUpload({
 	initalValues,
 	onSubmit,
 }: {
-	initalValues: Pick<Product, 'id' | 'imageUrl' | 'name' | 'imagePlaceholder'>;
+	initalValues: Pick<Course, 'id' | 'imageUrl' | 'name' | 'imagePlaceholder'>;
 	onSubmit?: () => Promise<unknown>;
 }) {
 	const [{ cover }, setSelectedFiles] = useState<{
@@ -45,7 +45,7 @@ export default function ProductFilesUpload({
 		if (initalValues) {
 			setSubmitting(true);
 			try {
-				await request.postForm(`/products/${initalValues.id}/cover`, {
+				await request.postForm(`/courses/${initalValues.id}/cover`, {
 					cover,
 				});
 				toast({

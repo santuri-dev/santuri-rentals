@@ -45,6 +45,7 @@ import {
 	getCourse,
 	getProduct,
 	getProductCategories,
+	uploadCourseFiles,
 	uploadProductFiles,
 } from './admin_shop.service';
 import {
@@ -474,6 +475,32 @@ const admin = (app: Elysia) =>
 						},
 						{
 							params: t.Object({ id: t.String() }),
+						}
+					)
+					.post(
+						'/:id/cover',
+						async ({ body: { cover }, set, params: { id } }) => {
+							try {
+								const res = await uploadCourseFiles({
+									id,
+									cover,
+								});
+								return {
+									success: true,
+									...res,
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return { success: false, message: error.message, data: null };
+							}
+						},
+						{
+							body: t.Object({
+								cover: t.File({
+									type: ['image/png', 'image/jpeg', 'image/webp'],
+								}),
+							}),
+							params: t.Object({ id: t.Numeric() }),
 						}
 					)
 			)

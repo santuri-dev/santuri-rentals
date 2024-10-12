@@ -48,6 +48,8 @@ export interface Course {
 	startDate: string;
 	updatedAt: string;
 	slug: string;
+	imageUrl: string | null;
+	imagePlaceholder: string | null;
 }
 
 export interface NavLink {

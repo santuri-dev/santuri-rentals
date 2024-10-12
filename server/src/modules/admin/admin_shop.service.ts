@@ -31,6 +31,19 @@ export async function getCourse(slug: string) {
 	return data;
 }
 
+// Get a course
+export async function getCourseById(id: number) {
+	const { data, error } = await supabase
+		.from('Course')
+		.select('*')
+		.eq('id', id)
+		.single();
+
+	if (error) throw new Error(error.message);
+
+	return data;
+}
+
 export async function editCourse(id: string, input: Partial<Course>) {
 	const { data, error } = await supabase
 		.from('Course')
@@ -181,7 +194,7 @@ export async function deleteProductCategory(id: number) {
 }
 
 /** 
-  - [product-files]
+  - [products]
     - [product-id]
       - `product_name_cover.png`
 
@@ -215,7 +228,48 @@ export async function uploadProductFiles({
 			.select('imageUrl, imagePlaceholder')
 			.single();
 
-		return { message: 'Successfully uploaded product image', data };
+		return { message: 'Successfully uploaded product cover image', data };
+	} catch (e: any) {
+		throw new Error(e.message);
+	}
+}
+
+/** 
+  - [products]
+    - [product-id]
+      - `product_name_cover.png`
+
+	- Save the product cover url
+*/
+export async function uploadCourseFiles({
+	id,
+	cover,
+}: {
+	id: number;
+	cover: File;
+}) {
+	try {
+		const course = await getCourseById(id);
+		const courseName = toSnakeCase(course.name);
+
+		const { placeholder, publicUrl } = await uploadFileToStorage(
+			cover,
+			'courses',
+			`${course.id}/${courseName}_cover`,
+			cover.type
+		);
+
+		const { data } = await supabase
+			.from('Course')
+			.update({
+				imagePlaceholder: placeholder,
+				imageUrl: publicUrl,
+			})
+			.eq('id', id)
+			.select('imageUrl, imagePlaceholder')
+			.single();
+
+		return { message: 'Successfully uploaded course cover image', data };
 	} catch (e: any) {
 		throw new Error(e.message);
 	}

@@ -11,6 +11,19 @@ import { Button } from '@/components/ui/button';
 import Dots from '@/components/Loaders/Dots';
 import CourseRowActions from '@/components/Tables/courses/CoursesTable/CourseRowActions';
 import { useRouter } from 'next/navigation';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
+import { ImageIcon } from 'lucide-react';
+import { useState } from 'react';
+import CourseFilesUpload from '@/components/Forms/courses/CourseFilesUpload';
+import Image from 'next/image';
 
 function CourseDetails({ slug }: { slug: string }) {
 	const {
@@ -19,6 +32,7 @@ function CourseDetails({ slug }: { slug: string }) {
 		refetch,
 	} = useQuery(courseBySlugOpts(slug));
 	const router = useRouter();
+	const [open, setOpen] = useState(false);
 
 	if (isFetching && !course) {
 		return <Skeleton className='w-full min-h-[50vh]' />;
@@ -48,16 +62,44 @@ function CourseDetails({ slug }: { slug: string }) {
 						<span className='text-lg font-semibold'>
 							{formatCurrency(course.cost)}
 						</span>
-						<CourseRowActions
-							course={course}
-							showMore={false}
-							onEdit={async () => {
-								await refetch();
-							}}
-							onDelete={() => {
-								router.push('/courses');
-							}}
-						/>
+						<div className={'flex gap-2 items-center'}>
+							<Dialog open={open} onOpenChange={setOpen}>
+								<DialogTrigger asChild>
+									<Button
+										variant={'secondary'}
+										size={'icon'}
+										className='h-8 w-8 p-0'>
+										<ImageIcon className='h-4 w-4 p-0' />
+									</Button>
+								</DialogTrigger>
+								<DialogContent className='max-h-[90vh] overflow-y-auto'>
+									<DialogTitle>Image Upload Form</DialogTitle>
+									<DialogDescription>Upload the image cover.</DialogDescription>
+									<CourseFilesUpload
+										initalValues={{
+											id: course.id,
+											name: course.name,
+											imageUrl: course.imageUrl ?? '',
+											imagePlaceholder: course.imagePlaceholder ?? '',
+										}}
+										onSubmit={async () => {
+											// setOpen(false);
+											await refetch();
+										}}
+									/>
+								</DialogContent>
+							</Dialog>
+							<CourseRowActions
+								course={course}
+								showMore={false}
+								onEdit={async () => {
+									await refetch();
+								}}
+								onDelete={() => {
+									router.push('/courses');
+								}}
+							/>
+						</div>
 					</div>
 
 					<div className='grid w-full'>
@@ -79,6 +121,19 @@ function CourseDetails({ slug }: { slug: string }) {
 							</div>
 						))}
 					</div>
+
+					{course.imageUrl ? (
+						<div className='h-48 relative aspect-square mt-8 md:mt-0'>
+							<Image
+								alt={`${course.name} image cover`}
+								src={course.imageUrl}
+								className='object-contain'
+								fill
+								placeholder='blur'
+								blurDataURL={course.imagePlaceholder ?? ''}
+							/>
+						</div>
+					) : null}
 				</div>
 				<div
 					className='mt-4'

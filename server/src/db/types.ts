@@ -109,6 +109,8 @@ export type Database = {
           description: string
           endDate: string
           id: number
+          imagePlaceholder: string | null
+          imageUrl: string | null
           location: string
           name: string
           slug: string
@@ -122,6 +124,8 @@ export type Database = {
           description: string
           endDate: string
           id?: number
+          imagePlaceholder?: string | null
+          imageUrl?: string | null
           location: string
           name: string
           slug: string
@@ -135,6 +139,8 @@ export type Database = {
           description?: string
           endDate?: string
           id?: number
+          imagePlaceholder?: string | null
+          imageUrl?: string | null
           location?: string
           name?: string
           slug?: string
