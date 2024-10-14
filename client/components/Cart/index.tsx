@@ -10,7 +10,7 @@ import {
 	DrawerTrigger,
 } from '@/components/ui/drawer';
 
-import { ShoppingCart, X } from 'lucide-react';
+import { ShoppingBag, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import {
 	DropdownMenu,
@@ -40,12 +40,14 @@ export default function Cart() {
 			<div className='hidden md:flex'>
 				<DropdownMenu open={open} onOpenChange={setOpen}>
 					<DropdownMenuTrigger onClick={() => setOpen(!open)} asChild>
-						<Button variant='ghost' className='relative flex gap-2'>
+						<Button
+							variant='ghost'
+							className='relative flex gap-2 hover:text-blue-500'>
 							{submitting ? (
 								<Spinner2 />
 							) : (
 								<>
-									<ShoppingCart className={'h-5 w-5'} />
+									<ShoppingBag className={'h-4 w-4'} />
 									{cart.length ? (
 										<span className='bg-yellow-400 text-black rounded-full h-5 w-5 items-center flex justify-center'>
 											{cart.length}
@@ -96,7 +98,7 @@ export default function Cart() {
 							<div className='px-4 py-4'>
 								<Button className='w-full gap-2' asChild>
 									<Link href={'/checkout'}>
-										<ShoppingCart className={'h-5 w-5'} />
+										<ShoppingBag className={'h-4 w-4'} />
 										Checkout
 									</Link>
 								</Button>
@@ -108,8 +110,11 @@ export default function Cart() {
 			<div className='flex md:hidden'>
 				<Drawer open={openDrawer} onOpenChange={setOpenDrawer}>
 					<DrawerTrigger asChild>
-						<Button variant='ghost' className='relative flex gap-2' size={'sm'}>
-							<ShoppingCart className={'h-5 w-5'} />
+						<Button
+							variant='ghost'
+							className='relative flex gap-2 hover:text-blue-500'
+							size={'sm'}>
+							<ShoppingBag className={'h-4 w-4'} />
 							{submitting ? (
 								<Spinner2 />
 							) : (
@@ -174,7 +179,7 @@ export default function Cart() {
 							<div className='px-4 py-4'>
 								<Button className='w-full gap-2'>
 									<Link href={'/checkout'} className='flex items-center gap-2'>
-										<ShoppingCart className={'h-5 w-5'} />
+										<ShoppingBag className={'h-4 w-4'} />
 										Checkout
 									</Link>
 								</Button>
