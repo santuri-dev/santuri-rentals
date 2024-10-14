@@ -10,6 +10,7 @@ import { formatCurrency } from '@/lib/helpers';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingBag, Tags } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCart } from '@/hooks/use-cart';
 
 function ProductSkeleton() {
 	return (
@@ -46,6 +47,7 @@ export default function Page() {
 		isFetching,
 		error,
 	} = useQuery<Product[]>(productsOpts);
+	const { cart, addToCart } = useCart();
 
 	if (isFetching && !products) return <ProductSkeletonGrid />;
 
@@ -66,44 +68,59 @@ export default function Page() {
 	return (
 		<div className='py-6'>
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-				{products.map((product) => (
-					<Card
-						key={product.id}
-						className='flex flex-col border-slate-900/50 hover:scale-[1.02] transition-transform duration-300 ease-in-out'>
-						<CardContent className='p-4'>
-							<div className='aspect-square relative mb-4'>
-								<Image
-									src={product.imageUrl ?? ''}
-									alt={product.name}
-									fill
-									className='rounded-md object-cover'
-									placeholder='blur'
-									blurDataURL={product.imagePlaceholder ?? ''}
-									sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-								/>
-							</div>
-							<div className='px-2'>
-								<h2 className='text-lg font-semibold mb-2'>{product.name}</h2>
-								{product.Category ? (
-									<div className={'flex items-center gap-2'}>
-										<Tags className='text-sm h-4 w-4 p-0' />
-										<Badge
-											className='text-xs gap-2 py-1 rounded-full'
-											variant={'secondary'}>
-											{product.Category?.name}
-										</Badge>
-									</div>
-								) : null}
-							</div>
-						</CardContent>
-						<CardFooter className='mt-auto w-full'>
-							<Button className='w-full text-slate-900'>
-								<ShoppingBag className='h-4 w-4 p-0 mr-2' />{' '}
-								{formatCurrency(product.price)}
-							</Button>
-						</CardFooter>
-					</Card>
-				))}
+				{products.map((product) => {
+					const inCart = !!cart.find((v) => v.id === product.id);
+
+					return (
+						<Card
+							key={product.id}
+							className='flex flex-col border-slate-900/50 hover:scale-[1.02] transition-transform duration-300 ease-in-out'>
+							<CardContent className='p-4'>
+								<div className='aspect-square relative mb-4'>
+									<Image
+										src={product.imageUrl ?? ''}
+										alt={product.name}
+										fill
+										className='rounded-md object-cover'
+										placeholder='blur'
+										blurDataURL={product.imagePlaceholder ?? ''}
+										sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+									/>
+								</div>
+								<div className='px-2'>
+									<h2 className='text-lg font-semibold mb-2'>{product.name}</h2>
+									{product.Category ? (
+										<div className={'flex items-center gap-2'}>
+											<Tags className='text-sm h-4 w-4 p-0' />
+											<Badge
+												className='text-xs gap-2 py-1 rounded-full'
+												variant={'secondary'}>
+												{product.Category?.name}
+											</Badge>
+										</div>
+									) : null}
+								</div>
+							</CardContent>
+							<CardFooter className='mt-auto w-full'>
+								<Button
+									onClick={() => {
+										addToCart(product);
+									}}
+									disabled={inCart}
+									className='w-full text-slate-900'>
+									{inCart ? (
+										'In Cart'
+									) : (
+										<>
+											<ShoppingBag className='h-4 w-4 p-0 mr-2' />{' '}
+											{formatCurrency(product.price)}
+										</>
+									)}
+								</Button>
+							</CardFooter>
+						</Card>
+					);
+				})}
 			</div>
 		</div>
 	);

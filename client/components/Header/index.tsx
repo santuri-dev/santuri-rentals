@@ -4,6 +4,7 @@ import Link from 'next/link';
 import NavLinks from '../NavLinks';
 import LoginButton from './LoginButton';
 import { usePathname } from 'next/navigation';
+import Cart from '../Cart';
 
 export default function Header() {
 	const pathname = usePathname();
@@ -22,6 +23,7 @@ export default function Header() {
 						{ path: '/shop', name: 'Shop' },
 					]}
 				/>
+				<Cart />
 				<LoginButton />
 			</div>
 		</header>
