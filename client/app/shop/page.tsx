@@ -69,7 +69,7 @@ export default function Page() {
 		<div className='py-6'>
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
 				{products.map((product) => {
-					const inCart = !!cart.find((v) => v.id === product.id);
+					const inCart = !!cart.find((v) => v.product.id === product.id);
 
 					return (
 						<Card

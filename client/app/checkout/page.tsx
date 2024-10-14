@@ -1,18 +1,14 @@
 'use client';
 
+import ProductCounter from '@/components/Cart/ProductCounter';
+import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/use-cart';
 import { formatCurrency } from '@/lib/helpers';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Page() {
-	const { cart } = useCart();
-	const subtotal = cart.reduce((total, product) => total + product.price, 0);
-	const { push } = useRouter();
-
-	if (cart.length === 0) {
-		push('/shop');
-	}
+	const { cart, subtotal, addToCart, removeFromCart } = useCart();
 
 	return (
 		<section className='w-full py-6'>
@@ -26,25 +22,51 @@ export default function Page() {
 					<p className='min-h-4 font-semibold'>Cart Summary</p>
 					<div className='bg-slate-800 rounded-md py-2'>
 						<div className='px-4'>
-							{cart.map(({ imageUrl, imagePlaceholder, name, price, id }) => (
-								<div
-									key={id}
-									className='flex py-2 justify-between items-center hover:cursor-pointer'>
-									<div className='flex justify-between w-full items-center'>
-										<div className='flex items-center gap-4'>
-											<Image
-												alt={`Product ${name} cover image`}
-												src={imageUrl ?? ''}
-												blurDataURL={imagePlaceholder ?? ''}
-												height={100}
-												width={100}
-												className='rounded-md'
-											/>
-										</div>
-										<p className='font-semibold'>{formatCurrency(price)}</p>
-									</div>
+							{cart.length === 0 ? (
+								<div className='flex pt-4 pb-2 space-y-2 justify-center items-center flex-col'>
+									<p>No products added to cart</p>
+									<Button className='text-blue-500' variant={'link'} asChild>
+										<Link href={'/shop'}>Back to Shop</Link>
+									</Button>
 								</div>
-							))}
+							) : null}
+							{cart.map(({ product, quantity }) => {
+								const { imageUrl, imagePlaceholder, name, price, id } = product;
+
+								return (
+									<div
+										key={id}
+										className='flex py-2 justify-between items-center hover:cursor-pointer'>
+										<div className='grid grid-cols-3 justify-between w-full items-center'>
+											<div className='flex items-center gap-4'>
+												<Image
+													alt={`Product ${name} cover image`}
+													src={imageUrl ?? ''}
+													blurDataURL={imagePlaceholder ?? ''}
+													height={100}
+													width={100}
+													className='rounded-md'
+												/>
+											</div>
+											<div>
+												<ProductCounter
+													count={quantity}
+													onCountChange={(count) => {
+														if (count < quantity) {
+															removeFromCart(id);
+														} else {
+															addToCart(product);
+														}
+													}}
+												/>
+											</div>
+											<p className='font-semibold flex flex-grow justify-end'>
+												{formatCurrency(price)}
+											</p>
+										</div>
+									</div>
+								);
+							})}
 						</div>
 					</div>
 					<div className='w-full px-4 text-sm space-y-2 bg-slate-800 rounded-md py-4'>
