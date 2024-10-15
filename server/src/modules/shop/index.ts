@@ -1,5 +1,5 @@
 import { Elysia, t } from 'elysia';
-import { getAllCourses, getAllProducts } from './shop.service';
+import { createCheckout, getAllCourses, getAllProducts } from './shop.service';
 
 const shop = (app: Elysia) =>
 	app.group('/shop', (app) =>
@@ -39,6 +39,39 @@ const shop = (app: Elysia) =>
 					};
 				}
 			})
+			.post(
+				'/checkout',
+				async ({ set, body }) => {
+					try {
+						const courses = await createCheckout(body);
+						return {
+							success: true,
+							message: 'Order was created successfully',
+							data: courses,
+						};
+					} catch (error: any) {
+						set.status = 400;
+						return {
+							success: false,
+							message: error.message,
+							data: null,
+						};
+					}
+				},
+				{
+					body: t.Object({
+						items: t.Array(
+							t.Object({ quantity: t.Number(), productId: t.Number() })
+						),
+						billingAddress: t.Object({
+							firstName: t.String(),
+							lastName: t.String(),
+							email: t.String({ format: 'email' }),
+							phoneNumber: t.String(),
+						}),
+					}),
+				}
+			)
 	);
 
 export default shop;

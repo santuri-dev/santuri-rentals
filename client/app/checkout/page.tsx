@@ -1,6 +1,7 @@
 'use client';
 
 import ProductCounter from '@/components/Cart/ProductCounter';
+import CheckoutForm from '@/components/Forms/CheckoutForm';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/use-cart';
 import { formatCurrency } from '@/lib/helpers';
@@ -15,8 +16,7 @@ export default function Page() {
 			<div className='w-full flex flex-col-reverse md:flex-row gap-8'>
 				<div className='w-full md:w-2/3 space-y-4'>
 					<p className='min-h-4 font-semibold'>Billing Address</p>
-					{/* <CheckoutForm /> */}
-					<div></div>
+					<CheckoutForm />
 				</div>
 				<div className='w-full md:w-1/3 space-y-4'>
 					<p className='min-h-4 font-semibold'>Cart Summary</p>
