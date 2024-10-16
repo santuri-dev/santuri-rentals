@@ -67,3 +67,26 @@ export interface Product {
 		name: string;
 	} | null;
 }
+
+export interface Order {
+	createdAt: string;
+	currency: string;
+	email: string;
+	firstName: string | null;
+	id: number;
+	lastName: string | null;
+	phone: string | null;
+	ref: string;
+	status: string;
+	totalCost: number;
+	trackingId: string | null;
+	OrderItem: {
+		currency: string;
+		id: number;
+		orderId: number | null;
+		price: number;
+		productId: number;
+		quantity: number;
+		Product: Product;
+	}[];
+}

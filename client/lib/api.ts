@@ -1,6 +1,6 @@
 import { request } from './axios';
 import { QueryOpts, UQueryOpts } from './queryClient';
-import { Course, Gear, Product } from './types';
+import { Course, Gear, Order, Product } from './types';
 
 export const coursesOpts: QueryOpts<Course[]> = {
 	initialData: [],
@@ -27,3 +27,27 @@ export const productsOpts: UQueryOpts<Product[]> = {
 		return data;
 	},
 };
+
+export const fetchOrderOpts = (
+	ref: string,
+	checkout_id: string,
+	signature: string,
+	trackingId: string
+): UQueryOpts<Order> => ({
+	queryKey: ['order', ref, checkout_id, signature],
+	queryFn: async () =>
+		await fetchOrder(ref, checkout_id, signature, trackingId),
+});
+
+async function fetchOrder(
+	ref: string,
+	checkout_id: string,
+	signature: string,
+	trackingId: string
+): Promise<Order> {
+	return (
+		await request.get(
+			`/shop/checkout/${ref}?signature=${signature}&checkout_id=${checkout_id}&tracking_id=${trackingId}`
+		)
+	).data.data;
+}

@@ -54,7 +54,7 @@ export default function CheckoutForm({
 			// setRedirectUri(res.data.redirect_url);
 			toast({ title: 'Success', description: res.data.message });
 			form.reset();
-			// window.location = res.data.data.redirect_url;
+			window.location = res.data.data.redirect_url;
 		} catch (e) {
 			toast({
 				title: 'Failed to initiate checkout',

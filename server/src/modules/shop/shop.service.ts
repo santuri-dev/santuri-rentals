@@ -1,4 +1,9 @@
 import supabase from '@/db';
+import Receipt from '@/emails/Receipt';
+import { createCheckout } from '@/lib/intasend';
+import transporter from '@/lib/nodemailer';
+import { render } from '@react-email/components';
+import env from '@/lib/env';
 
 // Fetch all courses
 export async function getAllCourses() {
@@ -21,7 +26,7 @@ export async function getAllProducts() {
 	return data;
 }
 
-export async function createCheckout({
+export async function createOrder({
 	billingAddress,
 	items,
 }: {
@@ -69,6 +74,8 @@ export async function createCheckout({
 		};
 	});
 
+	const ref = crypto.randomUUID();
+
 	// Start a transaction for creating the order and order items
 	const { data: order, error: orderError } = await supabase
 		.from('Order')
@@ -81,6 +88,7 @@ export async function createCheckout({
 				phone: billingAddress.phoneNumber,
 				totalCost,
 				currency: orderItems[0].currency,
+				ref,
 			},
 		])
 		.select()
@@ -102,8 +110,90 @@ export async function createCheckout({
 		throw new Error(`Error creating order items: ${orderItemError.message}`);
 	}
 
-	return {
-		orderId: order.id,
-		totalCost,
-	};
+	const orderRequest = await createCheckout(order);
+
+	await supabase
+		.from('Order')
+		.update({ trackingId: orderRequest.id })
+		.eq('id', order.id);
+
+	return orderRequest;
+}
+
+export async function getOrder(ref: string) {
+	try {
+		const { data, error } = await supabase
+			.from('Order')
+			.select('*, OrderItem(*, Product(*))')
+			.eq('ref', ref)
+			.single();
+
+		if (error) throw new Error(error.message);
+		if (!data) throw new Error('Error finding order details');
+
+		return data;
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
+}
+
+export async function getOrderStatus(
+	state: 'PENDING' | 'PROCESSING' | 'COMPLETE' | 'FAILED',
+	ref: string
+) {
+	try {
+		if (state === 'COMPLETE') {
+			const { data: order, error } = await supabase
+				.from('Order')
+				.select('*')
+				.eq('ref', ref)
+				.single();
+
+			if (error) throw new Error(error.message);
+			if (!order) throw new Error('Error finding order details');
+
+			if (order.status === 'pending') {
+				await supabase
+					.from('Order')
+					.update({ status: 'paid' })
+					.eq('id', order.id);
+
+				const { data: orderItems, error } = await supabase
+					.from('OrderItem')
+					.select('*, Product(imageUrl, name)')
+					.eq('orderId', order.id);
+
+				if (error) {
+					throw new Error(
+						`Failed to send email notification: ${error.message}`
+					);
+				}
+
+				try {
+					await transporter.sendMail({
+						from: env.EMAIL_FROM,
+						to: order.email,
+						subject: 'Payment Received',
+						html: await render(
+							Receipt({ data: { order, orderItems }, to: order.email })
+						),
+					});
+				} catch (error: any) {
+					throw new Error(
+						`Failed to send password reset email: ${error.message}`
+					);
+				}
+			}
+
+			return {
+				success: true,
+				data: order,
+				message: 'Purchase was successful',
+			};
+		} else if (state === 'FAILED') {
+			await supabase.from('Order').update({ status: 'failed' }).eq('ref', ref);
+		}
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
 }

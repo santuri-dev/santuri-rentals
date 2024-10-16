@@ -20,3 +20,29 @@ export interface AdminDecodedRefresh {
 	adminUserId: number;
 	userAgent: string;
 }
+
+interface ErrorDetail {
+	code: string;
+	detail: string;
+	attr: string | null;
+}
+
+/**
+ * Description placeholder
+ *
+ * @type {ErrorResponse}
+ * @example 
+	type: 'client_error',
+	errors: [
+		{
+			code: 'authentication_failed',
+			detail: 'Invalid api token',
+			attr: null,
+		},
+	],
+ */
+
+export interface ErrorResponse {
+	type: string;
+	errors: ErrorDetail[];
+}

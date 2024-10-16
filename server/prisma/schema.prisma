@@ -188,7 +188,7 @@ model OrderItem {
   currency String
 
   orderId Int?
-  Order   Order? @relation(fields: [orderId], references: [id])
+  Order   Order? @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model Order {
@@ -196,6 +196,8 @@ model Order {
 
   status     String
   orderItems OrderItem[]
+  ref        String
+  trackingId String?     @unique
 
   firstName String?
   lastName  String?

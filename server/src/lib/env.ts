@@ -23,6 +23,8 @@ const envSchema = z.object({
 	ADMIN_CLIENT_URL: z.string().url(),
 	NODE_ENV: z.string(),
 	PORT: z.string().refine((v) => !isNaN(parseInt(v))),
+	INTASEND_PUBLISHABLE_KEY: z.string(),
+	INTASEND_API_TOKEN: z.string(),
 });
 
 const results = envSchema.safeParse(Bun.env);
