@@ -67,7 +67,11 @@ export default function BookSession() {
 		queryKey: ['studio_types'],
 		queryFn: async () => {
 			const { data } = (await request.get('/studio/types')).data;
-			return data;
+			const sorted = (data as StudioType[]).toSorted(
+				(a, b) => a.name.charCodeAt(0) - b.name.charCodeAt(0)
+			);
+
+			return sorted;
 		},
 	});
 
@@ -347,10 +351,10 @@ export default function BookSession() {
 								</TabsContent>
 							) : (
 								<TabsContent key={id} value={`${id}`}>
-									<div className='px-4 py-2'>
+									<div className='px-6 list-decimal'>
 										<div
 											dangerouslySetInnerHTML={{ __html: description }}
-											className='mt-4 space-y-4 text-md leading-relaxed'
+											className='mt-4 space-y-4 text-md leading-relaxed list-disc'
 										/>
 									</div>
 								</TabsContent>
