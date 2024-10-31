@@ -12,8 +12,8 @@ export async function approveStudioRequest(id: number) {
 
 	const { data: conflictingRequests, error: conflictError } = await supabase
 		.from('StudioRequest')
-		.select('*, User(email)')
-		.eq('type', studioRequestData.type)
+		.select('*, User(email), StudioType(id, name)')
+		.eq('typeId', studioRequestData.typeId)
 		.eq('status', 'approved')
 		.gte('startTime', studioRequestData.startTime);
 
@@ -22,8 +22,8 @@ export async function approveStudioRequest(id: number) {
 	} else if (conflictingRequests.length > 0) {
 		throw new Error(
 			`Conflicting request found for ${conflictingRequests.map(
-				({ type, startTime }) =>
-					`Studio: ${type} Time: ${formatTime(startTime)}`
+				({ StudioType, startTime }) =>
+					`Studio: ${StudioType?.name} Time: ${formatTime(startTime)}`
 			)}`
 		);
 	} else {
@@ -52,11 +52,74 @@ export async function approveStudioRequest(id: number) {
 export async function getAdminStudioRequests() {
 	const { data: approvedRequests, error } = await supabase
 		.from('StudioRequest')
-		.select('*, User(id, username, email)');
+		.select('*, StudioType(id, name, pricing), User(id, username, email)');
 
 	if (error) {
 		throw new Error(`Error fetching studio requests: ${error.message}`);
 	}
 
 	return approvedRequests;
+}
+
+export async function createStudioType(input: {
+	name: string;
+	description: string;
+	pricing: number;
+}) {
+	const { data, error } = await supabase
+		.from('StudioType')
+		.insert(input)
+		.select('*')
+		.single();
+
+	if (error) {
+		throw new Error(`Error creating studio type: ${error.message}`);
+	}
+
+	return data;
+}
+
+export async function editStudioType(input: {
+	id: number;
+	name: string;
+	description: string;
+	pricing: number;
+}) {
+	const { data, error } = await supabase
+		.from('StudioType')
+		.update(input)
+		.eq('id', input.id)
+		.select('*')
+		.single();
+
+	if (error) {
+		throw new Error(`Error updating studio type: ${error.message}`);
+	}
+
+	return data;
+}
+
+export async function deleteStudioType(id: number) {
+	const { data, error } = await supabase
+		.from('StudioType')
+		.delete()
+		.eq('id', id)
+		.select('*')
+		.single();
+
+	if (error) {
+		throw new Error(`Error deleting studio type: ${error.message}`);
+	}
+
+	return data;
+}
+
+export async function getStudioTypesAdmin() {
+	const { data, error } = await supabase.from('StudioType').select('*');
+
+	if (error) {
+		throw new Error(`Error creating studio type: ${error.message}`);
+	}
+
+	return data;
 }

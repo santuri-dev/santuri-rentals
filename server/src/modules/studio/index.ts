@@ -1,5 +1,9 @@
 import { Elysia, t } from 'elysia';
-import { createStudioRequest, getStudioRequests } from './studio.service';
+import {
+	createStudioRequest,
+	getStudioRequests,
+	getStudioTypes,
+} from './studio.service';
 import { StudioRequestSchema } from './studio.schema';
 import { requireUser } from '@/middleware/requireUser';
 
@@ -29,6 +33,19 @@ const studio = (app: Elysia) =>
 					}),
 				}
 			)
+			.get('/types', async ({ set }) => {
+				try {
+					const data = await getStudioTypes();
+					return { success: true, data };
+				} catch (error: any) {
+					set.status = 400;
+					return {
+						success: false,
+						message: error.message,
+						data: null,
+					};
+				}
+			})
 			.use(requireUser)
 			.post(
 				'',

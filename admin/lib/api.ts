@@ -9,6 +9,7 @@ import {
 	GearStats,
 	Product,
 	StudioRequest,
+	StudioType,
 } from './types';
 
 export const gearStatsOpts: QueryOpts<GearStats> = {
@@ -69,6 +70,15 @@ export const studioRequestOpts: QueryOpts<StudioRequest[]> = {
 	queryKey: ['studio_requests'],
 	queryFn: async () => {
 		const { data } = (await request.get('/studio/requests')).data;
+		return data;
+	},
+};
+
+export const studioTypesOpts: QueryOpts<StudioType[]> = {
+	initialData: [],
+	queryKey: ['studio_types'],
+	queryFn: async () => {
+		const { data } = (await request.get('/studio/types')).data;
 		return data;
 	},
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -18,9 +18,18 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { format, addHours, isBefore, setHours, setMinutes } from 'date-fns';
+import {
+	format,
+	addHours,
+	isBefore,
+	setHours,
+	setMinutes,
+	setMilliseconds,
+	setSeconds,
+	differenceInMinutes,
+} from 'date-fns';
 import { toast } from '@/hooks/use-toast';
-import { Gear } from '@/lib/types';
+import { Gear, StudioType } from '@/lib/types';
 import { DataTable } from '@/components/DataTable';
 import { gearColumns } from '@/components/Tables/GearTable/columns';
 import { availableGearOpts } from '@/lib/api';
@@ -32,21 +41,87 @@ import TimeSelector, {
 	DurationOption,
 	TimeOption,
 } from '@/components/Forms/studio/TimeSelector';
-import { parseDuration, parseTime } from '@/lib/helpers';
+import { formatCurrency, parseDuration, parseTime } from '@/lib/helpers';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
-
-type StudioType = 'dj' | 'recording' | 'rehearsals' | 'workstation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function BookSession() {
 	const [date, setDate] = useState<Date>(new Date());
 	const [selectedTime, setSelectedTime] = useState<TimeOption | null>(null);
 	const [selectedDuration, setSelectedDuration] =
 		useState<DurationOption | null>(null);
-	const [type, setType] = useState<StudioType>('dj');
 	const [gearItems, setWorkstationItems] = useState<Gear[]>([]);
-	const { data: allocatedSlots } = useQuery<AllocatedSlot[]>({
+	const [type, setType] = useState<StudioType | null>(null);
+	const { status } = useAuth();
+	const [cost, setCost] = useState(0);
+
+	// Fetch studio types
+	const {
+		data: studioTypes,
+		isFetching,
+		refetch: refetchStudioTypes,
+	} = useQuery<StudioType[]>({
+		initialData: [],
+		queryKey: ['studio_types'],
+		queryFn: async () => {
+			const { data } = (await request.get('/studio/types')).data;
+			return data;
+		},
+	});
+
+	useEffect(() => {
+		if (selectedTime && selectedDuration && type) {
+			const currentDate = new Date();
+			const { hours, minutes } = parseTime(selectedTime);
+			const startTime = setHours(setMinutes(new Date(date), minutes), hours);
+
+			if (isBefore(startTime, currentDate)) {
+				toast({
+					title: 'Error',
+					description: 'The selected start time must be in the future.',
+				});
+				setLoading(false);
+				return;
+			}
+
+			const durationHours = parseDuration(selectedDuration);
+			const endTime = addHours(startTime, durationHours);
+
+			const selectedStartTime = setMilliseconds(
+				setSeconds(setMinutes(new Date(startTime), 0), 0),
+				0
+			);
+
+			const selectedEndTime = setMilliseconds(
+				setSeconds(setMinutes(new Date(endTime), 0), 0),
+				0
+			);
+
+			const durationInMinutes = differenceInMinutes(
+				selectedEndTime,
+				selectedStartTime
+			);
+			const tHours = Math.floor(durationInMinutes / 60);
+			const tMinutes = durationInMinutes % 60;
+
+			const tCost = type.pricing * tHours + (type.pricing * tMinutes) / 60;
+			setCost(tCost);
+		}
+	}, [date, selectedDuration, selectedTime, type]);
+
+	// Set initial type when studioTypes data is available and type is not already set
+	useEffect(() => {
+		if (studioTypes && studioTypes.length > 0 && !type) {
+			setType(studioTypes[0]);
+		}
+	}, [studioTypes, type]);
+
+	// Fetch allocated slots
+	const { data: allocatedSlots, refetch: refetchSlots } = useQuery<
+		AllocatedSlot[]
+	>({
 		initialData: [],
 		queryKey: ['allocated_times', date.toISOString()],
 		queryFn: async () => {
@@ -56,18 +131,17 @@ export default function BookSession() {
 					status: 'approved',
 				})
 			).data;
-
 			return data;
 		},
 	});
 	const [loading, setLoading] = useState(false);
-	const { status } = useAuth();
 
 	function reset() {
 		setDate(new Date());
 		setSelectedDuration(null);
 		setSelectedTime(null);
 		setWorkstationItems([]);
+		setCost(0);
 	}
 
 	async function handleSubmit() {
@@ -95,8 +169,8 @@ export default function BookSession() {
 				await request.post('/studio', {
 					startTime: new Date(startTime).toISOString(),
 					endTime: new Date(endTime).toISOString(),
-					type,
-					...(type === 'workstation' ? { gearItems } : { gearItems: [] }),
+					typeId: type?.id,
+					...(type?.name === 'workstation' ? { gearItems } : { gearItems: [] }),
 				})
 			).data;
 
@@ -112,9 +186,33 @@ export default function BookSession() {
 		}
 	}
 
-	const handleTypeChange = (value: string) => {
-		setType(value as StudioType);
+	const handleTypeChange = (id: string) => {
+		const selectedType = studioTypes.find((v) => v.id === parseInt(id));
+		if (selectedType) {
+			setType(selectedType);
+		}
 	};
+
+	if ((isFetching && studioTypes.length === 0) || (!type && isFetching)) {
+		return <Skeleton className='w-full h-[60vh]' />;
+	}
+
+	function retry() {
+		reset();
+		refetchStudioTypes();
+		refetchSlots();
+	}
+
+	if (!type) {
+		return (
+			<div className='w-full h-[60vh] flex-col space-y-4 items-center justify-center flex'>
+				<p>Something went wrong</p>
+				<Button variant={'secondary'} onClick={retry}>
+					Retry
+				</Button>
+			</div>
+		);
+	}
 
 	return (
 		<div className='flex flex-col gap-6 pb-6'>
@@ -186,102 +284,78 @@ export default function BookSession() {
 					<h2 className='font-semibold text-lg'>Studio Type</h2>
 				</div>
 				<div>
-					<Select onValueChange={handleTypeChange} value={type}>
+					<Select onValueChange={handleTypeChange} value={`${type.id}`}>
 						<SelectTrigger className='md:hidden w-full'>
 							<SelectValue placeholder='Select Studio Type' />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value='dj'>DJ</SelectItem>
-							<SelectItem value='rehearsals'>Rehearsal</SelectItem>
-							<SelectItem value='workstation'>Workstation</SelectItem>
-							<SelectItem value='recording'>Recording</SelectItem>
+							{studioTypes.map((type) => (
+								<SelectItem
+									key={`${type.name}~${type.id}`}
+									value={`${type.id}`}>
+									{type.name}
+								</SelectItem>
+							))}
 						</SelectContent>
 					</Select>
-					<Tabs value={type} onValueChange={handleTypeChange}>
+					<Tabs value={`${type.id}`} onValueChange={handleTypeChange}>
 						<TabsList className='md:w-full md:grid md:grid-cols-4 hidden'>
-							<TabsTrigger value='dj'>DJ</TabsTrigger>
-							<TabsTrigger value='rehearsals'>Rehearsal</TabsTrigger>
-							<TabsTrigger value='workstation'>Workstation</TabsTrigger>
-							<TabsTrigger value='recording'>Recording</TabsTrigger>
+							{studioTypes.map(({ id, name }) => (
+								<TabsTrigger key={id} value={`${id}`}>
+									{name}
+								</TabsTrigger>
+							))}
 						</TabsList>
-						<TabsContent value='dj'>
-							<div className='mt-4 space-y-4'>
-								<h3 className='font-semibold'>DJ Studio Equipment</h3>
-								<ul className='list-disc pl-5 space-y-2 text-sm'>
-									<li>Space for beginners and a solo mixing session</li>
-									<li>Includes a 2-deck Pioneer setup</li>
-									<li>Please bring your own headphones</li>
-									<li>
-										We do not provide a Microphone or XLR in DJ Studios - if
-										essential to your session, please ensure you bring your own
-									</li>
-								</ul>
-							</div>
-						</TabsContent>
-						<TabsContent value='recording'>
-							<div className='mt-4 space-y-4'>
-								<h3 className='font-semibold'>Recording Studio Equipment</h3>
-								<ul className='list-disc pl-5 space-y-2 text-sm'>
-									<li>Professional-grade microphones and audio interfaces</li>
-									<li>Studio monitors and acoustic treatment</li>
-									<li>Digital Audio Workstation (DAW) software</li>
-									<li>
-										MIDI controllers and synthesizers available upon request
-									</li>
-								</ul>
-							</div>
-						</TabsContent>
-						<TabsContent value='rehearsals'>
-							<div className='mt-4 space-y-4'>
-								<h3 className='font-semibold'>Rehearsal Equipment</h3>
-								<ul className='list-disc pl-5 space-y-2 text-sm'>
-									<li>Professional-grade microphones and audio interfaces</li>
-									<li>Studio monitors and acoustic treatment</li>
-									<li>Digital Audio Workstation (DAW) software</li>
-									<li>
-										MIDI controllers and synthesizers available upon request
-									</li>
-								</ul>
-							</div>
-						</TabsContent>
-						<TabsContent value='workstation'>
-							<div className='mt-4 space-y-4'>
-								<h3 className='font-semibold'>Workstation Equipment</h3>
-								<p className='text-sm'>
-									Select Items that you would like to request for your
-									workstation
-								</p>
-								<DataTable
-									title=''
-									columns={gearColumns}
-									opts={availableGearOpts}
-									selectActions={{
-										title: 'Items',
-										actions: [
-											{
-												name: 'Request for Session',
-												async action(rows, updateLoading) {
-													await setWorkstationItems(rows);
-													updateLoading();
-													const itemNames = rows
-														.map((row) => row.name)
-														.join(', ');
-													const readableNames = itemNames.replace(
-														/, ([^,]*)$/,
-														' and $1'
-													);
-													toast({
-														title: 'Success',
-														description: `Successfully added ${readableNames} to request`,
-													});
-													return Promise.resolve();
-												},
-											},
-										],
-									}}
-								/>
-							</div>
-						</TabsContent>
+						{studioTypes.map(({ id, description, name }) =>
+							name.toLowerCase() === 'workstation' ? (
+								<TabsContent key={id} value={`${id}`}>
+									<div className='mt-4 space-y-4'>
+										<div
+											dangerouslySetInnerHTML={{ __html: description }}
+											className='mt-4 space-y-4 leading-relaxed'
+										/>
+										<DataTable
+											title=''
+											columns={gearColumns}
+											opts={availableGearOpts}
+											selectActions={{
+												title: 'Items',
+												actions: [
+													{
+														name: 'Request for Session',
+														async action(rows, updateLoading) {
+															setWorkstationItems(rows);
+															updateLoading();
+															const itemNames = rows
+																.map((row) => row.name)
+																.join(', ');
+															const readableNames = itemNames.replace(
+																/, ([^,]*)$/,
+																' and $1'
+															);
+															toast({
+																title: 'Success',
+																description: `Successfully added ${readableNames} to request`,
+															});
+															return Promise.resolve();
+														},
+													},
+												],
+											}}
+										/>
+									</div>
+								</TabsContent>
+							) : (
+								<TabsContent key={id} value={`${id}`}>
+									<div className='px-4 py-2'>
+										<div
+											dangerouslySetInnerHTML={{ __html: description }}
+											className='mt-4 space-y-4 text-md leading-relaxed'
+										/>
+									</div>
+								</TabsContent>
+							)
+						)}
 					</Tabs>
 				</div>
 			</div>
@@ -291,7 +365,7 @@ export default function BookSession() {
 						onClick={handleSubmit}
 						size='default'
 						disabled={!date || !selectedTime || !selectedDuration || loading}>
-						{loading ? <Dots /> : 'Book Session'}
+						{loading ? <Dots /> : `Book Session ${formatCurrency(cost)}`}
 					</Button>
 				) : (
 					<Button asChild>

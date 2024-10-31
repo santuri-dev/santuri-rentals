@@ -90,3 +90,10 @@ export interface Order {
 		Product: Product;
 	}[];
 }
+
+export interface StudioType {
+	id: number;
+	name: string;
+	description: string;
+	pricing: number;
+}

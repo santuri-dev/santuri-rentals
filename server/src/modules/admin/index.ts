@@ -50,8 +50,13 @@ import {
 } from './admin_shop.service';
 import {
 	approveStudioRequest,
+	createStudioType,
+	deleteStudioType,
+	editStudioType,
 	getAdminStudioRequests,
+	getStudioTypesAdmin,
 } from './admin_studio.service';
+import { StudioTypeSchema } from '../studio/studio.schema';
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -541,6 +546,95 @@ const admin = (app: Elysia) =>
 							};
 						}
 					})
+					.group('/types', (app) =>
+						app
+							.get('', async ({ set }) => {
+								try {
+									const data = await getStudioTypesAdmin();
+									return {
+										success: true,
+										message: 'Successfully fetched studio types',
+										data,
+									};
+								} catch (error: any) {
+									set.status = 400;
+									return {
+										success: false,
+										message: error.message,
+										data: null,
+									};
+								}
+							})
+							.post(
+								'',
+								async ({ set, body }) => {
+									try {
+										const data = await createStudioType(body);
+										return {
+											success: true,
+											message: 'Successfully created studio type',
+											data,
+										};
+									} catch (error: any) {
+										set.status = 400;
+										return {
+											success: false,
+											message: error.message,
+											data: null,
+										};
+									}
+								},
+								{
+									body: StudioTypeSchema,
+								}
+							)
+							.put(
+								'/:id',
+								async ({ set, body, params: { id } }) => {
+									try {
+										const data = await editStudioType({ id, ...body });
+										return {
+											success: true,
+											message: 'Successfully edited studio type',
+											data,
+										};
+									} catch (error: any) {
+										set.status = 400;
+										return {
+											success: false,
+											message: error.message,
+											data: null,
+										};
+									}
+								},
+								{
+									body: StudioTypeSchema,
+									params: t.Object({ id: t.Numeric() }),
+								}
+							)
+							.delete(
+								'/:id',
+								async ({ set, params: { id } }) => {
+									try {
+										await deleteStudioType(id);
+										return {
+											success: true,
+											message: 'Successfully deleted studio type',
+										};
+									} catch (error: any) {
+										set.status = 400;
+										return {
+											success: false,
+											message: error.message,
+											data: null,
+										};
+									}
+								},
+								{
+									params: t.Object({ id: t.Numeric() }),
+								}
+							)
+					)
 			)
 			.group('/products', (app) =>
 				app

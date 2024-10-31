@@ -136,17 +136,27 @@ model AdminSession {
 model StudioRequest {
   id Int @id @default(autoincrement())
 
-  type      String
+  typeId    Int
+  type      StudioType @relation(fields: [typeId], references: [id], onDelete: Cascade)
   startTime DateTime
   endTime   DateTime
-  status    String   @default("pending")
+  status    String     @default("pending")
   gearItems Int[]
+  cost      Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model StudioType {
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String
+  pricing       Float
+  StudioRequest StudioRequest[]
 }
 
 model Product {

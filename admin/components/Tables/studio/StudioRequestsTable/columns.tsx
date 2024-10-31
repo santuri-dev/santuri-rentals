@@ -1,7 +1,11 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/DataTable/data-table-column-header';
 import { StudioRequest } from '@/lib/types';
-import { calculateTimeDuration, formatTime } from '@/lib/helpers';
+import {
+	calculateTimeDuration,
+	formatCurrency,
+	formatTime,
+} from '@/lib/helpers';
 import { Badge } from '@/components/ui/badge';
 import StudioRequestsRowActions from './StudioRequestsRowActions';
 
@@ -23,12 +27,12 @@ export const studioRequestColumns: ColumnDef<StudioRequest>[] = [
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'type',
+		accessorKey: 'StudioType.name',
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title='Type' />
+			<DataTableColumnHeader column={column} title='Studio' />
 		),
 		cell: ({ row }) => {
-			return <p className={`text-sm`}>{row.original.type}</p>;
+			return <p className={`text-sm`}>{row.original.StudioType.name}</p>;
 		},
 		enableHiding: false,
 		enableSorting: false,
@@ -69,6 +73,17 @@ export const studioRequestColumns: ColumnDef<StudioRequest>[] = [
 		enableSorting: false,
 	},
 	{
+		accessorKey: 'cost',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Cost' />
+		),
+		cell: ({ row }) => {
+			return <p className={`text-sm`}>{formatCurrency(row.original.cost)}</p>;
+		},
+		enableHiding: false,
+		enableSorting: false,
+	},
+	{
 		accessorKey: 'status',
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title='Status' />
@@ -83,7 +98,6 @@ export const studioRequestColumns: ColumnDef<StudioRequest>[] = [
 		enableHiding: false,
 	},
 ];
-
 export const studioRequestRowActions: ColumnDef<StudioRequest> = {
 	id: 'actions',
 	cell: ({ row }) => <StudioRequestsRowActions studioRequest={row.original} />,

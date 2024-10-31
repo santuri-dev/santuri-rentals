@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      _prisma_migrations: {
+        Row: {
+          applied_steps_count: number
+          checksum: string
+          finished_at: string | null
+          id: string
+          logs: string | null
+          migration_name: string
+          rolled_back_at: string | null
+          started_at: string
+        }
+        Insert: {
+          applied_steps_count?: number
+          checksum: string
+          finished_at?: string | null
+          id: string
+          logs?: string | null
+          migration_name: string
+          rolled_back_at?: string | null
+          started_at?: string
+        }
+        Update: {
+          applied_steps_count?: number
+          checksum?: string
+          finished_at?: string | null
+          id?: string
+          logs?: string | null
+          migration_name?: string
+          rolled_back_at?: string | null
+          started_at?: string
+        }
+        Relationships: []
+      }
       AdminSession: {
         Row: {
           adminUserId: number
@@ -415,39 +448,49 @@ export type Database = {
       }
       StudioRequest: {
         Row: {
+          cost: number
           createdAt: string
           endTime: string
           gearItems: number[] | null
           id: number
           startTime: string
           status: string
-          type: string
+          typeId: number
           updatedAt: string
           userId: number
         }
         Insert: {
+          cost: number
           createdAt?: string
           endTime: string
           gearItems?: number[] | null
           id?: number
           startTime: string
           status?: string
-          type: string
+          typeId: number
           updatedAt?: string
           userId: number
         }
         Update: {
+          cost?: number
           createdAt?: string
           endTime?: string
           gearItems?: number[] | null
           id?: number
           startTime?: string
           status?: string
-          type?: string
+          typeId?: number
           updatedAt?: string
           userId?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "StudioRequest_typeId_fkey"
+            columns: ["typeId"]
+            isOneToOne: false
+            referencedRelation: "StudioType"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "StudioRequest_userId_fkey"
             columns: ["userId"]
@@ -456,6 +499,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      StudioType: {
+        Row: {
+          description: string
+          id: number
+          name: string
+          pricing: number
+        }
+        Insert: {
+          description: string
+          id?: number
+          name: string
+          pricing: number
+        }
+        Update: {
+          description?: string
+          id?: number
+          name?: string
+          pricing?: number
+        }
+        Relationships: []
       }
       User: {
         Row: {

@@ -75,10 +75,19 @@ export interface StudioRequest {
 	id: number;
 	startTime: string;
 	status: string;
-	type: string;
+	typeId: number;
+	StudioType: StudioType;
 	updatedAt: string;
 	userId: number;
 	User: User;
+	cost: number;
+}
+
+export interface StudioType {
+	id: number;
+	name: string;
+	description: string;
+	pricing: number;
 }
 
 export interface Product {
