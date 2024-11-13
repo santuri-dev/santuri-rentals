@@ -39,14 +39,28 @@ export async function createStudioRequest(
 		throw new Error(`Error fetching studio type of ID: ${typeId}`);
 	}
 
+	const { data: user, error: userError } = await supabase
+		.from('User')
+		.select('id, Role(*)')
+		.eq('id', userId)
+		.single();
+
+	if (!user || userError) {
+		throw new Error(`Error fetching user of ID: ${userId}`);
+	}
+
+	const baseCost =
+		studioType.pricing * hours + (studioType.pricing * minutes) / 60;
+	const cost = baseCost * (1 - (user.Role?.studioDiscount ?? 0) / 100);
+
 	const { data: studioRequestData, error: studioRequestError } = await supabase
 		.from('StudioRequest')
 		.insert({
 			startTime: selectedStartTime.toISOString(),
 			endTime: selectedEndTime.toISOString(),
 			typeId,
-			userId,
-			cost: studioType.pricing * hours + (studioType.pricing * minutes) / 60,
+			userId: user.id,
+			cost,
 		})
 		.select()
 		.single();

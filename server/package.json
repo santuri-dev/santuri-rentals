@@ -4,7 +4,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "bun run --watch src/index.ts",
-		"migrate": "bunx prisma migrate dev && ./gentypes.sh",
+		"migrate": "bunx prisma migrate dev",
+		"db:push": "bunx prisma db push && ./gentypes.sh",
 		"gentypes": "./gentypes.sh"
 	},
 	"dependencies": {
@@ -22,7 +23,7 @@
 		"nodemailer": "^6.9.14",
 		"sharp": "^0.33.5",
 		"slugify": "^1.6.6",
-		"supabase": "^1.191.3",
+		"supabase": "^1.219.2",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {

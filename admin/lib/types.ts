@@ -34,6 +34,20 @@ export interface User {
 	image: string | null;
 	createdAt: string | null;
 	imgPlaceholder?: string;
+	firstName: string | null;
+	lastName: string | null;
+	phoneNumber: string | null;
+	Role: {
+		id: number;
+		name: string;
+	} | null;
+}
+
+export interface UserRole {
+	id: number;
+	name: string;
+	gearDiscount: number;
+	studioDiscount: number;
 }
 
 export interface Course {

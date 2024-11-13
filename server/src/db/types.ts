@@ -417,6 +417,27 @@ export type Database = {
           },
         ]
       }
+      Role: {
+        Row: {
+          gearDiscount: number
+          id: number
+          name: string
+          studioDiscount: number
+        }
+        Insert: {
+          gearDiscount?: number
+          id?: number
+          name: string
+          studioDiscount?: number
+        }
+        Update: {
+          gearDiscount?: number
+          id?: number
+          name?: string
+          studioDiscount?: number
+        }
+        Relationships: []
+      }
       Session: {
         Row: {
           expires: string
@@ -534,6 +555,7 @@ export type Database = {
           password: string
           phoneNumber: string | null
           resetPasswordToken: string | null
+          roleId: number | null
           updatedAt: string
           username: string
           verificationCode: string | null
@@ -550,6 +572,7 @@ export type Database = {
           password: string
           phoneNumber?: string | null
           resetPasswordToken?: string | null
+          roleId?: number | null
           updatedAt?: string
           username: string
           verificationCode?: string | null
@@ -566,11 +589,20 @@ export type Database = {
           password?: string
           phoneNumber?: string | null
           resetPasswordToken?: string | null
+          roleId?: number | null
           updatedAt?: string
           username?: string
           verificationCode?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "User_roleId_fkey"
+            columns: ["roleId"]
+            isOneToOne: false
+            referencedRelation: "Role"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

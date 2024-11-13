@@ -10,6 +10,8 @@ import {
 	Product,
 	StudioRequest,
 	StudioType,
+	User,
+	UserRole,
 } from './types';
 
 export const gearStatsOpts: QueryOpts<GearStats> = {
@@ -97,6 +99,24 @@ export const productCategoriesOpts: QueryOpts<Category[]> = {
 	queryKey: ['product', 'categories'],
 	queryFn: async () => {
 		const { data } = (await request.get('/products/categories')).data;
+		return data;
+	},
+};
+
+export const userOpts: QueryOpts<User[]> = {
+	initialData: [],
+	queryKey: ['users'],
+	queryFn: async () => {
+		const { data } = (await request.get('/users')).data;
+		return data;
+	},
+};
+
+export const userRolesOpts: QueryOpts<UserRole[]> = {
+	initialData: [],
+	queryKey: ['users', 'roles'],
+	queryFn: async () => {
+		const { data } = (await request.get('/users/roles')).data;
 		return data;
 	},
 };

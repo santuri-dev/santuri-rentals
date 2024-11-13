@@ -11,6 +11,7 @@ const links: NavLink[] = [
 	{ path: '/courses', name: 'Courses' },
 	{ path: '/studio', name: 'Studio' },
 	{ path: '/shop', name: 'Shop' },
+	{ path: '/users', name: 'Users' },
 ];
 
 export function MainNav({

@@ -57,6 +57,19 @@ import {
 	getStudioTypesAdmin,
 } from './admin_studio.service';
 import { StudioTypeSchema } from '../studio/studio.schema';
+import {
+	createUserRole,
+	deleteUserRole,
+	getUserRoles,
+	getUsers,
+	updateUserRole,
+} from './admin_user.service';
+
+const UserRoleSchema = t.Object({
+	name: t.String(),
+	gearDiscount: t.Number(),
+	studioDiscount: t.Number(),
+});
 
 const admin = (app: Elysia) =>
 	app.group('/admin', (app) =>
@@ -809,6 +822,117 @@ const admin = (app: Elysia) =>
 									type: ['image/png', 'image/jpeg', 'image/webp'],
 								}),
 							}),
+							params: t.Object({ id: t.Numeric() }),
+						}
+					)
+			)
+			.group('/users', (app) =>
+				app
+					.guard({ detail: { tags: ['User Management'] } })
+					.get('', async ({ set }) => {
+						try {
+							const users = await getUsers();
+							return {
+								success: true,
+								data: users,
+								message: 'Successfully fetch users',
+							};
+						} catch (error: any) {
+							set.status = 400;
+							return {
+								success: false,
+								data: null,
+								message: 'Failed to fetch users: ' + error.message,
+							};
+						}
+					})
+					.get('/roles', async ({ set }) => {
+						try {
+							const roles = await getUserRoles();
+							return {
+								success: true,
+								data: roles,
+								message: 'Successfully fetch user roles',
+							};
+						} catch (error: any) {
+							set.status = 400;
+							return {
+								success: false,
+								data: null,
+								message: 'Failed to fetch user roles: ' + error.message,
+							};
+						}
+					})
+					.post(
+						'/roles',
+						async ({ body, set }) => {
+							try {
+								const data = await createUserRole(body);
+
+								return {
+									success: true,
+									data,
+									message: 'Successfully created user role',
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									data: null,
+									message: 'Failed to create user role: ' + error.message,
+								};
+							}
+						},
+						{
+							body: UserRoleSchema,
+						}
+					)
+					.put(
+						'/roles/:id',
+						async ({ body, set, params: { id } }) => {
+							try {
+								const data = await updateUserRole(id, body);
+
+								return {
+									success: true,
+									data,
+									message: 'Successfully updated user role',
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									data: null,
+									message: 'Failed to update user role: ' + error.message,
+								};
+							}
+						},
+						{
+							body: UserRoleSchema,
+							params: t.Object({ id: t.Numeric() }),
+						}
+					)
+					.delete(
+						'/roles/:id',
+						async ({ set, params: { id } }) => {
+							try {
+								const data = await deleteUserRole(id);
+
+								return {
+									success: true,
+									data,
+									message: 'Successfully deleted user role',
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									data: null,
+									message: 'Failed to delete user role: ' + error.message,
+								};
+							}
+						},
+						{
 							params: t.Object({ id: t.Numeric() }),
 						}
 					)
