@@ -1,38 +1,39 @@
 {
-	"name": "server",
-	"version": "1.0.50",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "bun run --watch src/index.ts",
-		"migrate": "bunx prisma migrate dev",
-		"db:push": "bunx prisma db push && ./gentypes.sh",
-		"gentypes": "./gentypes.sh"
-	},
-	"dependencies": {
-		"@elysiajs/cors": "^1.1.0",
-		"@elysiajs/swagger": "^1.1.1",
-		"@prisma/client": "5.19.0",
-		"@react-email/components": "^0.0.24",
-		"@supabase/supabase-js": "^2.45.2",
-		"bcrypt": "^5.1.1",
-		"date-fns": "^4.1.0",
-		"dayjs": "^1.11.13",
-		"elysia": "latest",
-		"intasend-node": "^1.1.2",
-		"jsonwebtoken": "^9.0.2",
-		"nodemailer": "^6.9.14",
-		"sharp": "^0.33.5",
-		"slugify": "^1.6.6",
-		"supabase": "^1.219.2",
-		"zod": "^3.23.8"
-	},
-	"devDependencies": {
-		"@types/bcrypt": "^5.0.2",
-		"@types/jsonwebtoken": "^9.0.6",
-		"@types/nodemailer": "^6.4.15",
-		"@types/react": "^18.3.6",
-		"bun-types": "latest",
-		"prisma": "5.19.0"
-	},
-	"module": "src/index.js"
+  "name": "server",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/index.ts",
+    "migrate": "bunx prisma migrate dev",
+    "db:push": "bunx prisma db push && ./gentypes.sh",
+    "gentypes": "./gentypes.sh"
+  },
+  "dependencies": {
+    "@date-fns/tz": "^1.2.0",
+    "@elysiajs/cors": "^1.1.0",
+    "@elysiajs/swagger": "^1.1.1",
+    "@prisma/client": "5.19.0",
+    "@react-email/components": "^0.0.24",
+    "@supabase/supabase-js": "^2.45.2",
+    "bcrypt": "^5.1.1",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
+    "elysia": "latest",
+    "intasend-node": "^1.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.14",
+    "sharp": "^0.33.5",
+    "slugify": "^1.6.6",
+    "supabase": "^1.219.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/nodemailer": "^6.4.15",
+    "@types/react": "^18.3.6",
+    "bun-types": "latest",
+    "prisma": "5.19.0"
+  },
+  "module": "src/index.js"
 }

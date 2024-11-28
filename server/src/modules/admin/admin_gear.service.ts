@@ -49,6 +49,8 @@ export async function approveGearRequest(
 
 		if (lesseError) throw lesseError;
 
+		void closeGearRequest(checkout.id, adminUserId);
+
 		return 'Gear request was approved';
 	} catch (error: any) {
 		return 'Error approving gear request: ' + error.message;

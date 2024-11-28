@@ -1,5 +1,6 @@
 import supabase from '@/db';
 import { GearRequest, GearInventoryItem } from './gear.schema';
+import { TZDate } from '@date-fns/tz';
 
 // Fetch all items
 export async function getAllGearItems() {
@@ -128,7 +129,12 @@ export async function requestGear({
 	try {
 		const { error: checkoutError } = await supabase
 			.from('GearCheckout')
-			.insert({ borrowerId, pickupDate, returnDate, items });
+			.insert({
+				borrowerId,
+				pickupDate: new TZDate(pickupDate, 'Africa/Nairobi').toISOString(),
+				returnDate: new TZDate(returnDate, 'Africa/Nairobi').toISOString(),
+				items,
+			});
 
 		if (checkoutError) {
 			throw new Error(`Error creating request: ${checkoutError.message}`);

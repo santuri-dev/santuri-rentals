@@ -6,6 +6,7 @@ import {
 	setMinutes,
 	setSeconds,
 } from 'date-fns';
+import { TZDate } from '@date-fns/tz';
 
 export async function createStudioRequest(
 	input: StudioRequest & { gearItems: number[] },
@@ -56,8 +57,8 @@ export async function createStudioRequest(
 	const { data: studioRequestData, error: studioRequestError } = await supabase
 		.from('StudioRequest')
 		.insert({
-			startTime: selectedStartTime.toISOString(),
-			endTime: selectedEndTime.toISOString(),
+			startTime: new TZDate(selectedStartTime, 'Africa/Nairobi').toISOString(),
+			endTime: new TZDate(selectedEndTime, 'Africa/Nairobi').toISOString(),
 			typeId,
 			userId: user.id,
 			cost,
@@ -85,7 +86,7 @@ export async function getStudioRequests({
 		.from('StudioRequest')
 		.select('id, startTime, endTime, StudioType(id, name)') // Only select relevant fields
 		.eq('status', status)
-		.gt('endTime', new Date(date).toISOString()); // Only get requests that haven't ended
+		.gt('endTime', new TZDate(date, 'Africa/Nairobi').toISOString()); // Only get requests that haven't ended
 
 	if (error) {
 		throw new Error(
