@@ -21,7 +21,9 @@ import { useQuery } from '@tanstack/react-query';
 export default function ProductsTable() {
 	const [openCategories, setOpenCategories] = useState(false);
 	const [open, setOpen] = useState(false);
-	const { refetch } = useLazyQuery(productTableOpts);
+	const { refetch } = useLazyQuery(
+		productTableOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	useQuery(productCategoriesOpts);
 

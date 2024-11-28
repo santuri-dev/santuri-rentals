@@ -3,6 +3,7 @@
 import {
 	ColumnDef,
 	ColumnFiltersState,
+	PaginationState,
 	SortingState,
 	VisibilityState,
 	flexRender,
@@ -10,7 +11,6 @@ import {
 	getFacetedRowModel,
 	getFacetedUniqueValues,
 	getFilteredRowModel,
-	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/table';
 import { DataTablePagination } from './data-table-pagination';
 import { ReactNode, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import Spinner from '@/components/Loaders/Spinner';
 import { ReloadIcon } from '@radix-ui/react-icons';
@@ -33,14 +33,16 @@ import SelectActionsMenu from './select-actions-menu';
 import useSelectedRows from './useSelectedRows';
 import ColumnToggleMenu from './column-toggle-menu';
 import { SelectActions } from './types';
+import { PaginatedResponse } from '@/lib/types';
 
 interface DataTableProps<TData, TValue> {
 	title: string;
 	columns: ColumnDef<TData, TValue>[];
-	opts: QueryOpts<TData[]>;
+	opts: (
+		paginationState: PaginationState
+	) => QueryOpts<PaginatedResponse<TData>>;
 	actions?: { name: string; children: ReactNode }[];
 	selectActions?: SelectActions<TData>;
-	paginate?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -49,39 +51,52 @@ export function DataTable<TData, TValue>({
 	opts,
 	actions,
 	selectActions,
-	paginate = true,
 }: DataTableProps<TData, TValue>) {
-	const { data, isFetching, refetch } = useQuery(opts);
-
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>([]);
 
+	const [pagination, setPagination] = useState<PaginationState>({
+		pageIndex: 0,
+		pageSize: 5,
+	});
+
+	const {
+		data: queryData,
+		isFetching,
+		refetch,
+	} = useQuery({ ...opts(pagination), placeholderData: keepPreviousData });
+
+	const data = Array.isArray(queryData) ? queryData : queryData?.data || [];
+
 	const table = useReactTable({
 		data,
 		columns,
+		rowCount: queryData.pagination.count,
 		state: {
 			sorting,
 			columnVisibility,
 			rowSelection,
 			columnFilters,
+			pagination,
 		},
 		enableRowSelection: true,
 		onRowSelectionChange: setRowSelection,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
 		onColumnVisibilityChange: setColumnVisibility,
+		onPaginationChange: setPagination,
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFacetedRowModel: getFacetedRowModel(),
 		getFacetedUniqueValues: getFacetedUniqueValues(),
+		manualPagination: true,
 	});
 
 	const { selectedRows } = useSelectedRows(
-		['selected', ...opts.queryKey.map((v: unknown) => v as string)],
+		['selected', ...opts(pagination).queryKey.map((v: unknown) => v as string)],
 		table,
 		rowSelection
 	);
@@ -169,7 +184,7 @@ export function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
-			{paginate ? <DataTablePagination table={table} /> : null}
+			<DataTablePagination table={table} />
 		</div>
 	);
 }

@@ -1,6 +1,8 @@
+import { PaginatedResponse } from '@/components/DataTable/types';
 import { request } from './axios';
 import { QueryOpts, UQueryOpts } from './queryClient';
 import { Course, Gear, Order, Product } from './types';
+import { PaginationState } from '@tanstack/react-table';
 
 export const coursesOpts: QueryOpts<Course[]> = {
 	initialData: [],
@@ -11,13 +13,24 @@ export const coursesOpts: QueryOpts<Course[]> = {
 	},
 };
 
-export const availableGearOpts: QueryOpts<Gear[]> = {
-	initialData: [],
-	queryKey: ['gear', 'available'],
-	queryFn: async () => {
-		const { data } = (await request.get('/gear/available')).data;
-		return data;
-	},
+export const availableGearOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<Gear>> => {
+	return {
+		initialData: {
+			data: [],
+			pagination: { count: 0, pageIndex: 0, pageSize: 0 },
+		},
+		queryKey: ['gear', 'available', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/gear/available?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };
 
 export const productsOpts: UQueryOpts<Product[]> = {

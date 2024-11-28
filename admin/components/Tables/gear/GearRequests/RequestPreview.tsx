@@ -1,4 +1,4 @@
-import { Gear, GearCheckout } from '@/lib/types';
+import { Gear, GearCheckout, PaginatedResponse } from '@/lib/types';
 import {
 	Dialog,
 	DialogContent,
@@ -27,26 +27,38 @@ import {
 import * as z from 'zod';
 import { camelCaseToReadable } from '@/lib/helpers';
 import Dots from '@/components/Loaders/Dots';
-import { gearRequestOpts } from '@/lib/api';
+import { createPaginationInitialData, gearRequestOpts } from '@/lib/api';
 import useLazyQuery from '@/hooks/use-lazy-query';
+import { PaginationState } from '@tanstack/react-table';
 
 function makeQueryOpts(
 	gearCheckout: GearCheckout,
 	status: string
-): QueryOpts<Gear[]> {
-	return {
-		initialData: [],
-		queryKey: ['gear', 'requests', 'status', ...gearCheckout.items],
-		queryFn: async () => {
-			const { data } = (
-				await request.post('/gear/bulk', {
-					ids: gearCheckout.items,
-					status: status === 'all' ? undefined : status,
-				})
-			).data;
-
-			return data;
-		},
+): (pagination: PaginationState) => QueryOpts<PaginatedResponse<Gear>> {
+	return ({ pageIndex, pageSize }: PaginationState) => {
+		return {
+			initialData: createPaginationInitialData(pageIndex, pageSize),
+			queryKey: [
+				'gear',
+				'requests',
+				'status',
+				pageIndex,
+				pageSize,
+				'items',
+				...gearCheckout.items,
+			],
+			queryFn: async () => {
+				return (
+					await request.post(
+						`/gear/bulk?pageIndex=${pageIndex}&pageSize=${pageSize}`,
+						{
+							ids: gearCheckout.items,
+							status: status === 'all' ? undefined : status,
+						}
+					)
+				).data;
+			},
+		};
 	};
 }
 
@@ -63,8 +75,10 @@ export default function RequestPreview({
 	const [closing, setClosing] = useState(false);
 	const opts = makeQueryOpts(gearCheckout, status);
 
-	const { refetch } = useLazyQuery(opts);
-	const { refetch: refetchRequests } = useLazyQuery(gearRequestOpts);
+	const { refetch } = useLazyQuery(opts({ pageIndex: 0, pageSize: 5 }));
+	const { refetch: refetchRequests } = useLazyQuery(
+		gearRequestOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	async function handleStatusChange(value: string) {
 		setStatus(value);
@@ -187,7 +201,6 @@ export default function RequestPreview({
 					title={''}
 					columns={[selectColumn<Gear>(), ...gearColumns]}
 					opts={opts}
-					paginate={false}
 				/>
 			</DialogContent>
 		</Dialog>

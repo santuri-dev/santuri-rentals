@@ -6,20 +6,25 @@ import {
 } from './gear.service';
 import { GearRequestSchema } from './gear.schema';
 import { requireUser } from '@/middleware/requireUser';
+import { paginationQuerySchema } from '@/lib/pagination';
 
 const gear = (app: Elysia) =>
 	app.group('/gear', (app) =>
 		app
 			.guard({ detail: { tags: ['Gear'] } })
-			.get('/available', async ({ set }) => {
-				try {
-					const items = await getAvailableGearItems();
-					return { success: true, data: items };
-				} catch (error: any) {
-					set.status = 500;
-					return { success: false, message: error.message };
-				}
-			})
+			.get(
+				'/available',
+				async ({ set, query }) => {
+					try {
+						const data = await getAvailableGearItems(query);
+						return { success: true, ...data };
+					} catch (error: any) {
+						set.status = 500;
+						return { success: false, message: error.message };
+					}
+				},
+				{ query: paginationQuerySchema }
+			)
 			.get(
 				'/:id',
 				async ({ params: { id }, set }) => {

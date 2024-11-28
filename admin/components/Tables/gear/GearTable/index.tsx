@@ -18,7 +18,9 @@ import useLazyQuery from '@/hooks/use-lazy-query';
 
 export default function GearTable() {
 	const [open, setOpen] = useState(false);
-	const { refetch } = useLazyQuery(gearTableOpts);
+	const { refetch } = useLazyQuery(
+		gearTableOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	return (
 		<>

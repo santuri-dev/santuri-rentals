@@ -1,3 +1,8 @@
+export interface PaginatedResponse<T> {
+	pagination: { pageIndex: number; count: number; pageSize: number };
+	data: T[];
+}
+
 export interface Gear {
 	id: number;
 	name: string;

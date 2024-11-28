@@ -1,5 +1,6 @@
 import supabase from '@/db';
 import { formatTime } from '@/lib/helpers';
+import { getPagination, PaginationState } from '@/lib/pagination';
 
 export async function approveStudioRequest(id: number) {
 	const { data: studioRequestData, error: studioRequestError } = await supabase
@@ -49,16 +50,22 @@ export async function approveStudioRequest(id: number) {
 	}
 }
 
-export async function getAdminStudioRequests() {
-	const { data: approvedRequests, error } = await supabase
+export async function getAdminStudioRequests(pagination: PaginationState) {
+	const { from, pageIndex, pageSize, to } = getPagination(pagination);
+
+	const { data, error, count } = await supabase
 		.from('StudioRequest')
-		.select('*, StudioType(id, name, pricing), User(id, username, email)');
+		.select('*, StudioType(id, name, pricing), User(id, username, email)', {
+			count: 'exact',
+		})
+		.order('id')
+		.range(from, to);
 
 	if (error) {
 		throw new Error(`Error fetching studio requests: ${error.message}`);
 	}
 
-	return approvedRequests;
+	return { data, pagination: { pageIndex, pageSize, count } };
 }
 
 export async function createStudioType(input: {
@@ -114,12 +121,18 @@ export async function deleteStudioType(id: number) {
 	return data;
 }
 
-export async function getStudioTypesAdmin() {
-	const { data, error } = await supabase.from('StudioType').select('*');
+export async function getStudioTypesAdmin(pagination: PaginationState) {
+	const { from, pageIndex, pageSize, to } = getPagination(pagination);
+
+	const { data, error, count } = await supabase
+		.from('StudioType')
+		.select('*', { count: 'exact' })
+		.order('id')
+		.range(from, to);
 
 	if (error) {
 		throw new Error(`Error creating studio type: ${error.message}`);
 	}
 
-	return data;
+	return { data, pagination: { pageIndex, pageSize, count } };
 }

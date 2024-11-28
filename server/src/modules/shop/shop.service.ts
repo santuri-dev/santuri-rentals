@@ -4,13 +4,21 @@ import { createCheckout } from '@/lib/intasend';
 import transporter from '@/lib/nodemailer';
 import { render } from '@react-email/components';
 import env from '@/lib/env';
+import { getPagination, PaginationState } from '@/lib/pagination';
 
 // Fetch all courses
-export async function getAllCourses() {
-	const { data, error } = await supabase.from('Course').select('*');
+export async function getAllCourses(pagination: PaginationState) {
+	const { from, pageIndex, pageSize, to } = getPagination(pagination);
+
+	const { data, error, count } = await supabase
+		.from('Course')
+		.select('*', { count: 'exact' })
+		.order('id')
+		.range(from, to);
 
 	if (error) throw new Error(error.message);
-	return data;
+
+	return { data, pagination: { pageIndex, pageSize, count } };
 }
 
 // Fetch all products

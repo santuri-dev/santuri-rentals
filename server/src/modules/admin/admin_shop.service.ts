@@ -1,6 +1,7 @@
 import supabase, { uploadFileToStorage } from '@/db';
 import { Course, Product } from '../shop/shop.schema';
 import { generateUniqueSlug, toSnakeCase } from '../../lib/helpers';
+import { getPagination, PaginationState } from '@/lib/pagination';
 
 // Add a new course
 export async function addCourse(input: Course) {
@@ -95,13 +96,18 @@ export async function addProduct(input: Product) {
 }
 
 // Fetch all products (admin)
-export async function getAllProductsAdmin() {
-	const { data, error } = await supabase
+export async function getAllProductsAdmin(pagination: PaginationState) {
+	const { from, pageIndex, pageSize, to } = getPagination(pagination);
+
+	const { data, error, count } = await supabase
 		.from('Product')
-		.select('*, Category(id, name)');
+		.select('*, Category(id, name)', { count: 'exact' })
+		.order('id')
+		.range(from, to);
 
 	if (error) throw new Error(error.message);
-	return data;
+
+	return { data, pagination: { pageIndex, pageSize, count } };
 }
 
 // Get a product

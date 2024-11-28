@@ -18,7 +18,9 @@ import useLazyQuery from '@/hooks/use-lazy-query';
 
 export default function StudioTypesTable() {
 	const [open, setOpen] = useState(false);
-	const { refetch } = useLazyQuery(studioTypesOpts);
+	const { refetch } = useLazyQuery(
+		studioTypesOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	return (
 		<DataTable

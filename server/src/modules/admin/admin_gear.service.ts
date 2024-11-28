@@ -1,4 +1,5 @@
 import supabase from '@/db';
+import { getPagination, PaginationState } from '@/lib/pagination';
 
 export async function approveGearRequest(
 	gearCheckoutId: number,
@@ -72,18 +73,27 @@ export async function closeGearRequest(checkoutId: number, closedById: number) {
 	}
 }
 
-export async function getAllLeases() {
+export async function getAllLeases(pagination: PaginationState) {
 	try {
-		const { data, error: gearError } = await supabase
+		const { from, to, pageIndex, pageSize } = getPagination(pagination);
+
+		const {
+			data,
+			error: gearError,
+			count,
+		} = await supabase
 			.from('Gear')
 			.select(
-				'id, name, condition, status, serialNumber, GearCheckout(id, borrowerId, returnDate, pickupDate, User(id, username, email))'
+				'id, name, condition, status, serialNumber, GearCheckout(id, borrowerId, returnDate, pickupDate, User(id, username, email))',
+				{ count: 'exact' }
 			)
-			.eq('status', 'lease');
+			.eq('status', 'lease')
+			.order('id')
+			.range(from, to);
 
 		if (gearError) throw gearError;
 
-		return data;
+		return { data, pagination: { pageIndex, pageSize, count } };
 	} catch (error: any) {
 		throw new Error('Error fetching gear leases: ' + error.message);
 	}

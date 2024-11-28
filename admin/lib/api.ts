@@ -1,3 +1,4 @@
+import { PaginationState } from '@tanstack/react-table';
 import { request } from './axios';
 import { QueryOpts, UQueryOpts } from './queryClient';
 import {
@@ -7,12 +8,21 @@ import {
 	GearCheckout,
 	GearLease,
 	GearStats,
+	PaginatedResponse,
 	Product,
 	StudioRequest,
 	StudioType,
 	User,
 	UserRole,
 } from './types';
+
+export const createPaginationInitialData = <T>(
+	pageIndex: number,
+	pageSize: number
+): PaginatedResponse<T> => ({
+	data: [],
+	pagination: { count: 0, pageIndex, pageSize },
+});
 
 export const gearStatsOpts: QueryOpts<GearStats> = {
 	initialData: { 'Due Today': 0, Available: 0, Leased: 0, Overdue: 0 },
@@ -23,40 +33,70 @@ export const gearStatsOpts: QueryOpts<GearStats> = {
 	},
 };
 
-export const gearTableOpts: QueryOpts<Gear[]> = {
-	initialData: [],
-	queryKey: ['gear', 'available'],
-	queryFn: async () => {
-		const { data } = (await request.get('/gear')).data;
-		return data;
-	},
+export const gearTableOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<Gear>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['gear', 'available', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(`/gear?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+			).data;
+		},
+	};
 };
 
-export const gearRequestOpts: QueryOpts<GearCheckout[]> = {
-	initialData: [],
-	queryKey: ['gear', 'requests', 'pending'],
-	queryFn: async () => {
-		const { data } = (await request.get('/gear/requests')).data;
-		return data;
-	},
+export const gearRequestOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<GearCheckout>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['gear', 'requests', 'pending', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/gear/requests?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };
 
-export const gearLeaseOpts: QueryOpts<GearLease[]> = {
-	initialData: [],
-	queryKey: ['gear', 'leases'],
-	queryFn: async () => {
-		const { data } = (await request.get('/gear/leases')).data;
-		return data;
-	},
+export const gearLeaseOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<GearLease>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['gear', 'leases', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/gear/leases?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };
 
-export const coursesOpts: QueryOpts<Course[]> = {
-	initialData: [],
-	queryKey: ['courses'],
-	queryFn: async () => {
-		const { data } = (await request.get('/courses')).data;
-		return data;
-	},
+export const coursesOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<Course>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['courses', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/courses?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };
 
 export const courseBySlugOpts = (slug: string): UQueryOpts<Course> => ({
@@ -67,31 +107,55 @@ export const courseBySlugOpts = (slug: string): UQueryOpts<Course> => ({
 	},
 });
 
-export const studioRequestOpts: QueryOpts<StudioRequest[]> = {
-	initialData: [],
-	queryKey: ['studio_requests'],
-	queryFn: async () => {
-		const { data } = (await request.get('/studio/requests')).data;
-		return data;
-	},
+export const studioRequestOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<StudioRequest>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['studio_requests', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/studio/requests?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };
 
-export const studioTypesOpts: QueryOpts<StudioType[]> = {
-	initialData: [],
-	queryKey: ['studio_types'],
-	queryFn: async () => {
-		const { data } = (await request.get('/studio/types')).data;
-		return data;
-	},
+export const studioTypesOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<StudioType>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['studio_types', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/studio/types?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };
 
-export const productTableOpts: QueryOpts<Product[]> = {
-	initialData: [],
-	queryKey: ['products'],
-	queryFn: async () => {
-		const { data } = (await request.get('/products')).data;
-		return data;
-	},
+export const productTableOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<Product>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['products', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/products?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };
 
 export const productCategoriesOpts: QueryOpts<Category[]> = {
@@ -103,20 +167,34 @@ export const productCategoriesOpts: QueryOpts<Category[]> = {
 	},
 };
 
-export const userOpts: QueryOpts<User[]> = {
-	initialData: [],
-	queryKey: ['users'],
-	queryFn: async () => {
-		const { data } = (await request.get('/users')).data;
-		return data;
-	},
+export const userOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<User>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['users', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(`/users?pageIndex=${pageIndex}&pageSize=${pageSize}`)
+			).data;
+		},
+	};
 };
 
-export const userRolesOpts: QueryOpts<UserRole[]> = {
-	initialData: [],
-	queryKey: ['users', 'roles'],
-	queryFn: async () => {
-		const { data } = (await request.get('/users/roles')).data;
-		return data;
-	},
+export const userRolesOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<UserRole>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['users', 'roles', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/users/roles?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };

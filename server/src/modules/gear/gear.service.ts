@@ -1,39 +1,63 @@
 import supabase from '@/db';
 import { GearRequest, GearInventoryItem } from './gear.schema';
 import { TZDate } from '@date-fns/tz';
+import { getPagination, PaginationState } from '@/lib/pagination';
 
 // Fetch all items
-export async function getAllGearItems() {
-	const { data, error } = await supabase.from('Gear').select('*');
+export async function getAllGearItems(pagination: PaginationState) {
+	const { from, to, pageIndex, pageSize } = getPagination(pagination);
+
+	const { data, error, count } = await supabase
+		.from('Gear')
+		.select('*', { count: 'exact' })
+		.order('id')
+		.range(from, to);
 
 	if (error) throw new Error(error.message);
-	return data;
+
+	return { data, pagination: { pageIndex, pageSize, count } };
 }
 
 // Fetch many items
-export async function getManyGearItems(ids: number[], status?: string) {
-	let query = supabase.from('Gear').select('*').in('id', ids);
+export async function getManyGearItems(
+	ids: number[],
+	pagination: PaginationState,
+	status?: string
+) {
+	const { from, to, pageIndex, pageSize } = getPagination(pagination);
+
+	let query = supabase
+		.from('Gear')
+		.select('*', { count: 'exact' })
+		.in('id', ids)
+		.order('id')
+		.range(from, to);
 
 	// Apply status filter conditionally
 	if (status) {
 		query = query.eq('status', status);
 	}
 
-	const { data, error } = await query;
+	const { data, error, count } = await query;
 
 	if (error) throw new Error(error.message);
-	return data;
+	return { data, pagination: { pageIndex, pageSize, count } };
 }
 
 // Fetch available items
-export async function getAvailableGearItems() {
-	const { data, error } = await supabase
+export async function getAvailableGearItems(pagination: PaginationState) {
+	const { from, pageIndex, pageSize, to } = getPagination(pagination);
+
+	const { data, error, count } = await supabase
 		.from('Gear')
-		.select('id, name, condition, peripherals')
-		.eq('status', 'available');
+		.select('id, name, condition, peripherals', { count: 'exact' })
+		.eq('status', 'available')
+		.order('id')
+		.range(from, to);
 
 	if (error) throw new Error(error.message);
-	return data;
+
+	return { data, pagination: { pageIndex, pageSize, count } };
 }
 
 // Add a new item
@@ -146,20 +170,29 @@ export async function requestGear({
 	}
 }
 
-export async function getPendingGearRequests() {
+export async function getPendingGearRequests(pagination: PaginationState) {
 	try {
-		const { data, error: checkoutError } = await supabase
+		const { from, to, pageIndex, pageSize } = getPagination(pagination);
+
+		const {
+			data,
+			error: checkoutError,
+			count,
+		} = await supabase
 			.from('GearCheckout')
 			.select(
-				'id, pickupDate, returnDate, items, createdAt, User(id, username, email)'
+				'id, pickupDate, returnDate, items, createdAt, User(id, username, email)',
+				{ count: 'exact' }
 			)
-			.eq('closed', false);
+			.eq('closed', false)
+			.order('id')
+			.range(from, to);
 
 		if (checkoutError) {
 			throw new Error(`Error fetching gear request: ${checkoutError.message}`);
 		}
 
-		return data;
+		return { data, pagination: { pageIndex, pageSize, count } };
 	} catch (error: any) {
 		throw new Error(error.message);
 	}

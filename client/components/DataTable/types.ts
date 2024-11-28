@@ -7,3 +7,8 @@ export type SelectActions<T> = {
 		action: (rows: T[], updateLoading: () => void) => Promise<void>;
 	}>;
 };
+
+export interface PaginatedResponse<T> {
+	pagination: { pageIndex: number; count: number; pageSize: number };
+	data: T[];
+}

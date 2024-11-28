@@ -64,6 +64,7 @@ import {
 	getUsers,
 	updateUserRole,
 } from './admin_user.service';
+import { paginationQuerySchema } from '@/lib/pagination';
 
 const UserRoleSchema = t.Object({
 	name: t.String(),
@@ -265,21 +266,27 @@ const admin = (app: Elysia) =>
 							return { success: false, message: error.message };
 						}
 					})
-					.get('', async ({ set }) => {
-						try {
-							const items = await getAllGearItems();
-							return { success: true, data: items };
-						} catch (error: any) {
-							set.status = 500;
-							return { success: false, message: error.message };
+					.get(
+						'',
+						async ({ set, query }) => {
+							try {
+								const { data, pagination } = await getAllGearItems(query);
+								return { success: true, data, pagination };
+							} catch (error: any) {
+								set.status = 500;
+								return { success: false, message: error.message };
+							}
+						},
+						{
+							query: paginationQuerySchema,
 						}
-					})
+					)
 					.post(
 						'/bulk',
-						async ({ set, body: { ids, status } }) => {
+						async ({ set, body: { ids, status }, query }) => {
 							try {
-								const items = await getManyGearItems(ids, status);
-								return { success: true, data: items };
+								const res = await getManyGearItems(ids, query, status);
+								return { success: true, ...res };
 							} catch (error: any) {
 								set.status = 500;
 								return { success: false, message: error.message };
@@ -290,6 +297,7 @@ const admin = (app: Elysia) =>
 								ids: t.Array(t.Number()),
 								status: t.Optional(GearInventoryItemStatus),
 							}),
+							query: paginationQuerySchema,
 						}
 					)
 					.post(
@@ -343,15 +351,21 @@ const admin = (app: Elysia) =>
 					)
 					.group('/requests', (app) =>
 						app
-							.get('', async ({ set }) => {
-								try {
-									const data = await getPendingGearRequests();
-									return { success: true, data };
-								} catch (error: any) {
-									set.status = 500;
-									return { success: false, message: error.message };
+							.get(
+								'',
+								async ({ set, query }) => {
+									try {
+										const res = await getPendingGearRequests(query);
+										return { success: true, ...res };
+									} catch (error: any) {
+										set.status = 500;
+										return { success: false, message: error.message };
+									}
+								},
+								{
+									query: paginationQuerySchema,
 								}
-							})
+							)
 							.post(
 								'/approve',
 								async ({ body: { checkoutId, items }, set, user }) => {
@@ -393,29 +407,37 @@ const admin = (app: Elysia) =>
 							)
 					)
 					.group('/leases', (app) =>
-						app.get('', async ({ set }) => {
-							try {
-								const leases = await getAllLeases();
-								return { success: true, data: leases };
-							} catch (error: any) {
-								set.status = 500;
-								return { success: false, message: error.message };
-							}
-						})
+						app.get(
+							'',
+							async ({ set, query }) => {
+								try {
+									const res = await getAllLeases(query);
+									return { success: true, ...res };
+								} catch (error: any) {
+									set.status = 500;
+									return { success: false, message: error.message };
+								}
+							},
+							{ query: paginationQuerySchema }
+						)
 					)
 			)
 			.group('/courses', (app) =>
 				app
 					.guard({ detail: { tags: ['Admin Courses'] } })
-					.get('', async ({ set }) => {
-						try {
-							const data = await getAllCourses();
-							return { success: true, data };
-						} catch (error: any) {
-							set.status = 500;
-							return { success: false, message: error.message };
-						}
-					})
+					.get(
+						'',
+						async ({ set, query }) => {
+							try {
+								const data = await getAllCourses(query);
+								return { success: true, ...data };
+							} catch (error: any) {
+								set.status = 500;
+								return { success: false, message: error.message };
+							}
+						},
+						{ query: paginationQuerySchema }
+					)
 					.post(
 						'',
 						async ({ body, set }) => {
@@ -542,42 +564,50 @@ const admin = (app: Elysia) =>
 							};
 						}
 					})
-					.get('/requests', async ({ set }) => {
-						try {
-							const data = await getAdminStudioRequests();
-							return {
-								success: true,
-								message: 'Studio requests fetched successfully',
-								data,
-							};
-						} catch (error: any) {
-							set.status = 400;
-							return {
-								success: false,
-								message: error.message,
-								data: null,
-							};
-						}
-					})
+					.get(
+						'/requests',
+						async ({ set, query }) => {
+							try {
+								const data = await getAdminStudioRequests(query);
+								return {
+									success: true,
+									message: 'Studio requests fetched successfully',
+									...data,
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									message: error.message,
+									data: null,
+								};
+							}
+						},
+						{ query: paginationQuerySchema }
+					)
 					.group('/types', (app) =>
 						app
-							.get('', async ({ set }) => {
-								try {
-									const data = await getStudioTypesAdmin();
-									return {
-										success: true,
-										message: 'Successfully fetched studio types',
-										data,
-									};
-								} catch (error: any) {
-									set.status = 400;
-									return {
-										success: false,
-										message: error.message,
-										data: null,
-									};
-								}
-							})
+							.get(
+								'',
+								async ({ set, query }) => {
+									try {
+										const data = await getStudioTypesAdmin(query);
+										return {
+											success: true,
+											message: 'Successfully fetched studio types',
+											...data,
+										};
+									} catch (error: any) {
+										set.status = 400;
+										return {
+											success: false,
+											message: error.message,
+											data: null,
+										};
+									}
+								},
+								{ query: paginationQuerySchema }
+							)
 							.post(
 								'',
 								async ({ set, body }) => {
@@ -652,23 +682,27 @@ const admin = (app: Elysia) =>
 			.group('/products', (app) =>
 				app
 					.guard({ detail: { tags: ['Admin Products'] } })
-					.get('', async ({ set }) => {
-						try {
-							const courses = await getAllProductsAdmin();
-							return {
-								success: true,
-								message: 'Products fetched successfully',
-								data: courses,
-							};
-						} catch (error: any) {
-							set.status = 400;
-							return {
-								success: false,
-								message: error.message,
-								data: null,
-							};
-						}
-					})
+					.get(
+						'',
+						async ({ set, query }) => {
+							try {
+								const data = await getAllProductsAdmin(query);
+								return {
+									success: true,
+									message: 'Products fetched successfully',
+									...data,
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									message: error.message,
+									data: null,
+								};
+							}
+						},
+						{ query: paginationQuerySchema }
+					)
 					.post(
 						'',
 						async ({ set, body }) => {
@@ -829,40 +863,48 @@ const admin = (app: Elysia) =>
 			.group('/users', (app) =>
 				app
 					.guard({ detail: { tags: ['User Management'] } })
-					.get('', async ({ set }) => {
-						try {
-							const users = await getUsers();
-							return {
-								success: true,
-								data: users,
-								message: 'Successfully fetch users',
-							};
-						} catch (error: any) {
-							set.status = 400;
-							return {
-								success: false,
-								data: null,
-								message: 'Failed to fetch users: ' + error.message,
-							};
-						}
-					})
-					.get('/roles', async ({ set }) => {
-						try {
-							const roles = await getUserRoles();
-							return {
-								success: true,
-								data: roles,
-								message: 'Successfully fetch user roles',
-							};
-						} catch (error: any) {
-							set.status = 400;
-							return {
-								success: false,
-								data: null,
-								message: 'Failed to fetch user roles: ' + error.message,
-							};
-						}
-					})
+					.get(
+						'',
+						async ({ set, query }) => {
+							try {
+								const data = await getUsers(query);
+								return {
+									success: true,
+									...data,
+									message: 'Successfully fetch users',
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									data: null,
+									message: 'Failed to fetch users: ' + error.message,
+								};
+							}
+						},
+						{ query: paginationQuerySchema }
+					)
+					.get(
+						'/roles',
+						async ({ set, query }) => {
+							try {
+								const data = await getUserRoles(query);
+								return {
+									success: true,
+									...data,
+									message: 'Successfully fetch user roles',
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									data: null,
+									message: 'Failed to fetch user roles: ' + error.message,
+								};
+							}
+						},
+						{ query: paginationQuerySchema }
+					)
 					.post(
 						'/roles',
 						async ({ body, set }) => {

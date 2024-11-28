@@ -18,7 +18,7 @@ import CourseForm from '@/components/Forms/courses/CourseForm';
 
 export default function CoursesTable() {
 	const [open, setOpen] = useState(false);
-	const { refetch } = useLazyQuery(coursesOpts);
+	const { refetch } = useLazyQuery(coursesOpts({ pageIndex: 0, pageSize: 5 }));
 
 	return (
 		<DataTable
