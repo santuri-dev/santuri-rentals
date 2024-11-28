@@ -30,7 +30,9 @@ export default function StudioRowActions({
 	const [editOpen, setEditOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [deleting, setDeleting] = useState(false);
-	const { refetch } = useLazyQuery(studioTypesOpts);
+	const { refetch } = useLazyQuery(
+		studioTypesOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	async function handleDelete() {
 		setDeleting(true);

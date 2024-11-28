@@ -24,7 +24,9 @@ export default function GearRowActions({ gear }: { gear: Gear }) {
 	const [editOpen, setEditOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [deleting, setDeleting] = useState(false);
-	const { refetch } = useLazyQuery(gearTableOpts);
+	const { refetch } = useLazyQuery(
+		gearTableOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	async function handleDelete() {
 		setDeleting(true);

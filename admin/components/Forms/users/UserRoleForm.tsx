@@ -19,7 +19,6 @@ import { request } from '@/lib/axios';
 import { toast } from '@/hooks/use-toast';
 import useLazyQuery from '@/hooks/use-lazy-query';
 import { userRolesOpts } from '@/lib/api';
-import { UserRole } from '@/lib/types';
 
 const roleFormSchema = z.object({
 	name: z.string().min(1, { message: 'Role name cannot be empty' }),
@@ -43,7 +42,9 @@ export default function UserRolesForm({
 	defaultValues?: Partial<RoleFormInput> & { id: number };
 }) {
 	const [submitting, setSubmitting] = useState(false);
-	const { refetch } = useLazyQuery<UserRole[]>(userRolesOpts);
+	const { refetch } = useLazyQuery(
+		userRolesOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	const form = useForm<RoleFormInput>({
 		resolver: zodResolver(roleFormSchema),
@@ -97,25 +98,6 @@ export default function UserRolesForm({
 
 		if (onSubmit) await onSubmit();
 	}
-
-	// async function handleDelete(id: number) {
-	// 	try {
-	// 		const { message } = (await request.delete(`/users/roles/${id}`)).data;
-	// 		toast({
-	// 			title: 'Success',
-	// 			description: message,
-	// 		});
-	// 		if (onSubmit) await onSubmit();
-	// 		await refetch();
-	// 	} catch (error) {
-	// 		toast({
-	// 			title: 'Error',
-	// 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// 			// @ts-ignore
-	// 			description: `Something went wrong while deleting role. ${error.response.data.message}`,
-	// 		});
-	// 	}
-	// }
 
 	return (
 		<Form {...form}>

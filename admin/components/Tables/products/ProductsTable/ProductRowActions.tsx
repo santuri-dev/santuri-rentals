@@ -28,7 +28,9 @@ export default function ProductRowActions({ product }: { product: Product }) {
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [imageOpen, setImageOpen] = useState(false);
 	const [deleting, setDeleting] = useState(false);
-	const { refetch } = useLazyQuery(productTableOpts);
+	const { refetch } = useLazyQuery(
+		productTableOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	async function handleDelete() {
 		setDeleting(true);

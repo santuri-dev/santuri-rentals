@@ -26,7 +26,9 @@ export default function StudioRequestsRowActions({
 }) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const { refetch } = useLazyQuery(studioRequestOpts);
+	const { refetch } = useLazyQuery(
+		studioRequestOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	async function handleSubmit() {
 		setLoading(true);

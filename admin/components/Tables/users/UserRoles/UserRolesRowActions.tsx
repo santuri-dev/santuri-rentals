@@ -26,7 +26,9 @@ export default function UserRoleRowActions({ role }: { role: UserRole }) {
 	const [editOpen, setEditOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [deleting, setDeleting] = useState(false);
-	const { refetch } = useLazyQuery(userRolesOpts);
+	const { refetch } = useLazyQuery(
+		userRolesOpts({ pageIndex: 0, pageSize: 5 })
+	);
 
 	async function handleDelete() {
 		setDeleting(true);
