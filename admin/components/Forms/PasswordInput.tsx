@@ -29,6 +29,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
 					{...props}
 				/>
 				<Button
+					tabIndex={-1}
 					type='button'
 					variant='ghost'
 					size='sm'
