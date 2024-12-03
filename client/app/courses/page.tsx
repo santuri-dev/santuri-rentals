@@ -2,6 +2,8 @@ import CourseCalendar from '@/components/Courses/CourseCalendar';
 import CourseGrid from '@/components/Courses/CourseGrid';
 
 export default function Page() {
+	return null;
+
 	return (
 		<div className='flex py-8'>
 			<div className='w-full md:w-3/4'>

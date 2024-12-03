@@ -35,6 +35,8 @@ export default function Cart() {
 		setOpenDrawer(false);
 	}, [pathname]);
 
+	return null;
+
 	return (
 		<>
 			<div className='hidden md:flex'>

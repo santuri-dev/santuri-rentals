@@ -17,10 +17,10 @@ export default function Header() {
 			<div className='flex items-center gap-4'>
 				<NavLinks
 					links={[
-						{ path: '/courses', name: 'Courses' },
+						// { path: '/courses', name: 'Courses' },
 						{ path: '/studio', name: 'Studio' },
-						{ path: '/gear', name: 'Gear' },
-						{ path: '/shop', name: 'Shop' },
+						// { path: '/gear', name: 'Gear' },
+						// { path: '/shop', name: 'Shop' },
 					]}
 				/>
 				<Cart />

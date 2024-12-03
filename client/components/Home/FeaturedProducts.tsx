@@ -68,13 +68,13 @@ export default function FeaturedProducts() {
 	}
 
 	if (!products || products?.length === 0) return null;
-
+	return null;
 	return (
 		<section className='p-6 bg-gradient-to-r rounded-md from-primary/10 to-secondary/10'>
 			<div className='mx-auto'>
 				<h2 className='text-xl font-bold mb-8'>Featured Merch</h2>
 				<div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-					{products.map((product) => {
+					{products?.map((product) => {
 						const inCart = !!cart.find((v) => v.product.id === product.id);
 						return (
 							<Card
