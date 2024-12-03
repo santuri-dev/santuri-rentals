@@ -97,3 +97,8 @@ export interface StudioType {
 	description: string;
 	pricing: number;
 }
+
+export interface PaginatedResponse<T> {
+	pagination: { pageIndex: number; count: number; pageSize: number };
+	data: T[];
+}

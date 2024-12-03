@@ -7,28 +7,33 @@ import {
 	getOrderStatus,
 } from './shop.service';
 import { env } from 'bun';
+import { paginationQuerySchema } from '@/lib/pagination';
 
 const shop = (app: Elysia) =>
 	app.group('/shop', (app) =>
 		app
 			.guard({ detail: { tags: ['Shop'] } })
-			.get('/courses', async ({ set }) => {
-				try {
-					const courses = await getAllCourses();
-					return {
-						success: true,
-						message: 'Courses fetched successfully',
-						data: courses,
-					};
-				} catch (error: any) {
-					set.status = 400;
-					return {
-						success: false,
-						message: error.message,
-						data: null,
-					};
-				}
-			})
+			.get(
+				'/courses',
+				async ({ set, query }) => {
+					try {
+						const res = await getAllCourses(query);
+						return {
+							success: true,
+							message: 'Courses fetched successfully',
+							...res,
+						};
+					} catch (error: any) {
+						set.status = 400;
+						return {
+							success: false,
+							message: error.message,
+							data: null,
+						};
+					}
+				},
+				{ query: paginationQuerySchema }
+			)
 			.get('/products', async ({ set }) => {
 				try {
 					const courses = await getAllProducts();

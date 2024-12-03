@@ -9,7 +9,9 @@ import { formatDate } from '@/lib/helpers';
 import { useState } from 'react';
 
 export default function CourseCalendar() {
-	const { data: courses } = useQuery(coursesOpts);
+	const {
+		data: { data: courses },
+	} = useQuery(coursesOpts({ pageIndex: 0, pageSize: 10 }));
 	const [selected, setSelected] = useState<Date | undefined>();
 
 	return (

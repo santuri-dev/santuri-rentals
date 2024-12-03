@@ -97,7 +97,9 @@ function CourseDialog({
 }
 
 export default function CourseGrid() {
-	const { data: courses = [] } = useQuery(coursesOpts);
+	const {
+		data: { data: courses },
+	} = useQuery(coursesOpts({ pageSize: 10, pageIndex: 0 }));
 	const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 	const [dialogOpen, setDialogOpen] = useState(false);
 

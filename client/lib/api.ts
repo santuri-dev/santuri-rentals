@@ -4,13 +4,29 @@ import { QueryOpts, UQueryOpts } from './queryClient';
 import { Course, Gear, Order, Product } from './types';
 import { PaginationState } from '@tanstack/react-table';
 
-export const coursesOpts: QueryOpts<Course[]> = {
-	initialData: [],
-	queryKey: ['courses'],
-	queryFn: async () => {
-		const { data } = (await request.get('/shop/courses')).data;
-		return data;
-	},
+export const createPaginationInitialData = <T>(
+	pageIndex: number,
+	pageSize: number
+): PaginatedResponse<T> => ({
+	data: [],
+	pagination: { count: 0, pageIndex, pageSize },
+});
+
+export const coursesOpts = ({
+	pageSize,
+	pageIndex,
+}: PaginationState): QueryOpts<PaginatedResponse<Course>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['courses', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/shop/courses?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
 };
 
 export const availableGearOpts = ({
