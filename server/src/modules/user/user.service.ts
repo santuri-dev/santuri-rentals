@@ -17,7 +17,7 @@ export async function fetchUser({ field, value }: FetchUserBy) {
 	try {
 		const { data, error } = await supabase
 			.from('User')
-			.select('*')
+			.select('*, Role(*)')
 			.eq(field, value);
 
 		if (error) throw new Error(`${error.message} + ${error.code}`);

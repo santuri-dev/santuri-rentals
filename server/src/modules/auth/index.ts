@@ -131,6 +131,7 @@ const auth = (app: Elysia) =>
 							name: user.username,
 							image: user.image ?? '',
 							imgPlaceholder: user.imgPlaceholder ?? '',
+							role: user.Role?.name ?? '',
 						},
 						{ expiresIn: env.ACCESS_TTL }
 					);

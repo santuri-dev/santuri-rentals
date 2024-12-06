@@ -3,6 +3,7 @@ import {
 	createStudioRequest,
 	getStudioRequests,
 	getStudioTypes,
+	getUserDiscounts,
 } from './studio.service';
 import { StudioRequestSchema } from './studio.schema';
 import { requireUser } from '@/middleware/requireUser';
@@ -47,6 +48,22 @@ const studio = (app: Elysia) =>
 				}
 			})
 			.use(requireUser)
+			.get(
+				'/discounts',
+				async ({ query: { role }, set }) => {
+					try {
+						return await getUserDiscounts(role);
+					} catch (error: any) {
+						set.status = 400;
+						return {
+							success: false,
+							message: error.message,
+							data: null,
+						};
+					}
+				},
+				{ query: t.Object({ role: t.String() }) }
+			)
 			.post(
 				'',
 				async ({ set, body, user }) => {

@@ -66,7 +66,7 @@ export const refreshAccessToken = async ({
 
 		const { data: user, error: userError } = await supabase
 			.from('User')
-			.select('*')
+			.select('*, Role(*)')
 			.eq('id', data[0].userId);
 
 		if (!user || userError) {
@@ -80,11 +80,11 @@ export const refreshAccessToken = async ({
 };
 
 export const signAccessToken = async (
-	{ id, name, image }: LocalUser,
+	{ id, name, image, role }: LocalUser,
 	options?: SignOptions
 ): Promise<string> => {
 	return await signJwt(
-		{ id, name, image },
+		{ id, name, image, role },
 		{ ...(options && options) },
 		'ACCESS'
 	);

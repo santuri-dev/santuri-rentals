@@ -106,3 +106,19 @@ export async function getStudioTypes() {
 
 	return data;
 }
+
+export async function getUserDiscounts(role: string) {
+	try {
+		const { data, error } = await supabase
+			.from('Role')
+			.select('name, gearDiscount, studioDiscount')
+			.eq('name', role);
+		if (error) {
+			throw new Error(error.message);
+		}
+
+		return { success: true, message: 'Successfully fetched discounts', data };
+	} catch (e: any) {
+		throw new Error(`Error fetching user discounts: ${e.message}`);
+	}
+}

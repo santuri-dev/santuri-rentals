@@ -27,6 +27,7 @@ export interface User {
 	image: string | null;
 	createdAt: string | null;
 	imgPlaceholder?: string;
+	role: string;
 }
 
 export interface Course {
@@ -96,6 +97,12 @@ export interface StudioType {
 	name: string;
 	description: string;
 	pricing: number;
+}
+
+export interface Discounts {
+	name: string;
+	gearDiscount: number;
+	studioDiscount: number;
 }
 
 export interface PaginatedResponse<T> {

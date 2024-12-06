@@ -29,7 +29,7 @@ import {
 	differenceInMinutes,
 } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
-import { Gear, StudioType } from '@/lib/types';
+import { Discounts, Gear, StudioType } from '@/lib/types';
 import { DataTable } from '@/components/DataTable';
 import { gearColumns } from '@/components/Tables/GearTable/columns';
 import { availableGearOpts } from '@/lib/api';
@@ -54,8 +54,20 @@ export default function BookSession() {
 		useState<DurationOption | null>(null);
 	const [gearItems, setWorkstationItems] = useState<Gear[]>([]);
 	const [type, setType] = useState<StudioType | null>(null);
-	const { status } = useAuth();
+	const { status, user } = useAuth();
 	const [cost, setCost] = useState(0);
+
+	const { data: discounts } = useQuery<Discounts>({
+		initialData: { name: '', gearDiscount: 0, studioDiscount: 0 },
+		queryKey: ['discounts', user?.role],
+		async queryFn() {
+			const { data } = (
+				await request.get(`/studio/discounts?role=${user?.role}`)
+			).data;
+
+			return data[0];
+		},
+	});
 
 	// Fetch studio types
 	const {
@@ -111,9 +123,11 @@ export default function BookSession() {
 			const tMinutes = durationInMinutes % 60;
 
 			const tCost = type.pricing * tHours + (type.pricing * tMinutes) / 60;
-			setCost(tCost);
+			const dCost = tCost * (1 - discounts.studioDiscount / 100);
+			console.log({ tCost, dCost, d: discounts.studioDiscount });
+			setCost(dCost);
 		}
-	}, [date, selectedDuration, selectedTime, type]);
+	}, [date, selectedDuration, selectedTime, type, discounts.studioDiscount]);
 
 	// Set initial type when studioTypes data is available and type is not already set
 	useEffect(() => {
@@ -365,12 +379,17 @@ export default function BookSession() {
 			</div>
 			<div className='mt-6 flex gap-4'>
 				{status === 'authenticated' ? (
-					<Button
-						onClick={handleSubmit}
-						size='default'
-						disabled={!date || !selectedTime || !selectedDuration || loading}>
-						{loading ? <Dots /> : `Book Session ${formatCurrency(cost)}`}
-					</Button>
+					<div className='flex items-center gap-2'>
+						<Button
+							onClick={handleSubmit}
+							size='default'
+							disabled={!date || !selectedTime || !selectedDuration || loading}>
+							{loading ? <Dots /> : `Book Session ${formatCurrency(cost)}`}
+						</Button>
+						{discounts.studioDiscount ? (
+							<p className='text-sm'>{`${discounts.studioDiscount}% discount`}</p>
+						) : null}
+					</div>
 				) : (
 					<Button asChild>
 						<Link href='/auth/login'>Login to Book</Link>
