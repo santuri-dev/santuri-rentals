@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	Dialog,
 	DialogContent,
@@ -18,6 +18,7 @@ import { toast } from '@/hooks/use-toast';
 import useLazyQuery from '@/hooks/use-lazy-query';
 import { studioRequestOpts } from '@/lib/api';
 import Dots from '@/components/Loaders/Dots';
+import { useSearchParams } from 'next/navigation';
 
 export default function StudioRequestsRowActions({
 	studioRequest,
@@ -26,9 +27,21 @@ export default function StudioRequestsRowActions({
 }) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const searchParams = useSearchParams();
+	const [selected, setSelectedDate] = useState<Date>(new Date());
+
 	const { refetch } = useLazyQuery(
-		studioRequestOpts({ pageIndex: 0, pageSize: 5 })
+		studioRequestOpts({ pageIndex: 0, pageSize: 5 }, selected)
 	);
+
+	useEffect(() => {
+		const dateParam = searchParams.get('date');
+		if (dateParam) {
+			setSelectedDate(new Date(dateParam));
+		} else {
+			setSelectedDate(new Date());
+		}
+	}, [searchParams]);
 
 	async function handleSubmit() {
 		setLoading(true);

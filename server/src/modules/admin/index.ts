@@ -175,6 +175,7 @@ const admin = (app: Elysia) =>
 									name: adminUser.username,
 									image: adminUser.image ?? '',
 									imgPlaceholder: adminUser.image ?? '',
+									role: adminUser.role,
 								},
 								{ expiresIn: env.ACCESS_TTL }
 							);
@@ -583,7 +584,13 @@ const admin = (app: Elysia) =>
 								};
 							}
 						},
-						{ query: paginationQuerySchema }
+						{
+							query: t.Object({
+								date: t.String({ format: 'date-time' }),
+								pageIndex: t.Number(),
+								pageSize: t.Number(),
+							}),
+						}
 					)
 					.group('/types', (app) =>
 						app

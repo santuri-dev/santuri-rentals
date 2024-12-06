@@ -1,6 +1,14 @@
 import supabase from '@/db';
 import { formatTime } from '@/lib/helpers';
 import { getPagination, PaginationState } from '@/lib/pagination';
+import { TZDate } from '@date-fns/tz';
+import {
+	add,
+	setHours,
+	setMilliseconds,
+	setMinutes,
+	setSeconds,
+} from 'date-fns';
 
 export async function approveStudioRequest(id: number) {
 	const { data: studioRequestData, error: studioRequestError } = await supabase
@@ -50,15 +58,31 @@ export async function approveStudioRequest(id: number) {
 	}
 }
 
-export async function getAdminStudioRequests(pagination: PaginationState) {
-	const { from, pageIndex, pageSize, to } = getPagination(pagination);
+export async function getAdminStudioRequests(
+	query: PaginationState & { date: string }
+) {
+	const { from, pageIndex, pageSize, to } = getPagination({
+		pageIndex: query.pageIndex,
+		pageSize: query.pageSize,
+	});
+
+	const startTime = setMilliseconds(
+		setSeconds(setMinutes(setHours(new Date(query.date), 0), 0), 0),
+		0
+	);
+
+	const after24Hours = add(startTime, { hours: 24 });
+
+	console.log({ startTime, after24Hours });
 
 	const { data, error, count } = await supabase
 		.from('StudioRequest')
 		.select('*, StudioType(id, name, pricing), User(id, username, email)', {
 			count: 'exact',
 		})
-		.order('id')
+		.gte('startTime', new TZDate(startTime, 'Africa/Nairobi').toISOString())
+		.lte('startTime', new TZDate(after24Hours, 'Africa/Nairobi').toISOString())
+		.order('createdAt')
 		.range(from, to);
 
 	if (error) {

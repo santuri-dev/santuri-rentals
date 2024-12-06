@@ -107,17 +107,17 @@ export const courseBySlugOpts = (slug: string): UQueryOpts<Course> => ({
 	},
 });
 
-export const studioRequestOpts = ({
-	pageIndex,
-	pageSize,
-}: PaginationState): QueryOpts<PaginatedResponse<StudioRequest>> => {
+export const studioRequestOpts = (
+	{ pageIndex, pageSize }: PaginationState,
+	date: Date
+): QueryOpts<PaginatedResponse<StudioRequest>> => {
 	return {
 		initialData: createPaginationInitialData(pageIndex, pageSize),
-		queryKey: ['studio_requests', pageIndex, pageSize],
+		queryKey: ['studio_requests', pageIndex, pageSize, date.toISOString()],
 		queryFn: async () => {
 			return (
 				await request.get(
-					`/studio/requests?pageIndex=${pageIndex}&pageSize=${pageSize}`
+					`/studio/requests?pageIndex=${pageIndex}&pageSize=${pageSize}&date=${date.toISOString()}`
 				)
 			).data;
 		},
