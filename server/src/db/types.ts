@@ -417,6 +417,21 @@ export type Database = {
           },
         ]
       }
+      RestrictedDates: {
+        Row: {
+          date: string
+          id: number
+        }
+        Insert: {
+          date: string
+          id?: number
+        }
+        Update: {
+          date?: string
+          id?: number
+        }
+        Relationships: []
+      }
       Role: {
         Row: {
           gearDiscount: number

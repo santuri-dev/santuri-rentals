@@ -175,6 +175,11 @@ model StudioRequest {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model RestrictedDates {
+  id   Int      @id @default(autoincrement())
+  date DateTime @unique
+}
+
 model StudioType {
   id            Int             @id @default(autoincrement())
   name          String

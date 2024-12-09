@@ -178,3 +178,67 @@ export async function getStudioTypesAdmin(pagination: PaginationState) {
 
 	return { data, pagination: { pageIndex, pageSize, count } };
 }
+
+function datesWithin(from: Date, to?: Date): TZDate[] {
+	const result: TZDate[] = [];
+	const startDate = new TZDate(from, 'Africa/Nairobi');
+	const endDate = to
+		? new TZDate(to, 'Africa/Nairobi')
+		: new TZDate(from, 'Africa/Nairobi');
+
+	if (startDate > endDate) {
+		throw new Error("'from' date must be earlier than or equal to 'to' date");
+	}
+
+	const currentDate = startDate;
+	while (currentDate <= endDate) {
+		result.push(new TZDate(currentDate, 'Africa/Nairobi'));
+		currentDate.setDate(currentDate.getDate() + 1);
+	}
+
+	return result;
+}
+
+export async function restrictStudioDates({
+	from,
+	to,
+}: {
+	from: string;
+	to?: string;
+}) {
+	try {
+		const dates = datesWithin(
+			new TZDate(from),
+			to ? new TZDate(to) : undefined
+		).map((v) => ({ date: v.toISOString() }));
+
+		const { error } = await supabase.from('RestrictedDates').insert(dates);
+
+		if (error) {
+			throw new Error(
+				`Something went wrong adding restricted dates${error.message}`
+			);
+		}
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
+}
+
+export async function getRestrictedStudioDates() {
+	try {
+		const { error, data } = await supabase
+			.from('RestrictedDates')
+			.select('*')
+			.gte('date', new TZDate(new Date(), 'Africa/Nairobi').toISOString());
+
+		if (error) {
+			throw new Error(
+				`Something went wrong adding restricted dates${error.message}`
+			);
+		}
+
+		return data;
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
+}

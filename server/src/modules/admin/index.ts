@@ -54,7 +54,9 @@ import {
 	deleteStudioType,
 	editStudioType,
 	getAdminStudioRequests,
+	getRestrictedStudioDates,
 	getStudioTypesAdmin,
+	restrictStudioDates,
 } from './admin_studio.service';
 import { StudioTypeSchema } from '../studio/studio.schema';
 import {
@@ -590,6 +592,32 @@ const admin = (app: Elysia) =>
 								date: t.String({ format: 'date-time' }),
 								pageIndex: t.Number(),
 								pageSize: t.Number(),
+							}),
+						}
+					)
+					.post(
+						'/restricted-dates',
+						async ({ body, set }) => {
+							try {
+								await restrictStudioDates(body);
+								return {
+									success: true,
+									message: 'Restricted studio dates added successfully',
+								};
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									message: error.message,
+								};
+							}
+						},
+						{
+							body: t.Object({
+								from: t.String({
+									format: 'date-time',
+									to: t.Optional(t.String({ format: 'date-time' })),
+								}),
 							}),
 						}
 					)

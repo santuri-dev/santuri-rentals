@@ -124,7 +124,6 @@ export default function BookSession() {
 
 			const tCost = type.pricing * tHours + (type.pricing * tMinutes) / 60;
 			const dCost = tCost * (1 - discounts.studioDiscount / 100);
-			console.log({ tCost, dCost, d: discounts.studioDiscount });
 			setCost(dCost);
 		}
 	}, [date, selectedDuration, selectedTime, type, discounts.studioDiscount]);

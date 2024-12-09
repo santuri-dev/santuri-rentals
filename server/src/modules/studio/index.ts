@@ -7,6 +7,7 @@ import {
 } from './studio.service';
 import { StudioRequestSchema } from './studio.schema';
 import { requireUser } from '@/middleware/requireUser';
+import { getRestrictedStudioDates } from '../admin/admin_studio.service';
 
 const studio = (app: Elysia) =>
 	app.group('/studio', (app) =>
@@ -45,6 +46,19 @@ const studio = (app: Elysia) =>
 						message: error.message,
 						data: null,
 					};
+				}
+			})
+			.get('/restricted-dates', async ({ set }) => {
+				try {
+					const data = await getRestrictedStudioDates();
+					return {
+						success: true,
+						message: 'Succesfully fetched restricted dates',
+						data,
+					};
+				} catch (error: any) {
+					set.status = 400;
+					return { success: false, message: error.message, data: null };
 				}
 			})
 			.use(requireUser)
