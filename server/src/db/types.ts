@@ -604,6 +604,41 @@ export type Database = {
           },
         ]
       }
+      UserInvite: {
+        Row: {
+          createdAt: string
+          email: string
+          id: number
+          roleId: number
+          token: string
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          email: string
+          id?: number
+          roleId: number
+          token: string
+          updatedAt?: string
+        }
+        Update: {
+          createdAt?: string
+          email?: string
+          id?: number
+          roleId?: number
+          token?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "UserInvite_roleId_fkey"
+            columns: ["roleId"]
+            isOneToOne: false
+            referencedRelation: "Role"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

@@ -108,6 +108,10 @@ export const signResetToken = async (
 	return signJwt({ id }, { ...(options && options) }, 'RESET');
 };
 
+export const signInviteToken = async (email: string, options: SignOptions) => {
+	return signJwt({ email }, { ...(options && options) }, 'INVITE');
+};
+
 export async function requestResetToken(email: string) {
 	try {
 		const user = await fetchUser({ field: 'email', value: email });

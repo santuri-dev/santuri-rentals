@@ -6,6 +6,7 @@ const envSchema = z.object({
 	ACCESS_PRIVATE: z.string(),
 	REFRESH_PRIVATE: z.string(),
 	RESET_PRIVATE: z.string(),
+	INVITE_PRIVATE: z.string(),
 	SALT_WORK_FACTOR: z.string().refine((v) => !isNaN(parseInt(v))),
 	ACCESS_TTL: z.string(),
 	REFRESH_TTL: z.string(),

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import env from './env';
 
-export type KeyName = 'ACCESS' | 'REFRESH' | 'RESET';
+export type KeyName = 'ACCESS' | 'REFRESH' | 'RESET' | 'INVITE';
 
 export const verifyJwt = async <T>(
 	token: string,

@@ -62,6 +62,7 @@ import {
 	deleteUserRole,
 	getUserRoles,
 	getUsers,
+	inviteUsers,
 	updateUserRole,
 } from './admin_user.service';
 import { paginationQuerySchema } from '@/lib/pagination';
@@ -983,6 +984,27 @@ const admin = (app: Elysia) =>
 						},
 						{
 							params: t.Object({ id: t.Numeric() }),
+						}
+					)
+					.post(
+						'/invites',
+						async ({ set, body }) => {
+							try {
+								return await inviteUsers(body);
+							} catch (error: any) {
+								set.status = 400;
+								return {
+									success: false,
+									data: null,
+									message: error.message,
+								};
+							}
+						},
+						{
+							body: t.Object({
+								roleId: t.Number(),
+								emails: t.Array(t.String({ format: 'email' })),
+							}),
 						}
 					)
 			)
