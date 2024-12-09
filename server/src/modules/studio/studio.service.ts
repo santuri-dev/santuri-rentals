@@ -7,6 +7,12 @@ import {
 	setSeconds,
 } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
+import env from '@/lib/env';
+import transporter from '@/lib/nodemailer';
+import { render } from '@react-email/components';
+import StudioRequestEmail from '@/emails/StudioRequestEmail';
+import { formatCurrency } from '../../lib/helpers';
+import AdminNotificationEmail from '@/emails/AdminNotificationEmail';
 
 export async function createStudioRequest(
 	input: StudioRequest & { gearItems: number[] },
@@ -63,10 +69,43 @@ export async function createStudioRequest(
 			userId: user.id,
 			cost,
 		})
-		.select()
+		.select('*, StudioType(*), User(*)')
 		.single();
 
 	if (studioRequestError) throw new Error(studioRequestError.message);
+
+	if (studioRequestData.User) {
+		await transporter.sendMail({
+			from: env.EMAIL_FROM,
+			to: studioRequestData.User.email,
+			subject: 'Studio Request Received',
+			html: await render(
+				StudioRequestEmail({
+					...studioRequestData,
+					type: studioRequestData.StudioType?.name ?? '',
+					userName: studioRequestData.User.username,
+					cost: formatCurrency(studioRequestData.cost),
+					statusLink: `${env.CLIENT_URL}/studio/requests/${studioRequestData.id}`,
+				})
+			),
+		});
+
+		await transporter.sendMail({
+			from: env.EMAIL_FROM,
+			to: env.EMAIL_FROM,
+			subject: 'Studio Request Received - Action Required',
+			html: await render(
+				AdminNotificationEmail({
+					...studioRequestData,
+					type: studioRequestData.StudioType?.name ?? '',
+					userName: studioRequestData.User.username,
+					userEmail: studioRequestData.User.email,
+					cost: formatCurrency(studioRequestData.cost),
+					reviewLink: `${env.ADMIN_CLIENT_URL}/studio/requests/${studioRequestData.id}`,
+				})
+			),
+		});
+	}
 
 	return {
 		message: 'Studio request created successfully',

@@ -34,3 +34,8 @@ export function formatTime(date: string) {
 export function toSnakeCase(inputString: string) {
 	return inputString.replace(/ /g, '_').toLowerCase();
 }
+
+export const formatCurrency = new Intl.NumberFormat('en-US', {
+	style: 'currency',
+	currency: 'KES',
+}).format;

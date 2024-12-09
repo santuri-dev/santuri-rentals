@@ -1,5 +1,5 @@
 import supabase from '@/db';
-import { formatTime } from '@/lib/helpers';
+import { formatCurrency, formatTime } from '@/lib/helpers';
 import { getPagination, PaginationState } from '@/lib/pagination';
 import { TZDate } from '@date-fns/tz';
 import {
@@ -9,6 +9,10 @@ import {
 	setMinutes,
 	setSeconds,
 } from 'date-fns';
+import env from '@/lib/env';
+import transporter from '@/lib/nodemailer';
+import { render } from '@react-email/components';
+import RequestApprovalEmail from '@/emails/RequestApprovalEmail';
 
 export async function approveStudioRequest(id: number) {
 	const { data: studioRequestData, error: studioRequestError } = await supabase
@@ -40,7 +44,7 @@ export async function approveStudioRequest(id: number) {
 			.from('StudioRequest')
 			.update({ status: 'approved' })
 			.eq('id', id)
-			.select('*')
+			.select('*, User(*), StudioType(*)')
 			.single();
 
 		if (error) throw new Error(error.message);
@@ -54,7 +58,23 @@ export async function approveStudioRequest(id: number) {
 			if (gearError) throw new Error(gearError.message);
 		}
 
-		return { gearItems: studioRequestData.gearItems };
+		if (data.User) {
+			await transporter.sendMail({
+				from: env.EMAIL_FROM,
+				to: data.User.email,
+				subject: 'Studio Request Approved',
+				html: await render(
+					RequestApprovalEmail({
+						...data,
+						type: data.StudioType?.name ?? '',
+						userName: data.User.username,
+						cost: formatCurrency(data.cost),
+						statusLink: `${env.CLIENT_URL}/studio/requests/${studioRequestData.id}`,
+					})
+				),
+			});
+		}
+		return { data };
 	}
 }
 
@@ -72,8 +92,6 @@ export async function getAdminStudioRequests(
 	);
 
 	const after24Hours = add(startTime, { hours: 24 });
-
-	console.log({ startTime, after24Hours });
 
 	const { data, error, count } = await supabase
 		.from('StudioRequest')
