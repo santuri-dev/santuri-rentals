@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import * as XLSX from 'xlsx';
@@ -103,7 +104,7 @@ export default function UploadUsersXLSX() {
 					variant: 'destructive',
 				});
 			}
-		} catch (error) {
+		} catch (error: any) {
 			toast({
 				title: 'Error',
 				description: error.message,
