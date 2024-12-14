@@ -46,6 +46,7 @@ import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import Spinner2 from '@/components/Loaders/Spinner2';
 
 export default function BookSession() {
 	const [date, setDate] = useState<Date>(new Date());
@@ -136,10 +137,15 @@ export default function BookSession() {
 	}, [studioTypes, type]);
 
 	// Fetch allocated slots
-	const { data: allocatedSlots, refetch: refetchSlots } = useQuery<
-		AllocatedSlot[]
-	>({
-		initialData: [],
+	const {
+		data: { allocatedSlots, isRestricted },
+		refetch: refetchSlots,
+		isFetching: isFetchingRequests,
+	} = useQuery<{
+		allocatedSlots: AllocatedSlot[];
+		isRestricted: boolean;
+	}>({
+		initialData: { allocatedSlots: [], isRestricted: false },
 		queryKey: ['allocated_times', date.toISOString()],
 		queryFn: async () => {
 			const { data } = (
@@ -240,8 +246,9 @@ export default function BookSession() {
 				the available equipment for each option.
 			</p>
 			<div>
-				<div className='mb-4'>
+				<div className='mb-4 flex items-center gap-2'>
 					<h2 className='font-semibold text-lg'>Details</h2>
+					{isFetchingRequests ? <Spinner2 /> : null}
 				</div>
 				<div className='space-y-4'>
 					<div className='gap-2 grid grid-cols-1 md:grid-cols-2 items-center'>
@@ -259,7 +266,14 @@ export default function BookSession() {
 							</Select>
 						</div>
 						<div>
-							<Label className='text-sm font-medium mb-2'>Date</Label>
+							<div className='gap-4 flex items-center mb-2'>
+								<Label className='text-sm font-medium'>Date</Label>
+								{isRestricted ? (
+									<p className='text-destructive text-sm'>
+										This date is restricted for bookings
+									</p>
+								) : null}
+							</div>
 							<Popover>
 								<PopoverTrigger asChild>
 									<Button
@@ -293,6 +307,7 @@ export default function BookSession() {
 						setSelectedDuration={setSelectedDuration}
 						date={date}
 						allocatedSlots={allocatedSlots}
+						disabled={isRestricted || isFetchingRequests}
 					/>
 				</div>
 			</div>

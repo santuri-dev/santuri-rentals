@@ -39,6 +39,7 @@ interface TimeSelectorProps {
 	setSelectedDuration: (duration: DurationOption | null) => void;
 	date: Date;
 	allocatedSlots: AllocatedSlot[];
+	disabled: boolean;
 }
 
 export interface AllocatedSlot {
@@ -97,11 +98,13 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 	setSelectedDuration,
 	date,
 	allocatedSlots,
+	disabled,
 }) => {
 	const [openDialog, setOpenDialog] = useState(false);
 
 	const isTimeDisabled = useCallback(
 		(time: TimeOption) => {
+			if (disabled) return true;
 			const { hours, minutes } = parseTime(time);
 			const selectedDateTime = setHours(
 				setMinutes(new Date(date), minutes),
@@ -128,11 +131,13 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 				});
 			});
 		},
-		[date, allocatedSlots]
+		[date, allocatedSlots, disabled]
 	);
 
 	const isDurationDisabled = useCallback(
 		(duration: DurationOption) => {
+			if (disabled) return true;
+
 			if (!selectedTime) return false;
 
 			const { hours, minutes } = parseTime(selectedTime);
@@ -156,7 +161,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 				);
 			});
 		},
-		[selectedTime, date, allocatedSlots]
+		[selectedTime, date, allocatedSlots, disabled]
 	);
 
 	return (
@@ -164,7 +169,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 			<div className='w-full'>
 				<label className='text-sm font-medium mb-2 block'>Start Time</label>
 				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
-					<DialogTrigger asChild>
+					<DialogTrigger asChild disabled={disabled}>
 						<Button
 							variant='outline'
 							className='w-full justify-start text-left font-normal'>
@@ -202,7 +207,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 				<Select
 					value={selectedDuration || undefined}
 					onValueChange={(value: DurationOption) => setSelectedDuration(value)}>
-					<SelectTrigger className='w-full'>
+					<SelectTrigger className='w-full' disabled={disabled}>
 						<SelectValue placeholder='Select duration' />
 					</SelectTrigger>
 					<SelectContent>

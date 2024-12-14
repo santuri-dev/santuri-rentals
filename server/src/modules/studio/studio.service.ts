@@ -121,7 +121,7 @@ export async function getStudioRequests({
 	status: string;
 }) {
 	// Query for approved studio requests that have not yet ended
-	const { data: approvedRequests, error } = await supabase
+	const { data: allocatedSlots, error } = await supabase
 		.from('StudioRequest')
 		.select('id, startTime, endTime, StudioType(id, name)') // Only select relevant fields
 		.eq('status', status)
@@ -133,7 +133,13 @@ export async function getStudioRequests({
 		);
 	}
 
-	return approvedRequests;
+	const { data: restrictionData } = await supabase
+		.from('RestrictedDates')
+		.select('*')
+		.eq('date', new TZDate(date, 'Africa/Nairobi').toISOString())
+		.single();
+
+	return { allocatedSlots, isRestricted: !!restrictionData };
 }
 
 export async function getStudioTypes() {

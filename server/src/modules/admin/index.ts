@@ -616,8 +616,8 @@ const admin = (app: Elysia) =>
 							body: t.Object({
 								from: t.String({
 									format: 'date-time',
-									to: t.Optional(t.String({ format: 'date-time' })),
 								}),
+								to: t.Optional(t.String({ format: 'date-time' })),
 							}),
 						}
 					)
@@ -898,7 +898,7 @@ const admin = (app: Elysia) =>
 			)
 			.group('/users', (app) =>
 				app
-					.guard({ detail: { tags: ['User Management'] } })
+					.guard({ detail: { tags: ['Admin User Management'] } })
 					.get(
 						'',
 						async ({ set, query }) => {
