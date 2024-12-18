@@ -62,12 +62,16 @@ export default function BookSession() {
 		initialData: { name: '', gearDiscount: 0, studioDiscount: 0 },
 		queryKey: ['discounts', user?.role],
 		async queryFn() {
-			const { data } = (
-				await request.get(`/studio/discounts?role=${user?.role}`)
-			).data;
+			if (user) {
+				const { data } = (
+					await request.get(`/studio/discounts?role=${user.role}`)
+				).data;
 
-			return data[0];
+				return data[0];
+			}
+			return { name: '', gearDiscount: 0, studioDiscount: 0 };
 		},
+		enabled: !!user,
 	});
 
 	// Fetch studio types
