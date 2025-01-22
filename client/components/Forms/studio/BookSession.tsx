@@ -64,7 +64,7 @@ export default function BookSession() {
 		async queryFn() {
 			if (user) {
 				const { data } = (
-					await request.get(`/studio/discounts?role=${user.role}`)
+					await request.get(`/studio/discounts?role=${user.role ?? 'student'}`)
 				).data;
 
 				return data[0];
