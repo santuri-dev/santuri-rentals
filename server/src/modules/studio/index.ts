@@ -8,8 +8,6 @@ import {
 import { StudioRequestSchema } from './studio.schema';
 import { requireUser } from '@/middleware/requireUser';
 import { getRestrictedStudioDates } from '../admin/admin_studio.service';
-import { optional } from 'zod';
-import { optionalUser } from '@/middleware/optionalUser';
 
 const studio = (app: Elysia) =>
 	app.group('/studio', (app) =>
@@ -63,7 +61,7 @@ const studio = (app: Elysia) =>
 					return { success: false, message: error.message, data: null };
 				}
 			})
-			.use(optionalUser)
+			.use(requireUser)
 			.get(
 				'/discounts',
 				async ({ query: { role }, set }) => {
@@ -80,7 +78,6 @@ const studio = (app: Elysia) =>
 				},
 				{ query: t.Object({ role: t.String() }) }
 			)
-			.use(requireUser)
 			.post(
 				'',
 				async ({ set, body, user }) => {
