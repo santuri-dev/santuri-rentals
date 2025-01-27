@@ -207,9 +207,18 @@ export async function restrictStudioDates({
 	to?: string;
 }) {
 	try {
+		const formattedFrom = setMilliseconds(
+			setSeconds(setMinutes(new TZDate(from), 0), 0),
+			0
+		);
+
+		const formattedTo = to
+			? setMilliseconds(setSeconds(setMinutes(new TZDate(to), 0), 0), 0)
+			: undefined;
+
 		const dates = datesWithin(
-			new TZDate(from),
-			to ? new TZDate(to) : undefined
+			new TZDate(formattedFrom),
+			formattedTo ? new TZDate(formattedTo) : undefined
 		).map((v) => ({ date: v.toISOString() }));
 
 		const { error } = await supabase.from('RestrictedDates').insert(dates);

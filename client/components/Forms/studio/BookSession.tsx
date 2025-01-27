@@ -92,6 +92,29 @@ export default function BookSession() {
 		},
 	});
 
+	// Add query for restricted dates
+	const { data: restrictedDates = [] } = useQuery<
+		{ date: string; id: number }[]
+	>({
+		queryKey: ['restricted_dates'],
+		queryFn: async () => {
+			const { data } = (await request.get('/studio/restricted-dates')).data;
+			return data;
+		},
+	});
+
+	// Add function to check if date is restricted
+	const isDateRestricted = (dateToCheck: Date) => {
+		return restrictedDates.some((rd) => {
+			const restrictedDate = new Date(rd.date);
+			return (
+				restrictedDate.getFullYear() === dateToCheck.getFullYear() &&
+				restrictedDate.getMonth() === dateToCheck.getMonth() &&
+				restrictedDate.getDate() === dateToCheck.getDate()
+			);
+		});
+	};
+
 	useEffect(() => {
 		if (selectedTime && selectedDuration && type) {
 			const currentDate = new Date();
@@ -299,6 +322,7 @@ export default function BookSession() {
 											if (newDate) setDate(newDate);
 										}}
 										initialFocus
+										disabled={(date) => isDateRestricted(date)}
 									/>
 								</PopoverContent>
 							</Popover>
@@ -311,7 +335,7 @@ export default function BookSession() {
 						setSelectedDuration={setSelectedDuration}
 						date={date}
 						allocatedSlots={allocatedSlots}
-						disabled={isRestricted || isFetchingRequests}
+						disabled={isDateRestricted(date) || isFetchingRequests}
 					/>
 				</div>
 			</div>
@@ -401,7 +425,13 @@ export default function BookSession() {
 						<Button
 							onClick={handleSubmit}
 							size='default'
-							disabled={!date || !selectedTime || !selectedDuration || loading}>
+							disabled={
+								!date ||
+								!selectedTime ||
+								!selectedDuration ||
+								loading ||
+								isDateRestricted(date)
+							}>
 							{loading ? <Dots /> : `Book Session ${formatCurrency(cost)}`}
 						</Button>
 						{discounts.studioDiscount ? (
