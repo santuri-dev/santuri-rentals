@@ -3,7 +3,7 @@ export interface LocalUser {
 	name: string;
 	image: string;
 	imgPlaceholder: string;
-	role: string;
+	role?: string;
 }
 
 export interface DecodedRefresh {
