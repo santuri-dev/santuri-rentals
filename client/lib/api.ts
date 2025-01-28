@@ -1,7 +1,7 @@
 import { PaginatedResponse } from '@/components/DataTable/types';
 import { request } from './axios';
 import { QueryOpts, UQueryOpts } from './queryClient';
-import { Course, Gear, Order, Product } from './types';
+import { Course, Gear, Order, Product, StudioRequest } from './types';
 import { PaginationState } from '@tanstack/react-table';
 
 export const createPaginationInitialData = <T>(
@@ -80,3 +80,20 @@ async function fetchOrder(
 		)
 	).data.data;
 }
+
+export const userStudioRequestsOpts = ({
+	pageSize,
+	pageIndex,
+}: PaginationState): QueryOpts<PaginatedResponse<StudioRequest>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['courses', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/studio/requests?pageIndex=${pageIndex}&pageSize=${pageSize}`
+				)
+			).data;
+		},
+	};
+};

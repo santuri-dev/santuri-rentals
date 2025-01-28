@@ -109,3 +109,18 @@ export interface PaginatedResponse<T> {
 	pagination: { pageIndex: number; count: number; pageSize: number };
 	data: T[];
 }
+
+export interface StudioRequest {
+	cost: number;
+	createdAt: string;
+	endTime: string;
+	gearItems: number[] | null;
+	id: number;
+	startTime: string;
+	status: string;
+	typeId: number;
+	updatedAt: string;
+	userId: number;
+	StudioType: StudioType | null;
+	User: User | null;
+}

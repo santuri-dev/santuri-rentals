@@ -40,7 +40,6 @@ export default function RestrictedDatesRowActions({
 			await refetch();
 			toast({ title: success ? 'Success' : 'Error', description: message });
 			setOpen(false);
-			// You might want to add a refetch function here to update the table
 		} catch (error) {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore

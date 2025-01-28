@@ -13,6 +13,7 @@ import { render } from '@react-email/components';
 import StudioRequestEmail from '@/emails/StudioRequestEmail';
 import { formatCurrency } from '../../lib/helpers';
 import AdminNotificationEmail from '@/emails/AdminNotificationEmail';
+import { getPagination, PaginationState } from '@/lib/pagination';
 
 export async function createStudioRequest(
 	input: StudioRequest & { gearItems: number[] },
@@ -185,4 +186,40 @@ export async function getRestrictedStudioDates() {
 	} catch (error: any) {
 		throw new Error(error.message);
 	}
+}
+export async function getUserStudioRequests(
+	userId: number,
+	query: PaginationState
+) {
+	const { from, to, pageIndex, pageSize } = getPagination(query);
+
+	const { data, error, count } = await supabase
+		.from('StudioRequest')
+		.select('*, StudioType(*), User(*)', { count: 'exact' })
+		.eq('userId', userId)
+		.order('startTime', { ascending: false })
+		.range(from, to);
+
+	if (error) {
+		throw new Error(`Error fetching user studio requests: ${error.message}`);
+	}
+
+	return { data, pagination: { pageIndex, pageSize, count } };
+}
+
+export async function getUserStudioRequest(userId: number, requestId: number) {
+	const { data, error } = await supabase
+		.from('StudioRequest')
+		.select(
+			'*, StudioType(id, name, pricing), User(id, email, image, imgPlaceholder, username)'
+		)
+		.eq('userId', userId)
+		.eq('id', requestId)
+		.single();
+
+	if (error) {
+		throw new Error(`Error fetching studio request: ${error.message}`);
+	}
+
+	return data;
 }
