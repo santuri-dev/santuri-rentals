@@ -16,6 +16,11 @@ export interface DecodedReset {
 	id: number;
 }
 
+export interface DecodedInvite {
+	email: string;
+	roleId: number;
+}
+
 export interface AdminDecodedRefresh {
 	id: number;
 	adminUserId: number;

@@ -9,8 +9,13 @@ import {
 	signAccessToken,
 	signRefreshToken,
 } from './auth.service';
-import { createUser, fetchUser, verifyUser } from '../user/user.service';
-import { LocalUser } from '@/lib/types';
+import {
+	createUser,
+	createUserWithToken,
+	fetchUser,
+	verifyUser,
+} from '../user/user.service';
+import { DecodedInvite, LocalUser } from '@/lib/types';
 import env from '@/lib/env';
 
 const auth = (app: Elysia) =>
@@ -48,51 +53,102 @@ const auth = (app: Elysia) =>
 			.post(
 				'/signup',
 				async ({ body, set }) => {
-					const { username, email, password } = body;
+					const { username, email, password, token } = body;
+					if (email) {
+						const emailExists = await fetchUser({
+							field: 'email',
+							value: email,
+						});
 
-					const emailExists = await fetchUser({
-						field: 'email',
-						value: email,
-					});
+						const usernameExists = await fetchUser({
+							field: 'username',
+							value: username,
+						});
 
-					const usernameExists = await fetchUser({
-						field: 'username',
-						value: username,
-					});
+						if (emailExists) {
+							set.status = 'Conflict';
+							return {
+								success: false,
+								data: null,
+								message: `${email} is already in use`,
+							};
+						}
 
-					if (emailExists) {
-						set.status = 'Conflict';
+						if (usernameExists) {
+							set.status = 'Conflict';
+							return {
+								success: false,
+								data: null,
+								message: `${username} is already in use`,
+							};
+						}
+
+						const user = await createUser({ username, password, email });
 						return {
-							success: false,
-							data: null,
-							message: `${email} is already in use`,
+							success: true,
+							message: 'Account created',
+							data: {
+								user,
+							},
 						};
+					} else if (token) {
+						const decoded = await verifyJwt<DecodedInvite>(token, 'INVITE');
+
+						if (decoded) {
+							const emailExists = await fetchUser({
+								field: 'email',
+								value: decoded.email,
+							});
+
+							const usernameExists = await fetchUser({
+								field: 'username',
+								value: username,
+							});
+
+							if (emailExists) {
+								set.status = 'Conflict';
+								return {
+									success: false,
+									data: null,
+									message: `${email} is already in use`,
+								};
+							}
+
+							if (usernameExists) {
+								set.status = 'Conflict';
+								return {
+									success: false,
+									data: null,
+									message: `${username} is already in use`,
+								};
+							}
+
+							const user = await createUserWithToken(
+								{ username, password },
+								token
+							);
+							return {
+								success: true,
+								message: 'Account created',
+								data: {
+									user,
+								},
+							};
+						} else {
+							return {
+								success: false,
+								message: 'Invalid token. Failed to create account.',
+								data: null,
+							};
+						}
 					}
-
-					if (usernameExists) {
-						set.status = 'Conflict';
-						return {
-							success: false,
-							data: null,
-							message: `${username} is already in use`,
-						};
-					}
-
-					const user = await createUser({ username, password, email });
-
-					return {
-						success: true,
-						message: 'Account created',
-						data: {
-							user,
-						},
-					};
 				},
 				{
 					body: t.Object({
 						username: t.String(),
-						email: t.String({ format: 'email' }),
+						email: t.Optional(t.String({ format: 'email' })),
 						password: t.String(),
+						token: t.Optional(t.String()),
 					}),
 				}
 			)

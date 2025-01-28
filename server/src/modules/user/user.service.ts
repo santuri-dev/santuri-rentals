@@ -1,9 +1,10 @@
 import supabase from '@/db';
-import { hashPassword } from '@/lib/auth';
+import { hashPassword, verifyJwt } from '@/lib/auth';
 import env from '@/lib/env';
 import VerifyEmail from '@/emails/VerifyEmail';
 import transporter from '@/lib/nodemailer';
 import { render } from '@react-email/components';
+import { DecodedInvite } from '@/lib/types';
 
 type FetchUserBy =
 	| { field: 'id'; value: number }
@@ -29,44 +30,84 @@ export async function fetchUser({ field, value }: FetchUserBy) {
 	}
 }
 
-export async function createUser({
-	username,
-	password,
-	email,
-}: {
+interface CreateUserInput {
 	username: string;
 	email: string;
 	password: string;
-}) {
+	roleId?: number;
+}
+
+async function saveAndVerifyUser({
+	username,
+	password,
+	email,
+	roleId,
+}: CreateUserInput) {
+	const verificationCode = crypto.randomUUID();
+	const { data, error } = await supabase
+		.from('User')
+		.insert({
+			username,
+			password: await hashPassword(password),
+			email,
+			verificationCode,
+			roleId,
+		})
+		.select('id, username, email, image');
+
+	if (error) throw new Error(error.message);
+	if (!data) throw new Error(`Something went wrong: data=null`);
+
+	const verificationLink = `${env.SERVER_URL}/api/auth/verify/${data[0].id}/${verificationCode}`;
+
 	try {
-		const verificationCode = crypto.randomUUID();
-		const { data, error } = await supabase
-			.from('User')
-			.insert({
-				username,
-				password: await hashPassword(password),
-				email,
-				verificationCode,
-			})
-			.select('id, username, email, image');
+		await transporter.sendMail({
+			from: env.EMAIL_FROM,
+			to: email,
+			subject: 'Verify Your Account',
+			html: await render(VerifyEmail({ verificationLink })),
+		});
+	} catch (error: any) {
+		throw new Error(`Failed to send verification email: ${error.message}`);
+	}
 
-		if (error) throw new Error(error.message);
-		if (!data) throw new Error(`Something went wrong: data=null`);
+	return data[0];
+}
 
-		const verificationLink = `${env.SERVER_URL}/api/auth/verify/${data[0].id}/${verificationCode}`;
+export async function createUser(input: CreateUserInput) {
+	try {
+		return await saveAndVerifyUser(input);
+	} catch (e: any) {
+		throw new Error(`Error creating user: ${e.message}`);
+	}
+}
 
-		try {
-			await transporter.sendMail({
-				from: env.EMAIL_FROM,
-				to: email,
-				subject: 'Verify Your Account',
-				html: await render(VerifyEmail({ verificationLink })),
+export async function createUserWithToken(
+	input: Omit<CreateUserInput, 'email'>,
+	inviteToken: string
+) {
+	try {
+		const decoded = await verifyJwt<DecodedInvite>(inviteToken, 'INVITE');
+		if (decoded) {
+			const { data, error } = await supabase
+				.from('UserInvite')
+				.select('*')
+				.eq('email', decoded.email)
+				.single();
+
+			if (error) throw new Error(error.message);
+			if (!data) throw new Error(`Something went wrong: data=null`);
+
+			await supabase.from('UserInvite').delete().eq('token', inviteToken);
+
+			return await saveAndVerifyUser({
+				...input,
+				email: data.email,
+				roleId: data.roleId,
 			});
-		} catch (error: any) {
-			throw new Error(`Failed to send verification email: ${error.message}`);
+		} else {
+			throw new Error('Failed to decode invite token');
 		}
-
-		return data[0];
 	} catch (e: any) {
 		throw new Error(`Error creating user: ${e.message}`);
 	}

@@ -3,7 +3,7 @@
 import { toast } from '@/hooks/use-toast';
 import { request } from '@/lib/axios';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -29,7 +29,7 @@ const signupFormSchema = z
 			.string({ required_error: 'Username is required' })
 			.min(2, 'Username is too short')
 			.max(20, 'Username is too long'),
-		email: z.string().email(),
+		email: z.optional(z.string().email()),
 		password: z.string().min(8, 'Password is too short'),
 		confirmPassword: z.string(),
 	})
@@ -40,7 +40,7 @@ const signupFormSchema = z
 
 type SignupInput = z.infer<typeof signupFormSchema>;
 
-export default function SignupForm() {
+export default function SignupForm({ token }: { token: string | null }) {
 	const [submitting, setSubmitting] = useState(false);
 	const { push } = useRouter();
 	const { status } = useAuth();
@@ -49,7 +49,6 @@ export default function SignupForm() {
 		resolver: zodResolver(signupFormSchema),
 		mode: 'onChange',
 		defaultValues: {
-			email: '',
 			password: '',
 			username: '',
 			confirmPassword: '',
@@ -59,11 +58,19 @@ export default function SignupForm() {
 	async function onSubmit({ username, email, password }: SignupInput) {
 		setSubmitting(true);
 		try {
-			await request.post('/auth/signup', {
-				username,
-				password,
-				email,
-			});
+			if (token) {
+				await request.post('/auth/signup', {
+					username,
+					password,
+					token,
+				});
+			} else {
+				await request.post('/auth/signup', {
+					username,
+					password,
+					email,
+				});
+			}
 			toast({
 				title: 'Successfully created your account',
 				description: 'Check your email for a verification link',
@@ -112,19 +119,21 @@ export default function SignupForm() {
 								</FormItem>
 							)}
 						/>
-						<FormField
-							control={form.control}
-							name='email'
-							render={({ field }) => (
-								<FormItem className='w-full'>
-									<FormLabel>Email</FormLabel>
-									<FormControl>
-										<Input placeholder='Email' {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+						{!token && (
+							<FormField
+								control={form.control}
+								name='email'
+								render={({ field }) => (
+									<FormItem className='w-full'>
+										<FormLabel>Email</FormLabel>
+										<FormControl>
+											<Input placeholder='Email' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						)}
 						<FormField
 							control={form.control}
 							name='password'
