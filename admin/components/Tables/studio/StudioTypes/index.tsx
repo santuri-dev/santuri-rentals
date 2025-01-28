@@ -15,11 +15,9 @@ import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import StudioForm from '@/components/Forms/studio/StudioForm';
 import useLazyQuery from '@/hooks/use-lazy-query';
-import RestrictedDatesForm from '@/components/Forms/studio/RestrictedDatesForm';
 
 export default function StudioTypesTable() {
 	const [openStudioForm, setOpenStudioForm] = useState(false);
-	const [openDateForm, setOpenDateForm] = useState(false);
 	const { refetch } = useLazyQuery(
 		studioTypesOpts({ pageIndex: 0, pageSize: 5 })
 	);
@@ -48,30 +46,6 @@ export default function StudioTypesTable() {
 								<StudioForm
 									onSubmit={async () => {
 										setOpenStudioForm(false);
-										await refetch();
-									}}
-								/>
-							</DialogContent>
-						</Dialog>
-					),
-				},
-				{
-					name: 'Restrict Dates',
-					children: (
-						<Dialog open={openDateForm} onOpenChange={setOpenDateForm}>
-							<DialogTrigger asChild>
-								<Button variant={'secondary'} size={'sm'}>
-									Add Restricted Dates <Plus className='h-4 w-4 ml-2' />
-								</Button>
-							</DialogTrigger>
-							<DialogContent>
-								<DialogTitle>Restrict Dates</DialogTitle>
-								<DialogDescription>
-									Select the dates you would like to restrict bookings.
-								</DialogDescription>
-								<RestrictedDatesForm
-									onSubmit={async () => {
-										setOpenDateForm(false);
 										await refetch();
 									}}
 								/>

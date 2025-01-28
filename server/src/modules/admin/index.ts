@@ -51,10 +51,11 @@ import {
 import {
 	approveStudioRequest,
 	createStudioType,
+	deleteStudioRestrictedDate,
 	deleteStudioType,
 	editStudioType,
 	getAdminStudioRequests,
-	getRestrictedStudioDates,
+	getRestrictedStudioDatesAdmin,
 	getStudioTypesAdmin,
 	restrictStudioDates,
 } from './admin_studio.service';
@@ -699,6 +700,52 @@ const admin = (app: Elysia) =>
 										return {
 											success: true,
 											message: 'Successfully deleted studio type',
+										};
+									} catch (error: any) {
+										set.status = 400;
+										return {
+											success: false,
+											message: error.message,
+											data: null,
+										};
+									}
+								},
+								{
+									params: t.Object({ id: t.Numeric() }),
+								}
+							)
+					)
+					.group('/restricted-dates', (app) =>
+						app
+							.get(
+								'',
+								async ({ set, query }) => {
+									try {
+										const data = await getRestrictedStudioDatesAdmin(query);
+										return {
+											success: true,
+											message: 'Successfully restricted dates',
+											...data,
+										};
+									} catch (error: any) {
+										set.status = 400;
+										return {
+											success: false,
+											message: error.message,
+											data: null,
+										};
+									}
+								},
+								{ query: paginationQuerySchema }
+							)
+							.delete(
+								'/:id',
+								async ({ set, params: { id } }) => {
+									try {
+										await deleteStudioRestrictedDate(id);
+										return {
+											success: true,
+											message: 'Successfully deleted restricted date',
 										};
 									} catch (error: any) {
 										set.status = 400;

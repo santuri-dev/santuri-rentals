@@ -1,13 +1,13 @@
 import { Elysia, t } from 'elysia';
 import {
 	createStudioRequest,
+	getRestrictedStudioDates,
 	getStudioRequests,
 	getStudioTypes,
 	getUserDiscounts,
 } from './studio.service';
 import { StudioRequestSchema } from './studio.schema';
 import { requireUser } from '@/middleware/requireUser';
-import { getRestrictedStudioDates } from '../admin/admin_studio.service';
 
 const studio = (app: Elysia) =>
 	app.group('/studio', (app) =>

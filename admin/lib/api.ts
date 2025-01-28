@@ -10,6 +10,7 @@ import {
 	GearStats,
 	PaginatedResponse,
 	Product,
+	RestrictedDate,
 	StudioRequest,
 	StudioType,
 	User,
@@ -118,6 +119,23 @@ export const studioRequestOpts = (
 			return (
 				await request.get(
 					`/studio/requests?pageIndex=${pageIndex}&pageSize=${pageSize}&date=${date.toISOString()}`
+				)
+			).data;
+		},
+	};
+};
+
+export const studioRestrictedDatesOpts = ({
+	pageIndex,
+	pageSize,
+}: PaginationState): QueryOpts<PaginatedResponse<RestrictedDate>> => {
+	return {
+		initialData: createPaginationInitialData(pageIndex, pageSize),
+		queryKey: ['studio_restricted_dates', pageIndex, pageSize],
+		queryFn: async () => {
+			return (
+				await request.get(
+					`/studio/restricted-dates?pageIndex=${pageIndex}&pageSize=${pageSize}`
 				)
 			).data;
 		},

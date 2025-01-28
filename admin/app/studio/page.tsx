@@ -1,3 +1,4 @@
+import RestrictedDatesTable from '@/components/Tables/studio/RestrictedDatesTable';
 import StudioRequestsTable from '@/components/Tables/studio/StudioRequestsTable';
 import StudioTypesTable from '@/components/Tables/studio/StudioTypes';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,12 +14,16 @@ export default function Page() {
 					<TabsList>
 						<TabsTrigger value='studios'>Studios</TabsTrigger>
 						<TabsTrigger value='requests'>Requests</TabsTrigger>
+						<TabsTrigger value='restricted-dates'>Restricted Dates</TabsTrigger>
 					</TabsList>
 					<TabsContent value='requests' className='space-y-4'>
 						<StudioRequestsTable />
 					</TabsContent>
 					<TabsContent value='studios' className='space-y-4'>
 						<StudioTypesTable />
+					</TabsContent>
+					<TabsContent value='restricted-dates' className='space-y-4'>
+						<RestrictedDatesTable />
 					</TabsContent>
 				</Tabs>
 			</div>

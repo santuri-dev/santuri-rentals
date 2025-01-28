@@ -233,12 +233,18 @@ export async function restrictStudioDates({
 	}
 }
 
-export async function getRestrictedStudioDates() {
+export async function getRestrictedStudioDatesAdmin(query: PaginationState) {
 	try {
-		const { error, data } = await supabase
+		const { from, pageIndex, pageSize, to } = getPagination({
+			pageIndex: query.pageIndex,
+			pageSize: query.pageSize,
+		});
+
+		const { error, data, count } = await supabase
 			.from('RestrictedDates')
-			.select('*')
-			.gte('date', new TZDate(new Date(), 'Africa/Nairobi').toISOString());
+			.select('*', { count: 'exact' })
+			.gte('date', new TZDate(new Date(), 'Africa/Nairobi').toISOString())
+			.range(from, to);
 
 		if (error) {
 			throw new Error(
@@ -246,8 +252,23 @@ export async function getRestrictedStudioDates() {
 			);
 		}
 
-		return data;
+		return { data, pagination: { pageIndex, pageSize, count } };
 	} catch (error: any) {
 		throw new Error(error.message);
 	}
+}
+
+export async function deleteStudioRestrictedDate(id: number) {
+	const { data, error } = await supabase
+		.from('RestrictedDates')
+		.delete()
+		.eq('id', id)
+		.select('*')
+		.single();
+
+	if (error) {
+		throw new Error(`Error deleting restricted date: ${error.message}`);
+	}
+
+	return data;
 }

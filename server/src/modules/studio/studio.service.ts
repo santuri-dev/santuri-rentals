@@ -167,3 +167,22 @@ export async function getUserDiscounts(role: string) {
 		throw new Error(`Error fetching user discounts: ${e.message}`);
 	}
 }
+
+export async function getRestrictedStudioDates() {
+	try {
+		const { error, data } = await supabase
+			.from('RestrictedDates')
+			.select('*')
+			.gte('date', new TZDate(new Date(), 'Africa/Nairobi').toISOString());
+
+		if (error) {
+			throw new Error(
+				`Something went wrong adding restricted dates${error.message}`
+			);
+		}
+
+		return data;
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
+}
