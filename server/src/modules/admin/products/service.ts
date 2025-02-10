@@ -1,6 +1,6 @@
 import supabase, { uploadFileToStorage } from '@/db';
-import { Course, Product } from '../shop/shop.schema';
-import { generateUniqueSlug, toSnakeCase } from '../../lib/helpers';
+import { Course, Product } from '../../shop/shop.schema';
+import { generateUniqueSlug, toSnakeCase } from '@/lib/helpers';
 import { getPagination, PaginationState } from '@/lib/pagination';
 
 // Add a new course

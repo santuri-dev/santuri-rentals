@@ -4,7 +4,7 @@ import { AdminDecodedRefresh, LocalUser } from '@/lib/types';
 import {
 	refreshAdminAccessToken,
 	signAdminAccessToken,
-} from '@/modules/admin/admin_auth.service';
+} from '@/modules/admin/auth/service';
 import Elysia from 'elysia';
 
 export const requireAdminUser = (app: Elysia) =>

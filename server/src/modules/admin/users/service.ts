@@ -1,10 +1,10 @@
 import supabase from '@/db';
 import { getPagination, PaginationState } from '@/lib/pagination';
-import { signInviteToken } from '../auth/auth.service';
 import env from '@/lib/env';
 import transporter from '@/lib/nodemailer';
 import { render } from '@react-email/components';
 import UserInvite from '@/emails/UserInvite';
+import { signInviteToken } from '@/modules/auth/auth.service';
 
 export async function getUsers(pagination: PaginationState) {
 	const { from, to, pageIndex, pageSize } = getPagination(pagination);
